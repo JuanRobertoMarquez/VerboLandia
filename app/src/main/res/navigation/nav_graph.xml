@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/nav_dictionary">
+
+    <fragment
+        android:id="@+id/nav_dictionary"
+        android:name="com.example.verbolandia.DictionaryFragment"
+        android:label="DictionaryFragment"
+        tools:layout="@layout/fragment_dictionary">
+        <action
+            android:id="@+id/action_dictionary_to_verbDetail"
+            app:destination="@id/nav_verb" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/nav_verb"
+        android:name="com.example.verbolandia.VerbDetailFragment"
+        android:label="VerbDetailFragment"
+        tools:layout="@layout/fragment_verb_detail" />
+
+    <fragment
+        android:id="@+id/nav_practice"
+        android:name="com.example.verbolandia.PracticeFragment"
+        android:label="PracticeFragment"
+        tools:layout="@layout/fragment_practice" />
+
+    <fragment
+        android:id="@+id/nav_progress"
+        android:name="com.example.verbolandia.ProgressFragment"
+        android:label="ProgressFragment"
+        tools:layout="@layout/fragment_progress" />
+
+</navigation>
