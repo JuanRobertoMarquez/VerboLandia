@@ -1,23 +1,250 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- App Identifiers -->
+    <!-- App Identifiers & Titles -->
     <string name="app_name">Verbolandia</string>
+    <string name="app_subtitle">DICCIONARIO DE VERBOS</string>
+    <string name="explorer_title">Explorador Verbal</string>
+    <string name="explorer_subtitle">Domina las 3 formas esenciales con rigor y fluidez.</string>
+    <string name="active_verbs_badge">180 Activos</string>
+
+    <!-- Verb Detail Screen -->
+    <string name="verb_detail_title">Detalle De Verbo</string>
+    <string name="badge_irregular">• IRREGULAR</string>
+    <string name="badge_high_freq">ALTA FRECUENCIA</string>
+    <string name="badge_level">A2 · B1</string>
+    <string name="detail_verb_name">Break</string>
+    <string name="detail_phonetic">/breɪk/</string>
+    <string name="meaning_header">SIGNIFICADO PRINCIPAL</string>
+    <string name="meaning_primary">Romper, quebrar, interrumpir</string>
+
+    <!-- Grammatical Forms Block -->
+    <string name="grammatical_forms_title">FORMAS GRAMATICALES</string>
+    <string name="grammatical_matrix_badge">Matriz V1 · V2 · V3</string>
+    <string name="col_v1_title">V1 · BASE</string>
+    <string name="col_v2_title">V2 · SIMPLE</string>
+    <string name="col_v3_title">V3 · PARTICIPLE</string>
+    <string name="tense_pasado">PASADO</string>
+    <string name="tense_participio">PARTICIPIO</string>
+    <string name="sample_v1">break</string>
+    <string name="sample_v2">broke</string>
+    <string name="sample_v3">broken</string>
+    <string name="sample_v1_phonetic">/breɪk/</string>
+    <string name="sample_v2_phonetic">/broʊk/</string>
+    <string name="sample_v3_phonetic">/ˈbroʊkən/</string>
+    <string name="derived_third_person">3ª Persona: breaks</string>
+    <string name="derived_gerund">Gerundio (-ing): breaking</string>
+
+    <!-- Mnemonic Pattern Block -->
+    <string name="mnemonic_title">PATRÓN MNEMOTÉCNICO</string>
+    <string name="mnemonic_pattern">Sigue la familia I / EA &#8594; O &#8594; O&#8230;EN. Aprende uno y recordarás tres con idéntica melodía vocálica:</string>
+    <string name="mnemonic_family_1">speak  ➔  spoke  ➔  spoken</string>
+    <string name="mnemonic_family_2">freeze  ➔  froze  ➔  frozen</string>
+    <string name="mnemonic_family_3">break  ➔  broke  ➔  broken</string>
+
+    <!-- Examples Block -->
+    <string name="examples_title">Verbo en Acción</string>
+    <string name="examples_count">3 EJEMPLOS CLAVE</string>
+    <string name="ex_1_title">PAST SIMPLE</string>
+    <string name="ex_1_en">"She broke her phone screen yesterday."</string>
+    <string name="ex_1_es">Ella rompió la pantalla de su teléfono ayer.</string>
+    <string name="ex_2_title">PRESENT PERFECT</string>
+    <string name="ex_2_en">"They have broken three records this year."</string>
+    <string name="ex_2_es">Han roto tres récords este año.</string>
+    <string name="ex_3_title">PHRASAL VERB</string>
+    <string name="ex_3_badge">Esencial</string>
+    <string name="ex_3_en">Break down</string>
+    <string name="ex_3_es">1. Dejar de funcionar (máquina, auto).\n2. Colapsar emocionalmente / quebrar en llanto.</string>
+
+    <!-- Common Error Block -->
+    <string name="error_warning_title">ERROR COMÚN A EVITAR</string>
+    <string name="error_warning_desc">NUNCA digas "broked" ni "have broke". Con los auxiliares have / has / had la forma obligatoria siempre es broken.</string>
+
+    <!-- Retention Metrics Block -->
+    <string name="retention_title">TU NIVEL DE RETENCIÓN</string>
+    <string name="retention_metric">82%</string>
+    <string name="retention_views">Visto 14 veces</string>
+    <string name="retention_last_success">Último acierto: Hoy</string>
+
+    <!-- Practice / Training Screen -->
+    <string name="practice_top_title">SESIÓN DE PRÁCTICA</string>
+    <string name="focus_mode_label">&#9889; MODO FOCUS</string>
+    <string name="practice_title">Entrenamiento Activo</string>
+    <string name="practice_subtitle">Afianza patrones verbales con ejercicios dinámicos sin presiones infantiles ni temporizadores punitivos.</string>
+    <string name="goal_card_title">META DE HOY</string>
+    <string name="goal_card_status">15 de 20 verbos consolidados</string>
+    <string name="goal_card_pct">75% completado</string>
+    <string name="goal_card_remaining">¡A solo 5 verbos!</string>
+    <string name="pedagogical_level_label">NIVEL PEDAGÓGICO</string>
+    <string name="level_basic">Básico (A1–A2)</string>
+    <string name="level_intermediate">Intermedio (B1–B2)</string>
+    <string name="level_advanced">Avanzado (C1–C2)</string>
+    <string name="reinforcement_title">Batería de refuerzo</string>
+    <string name="reinforcement_badge">10 VERBOS</string>
+    <string name="reinforcement_desc">Verbos con más vacilaciones recientes (arise, shrink, tread&#8230;).</string>
+    <string name="reinforcement_v_badge">V1 V2 V3</string>
+    <string name="btn_start_guided_review">Iniciar repaso guiado &#8594;</string>
+    <string name="modalities_title">Modalidades de práctica</string>
+    <string name="no_punishment_badge">SIN VIDAS NI CASTIGOS</string>
+
+    <string name="mod_1_title">Tríada Rápida</string>
+    <string name="mod_1_subtitle">Speed Conjugation</string>
+    <string name="mod_1_badge">Popular • 3 min</string>
+    <string name="mod_1_desc">Te damos el infinitivo base, selecciona en segundos sus formas de pasado simple y participio correctas.</string>
+    <string name="mod_1_sample">FORBID  ➔  FORBADE  ➔  FORBIDDEN   +10 pts</string>
+
+    <string name="mod_2_title">Completar en Contexto</string>
+    <string name="mod_2_subtitle">Fill the Gap</string>
+    <string name="mod_2_badge">Conocimiento Real</string>
+    <string name="mod_2_desc">Elige la conjugación precisa atendiendo al contexto narrativo de la oración real en prosa natural.</string>
+    <string name="mod_2_quote">"By next month, the architects will have&#8230;"</string>
+    <string name="mod_2_options">drawn   drew   drawn up</string>
+
+    <string name="mod_3_title">Billar de verbos</string>
+    <string name="mod_3_subtitle">Pattern Match</string>
+    <string name="mod_3_badge">Asociación Mental</string>
+    <string name="mod_3_desc">Lanza los verbos al tiempo gramatical correspondiente, sin fallar la tronera</string>
+    <string name="mod_3_family_1">Sing / Sang / Sung</string>
+    <string name="mod_3_family_2">Ring / Rang / Rung</string>
+    <string name="mod_3_family_3">+ ¿Sink?</string>
+
+    <string name="mod_4_title">Caza de Errores</string>
+    <string name="mod_4_subtitle">Error Hunter</string>
+    <string name="mod_4_badge">Atención al Detalle</string>
+    <string name="mod_4_desc">Identifica fallos típicos cometidos comúnmente por hispanohablantes en concordancia y tiempo pretérito.</string>
+    <string name="mod_4_quote">"He didn\'t went there"</string>
+    <string name="mod_4_link">Corregir &#8594;</string>
+
+    <string name="banner_tip_text">Aprende a tu ritmo. Cada práctica se adapta a tus intervalos de retención espaciada.</string>
+
+    <!-- Progress & Domain Screen -->
+    <string name="progress_top_title">PROGRESO Y DOMINIO</string>
+    <string name="cognitive_perf_label">RENDIMIENTO COGNITIVO</string>
+    <string name="sync_today_label">• Sincronizado hoy</string>
+    <string name="domain_metrics_title">Métricas de Dominio</string>
+    <string name="domain_metrics_subtitle">Análisis detallado de tu retención y patrones de error verbal.</string>
+
+    <string name="metric_1_label">Retención Global</string>
+    <string name="metric_1_val">84%</string>
+    <string name="metric_1_badge">📈 +6%</string>
+
+    <string name="metric_2_label">Verbos Dominados</string>
+    <string name="metric_2_val">142 / 200</string>
+    <string name="metric_2_badge">71% total</string>
+
+    <string name="metric_3_label">Zona Crítica</string>
+    <string name="metric_3_val">18</string>
+    <string name="metric_3_badge">Atención</string>
+
+    <string name="metric_4_label">Práctica Diaria</string>
+    <string name="metric_4_val">12 min</string>
+    <string name="metric_4_badge">Meta: 15m</string>
+
+    <string name="chart_title">Evolución de Precisión</string>
+    <string name="chart_subtitle">Últimos 7 días de práctica activa</string>
+    <string name="chart_max_badge">📈 Máx 92%</string>
+    <string name="day_mon">L</string>
+    <string name="day_tue">M</string>
+    <string name="day_wed">X</string>
+    <string name="day_thu">J</string>
+    <string name="day_fri">V</string>
+    <string name="day_sat">S</string>
+    <string name="day_sun">D</string>
+    <string name="sat_peak_val">92%</string>
+
+    <string name="weak_points_title">Puntos Débiles Recurrentes</string>
+    <string name="weak_points_subtitle">Prioridad alta para repetición espaciada</string>
+    <string name="weak_points_badge">4 Críticos</string>
+    <string name="btn_review">🔄 Repasar</string>
+
+    <string name="weak_1_name">Choose</string>
+    <string name="weak_1_phonetic">/tʃuːz/</string>
+    <string name="weak_1_err">38% error</string>
+    <string name="weak_1_forms">Chose ➔ Chosen</string>
+    <string name="weak_1_note">Confusión típica: tendencia a regularizar (*choosed) o confusión fonética en participio.</string>
+    <string name="weak_1_last">Último fallo: ayer</string>
+
+    <string name="weak_2_name">Freeze</string>
+    <string name="weak_2_phonetic">/friːz/</string>
+    <string name="weak_2_err">32% error</string>
+    <string name="weak_2_forms">Froze ➔ Frozen</string>
+    <string name="weak_2_note">Patrón vocálico /i:/ ➔ /oʊ/ ➔ /oʊzən/</string>
+    <string name="weak_2_last">Último fallo: hace 2 días</string>
+
+    <string name="weak_3_name">Lie vs. Lay</string>
+    <string name="weak_3_phonetic">Echarse (intransitivo) vs. Poner/Colocar (transitivo)</string>
+    <string name="weak_3_err">29% error</string>
+    <string name="weak_3_forms">Lie / Lay / Lain vs. Lay / Laid / Laid</string>
+    <string name="weak_3_note">Contraste de transitividad y formas pretéritas entrelazadas.</string>
+    <string name="weak_3_last">Último fallo: hoy</string>
+
+    <string name="weak_4_name">Begin</string>
+    <string name="weak_4_phonetic">/bɪˈɡɪn/</string>
+    <string name="weak_4_err">24% error</string>
+    <string name="weak_4_forms">Began ➔ Begun</string>
+    <string name="weak_4_note">Intercambio de \'a\' por \'u\' en pasado simple</string>
+    <string name="weak_4_last">Último fallo: hace 3 días</string>
+
+    <string name="typology_title">Dominio por Tipología Verbal</string>
+    <string name="typology_subtitle">Distribución morfológica en tu memoria activa</string>
+    <string name="typology_1_title">Regulares terminados en -ed</string>
+    <string name="typology_1_val">96%</string>
+    <string name="typology_2_title">Irregulares invariables (Cut / Hit / Put)</string>
+    <string name="typology_2_val">94%</string>
+    <string name="typology_3_title">Irregulares con cambio vocálico</string>
+    <string name="typology_3_val">78%</string>
+
+    <string name="btn_generate_test_errors">&#9889; Generar Test Enfocado en Mis Errores</string>
+    <string name="btn_test_subtext">Sesión adaptativa calibrada con tus 18 verbos más frágiles.</string>
+
+    <!-- Bottom Actions -->
+    <string name="btn_practice_verb">Practicar este verbo &#9889;</string>
+
+    <!-- Navigation Bar Labels -->
+    <string name="nav_dictionary">Diccionario</string>
+    <string name="nav_verb">Verbo</string>
+    <string name="nav_practice">Práctica</string>
+    <string name="nav_progress">Progreso</string>
 
     <!-- Conjugation Table Headers -->
     <string name="col_v1_base">V1 Infinitive</string>
     <string name="col_v2_past">V2 Past Simple</string>
     <string name="col_v3_participle">V3 Past Participle</string>
 
+    <!-- Card Syntactic Column Labels -->
+    <string name="card_col_v1">V1 BASE</string>
+    <string name="card_col_v2">V2 PASADO</string>
+    <string name="card_col_v3">V3 PARTICIPIO</string>
+
+    <!-- Verbo del Día -->
+    <string name="verbo_del_dia_label">VERBO DEL DÍA</string>
+    <string name="verbo_del_dia_title">freeze /fri:z/ • Congelar</string>
+    <string name="verbo_del_dia_v1">Base: freeze</string>
+    <string name="verbo_del_dia_v2">Pasado: froze</string>
+    <string name="verbo_del_dia_v3">Part.: frozen</string>
+
+    <!-- Section Headers -->
+    <string name="list_header_title">LISTADO SINTÁCTICO</string>
+    <string name="list_header_results">5 resultados visibles</string>
+
     <!-- Category Filters -->
-    <string name="filter_all">All</string>
-    <string name="filter_irregular">Irregular</string>
-    <string name="filter_regular">Regular</string>
+    <string name="filter_all">Todos</string>
+    <string name="filter_all_count">Todos (180)</string>
+    <string name="filter_irregular">Irregulares</string>
+    <string name="filter_irregular_count">Irregulares (120)</string>
+    <string name="filter_regular">Regulares</string>
+    <string name="filter_regular_count">Regulares (60)</string>
     <string name="filter_a1_a2">A1-A2</string>
     <string name="filter_b1_b2">B1-B2</string>
     <string name="filter_c1_c2">C1-C2</string>
 
     <!-- Search & Accessibility Content Descriptions -->
     <string name="search_hint">Buscar verbo&#8230;</string>
+    <string name="dict_search_hint">Buscar verbo en inglés o español&#8230; (ej. bre</string>
     <string name="cd_play_audio">Escuchar pronunciación</string>
     <string name="cd_clear_search">Limpiar búsqueda</string>
+    <string name="cd_avatar">Foto de perfil del usuario</string>
+    <string name="cd_logo">Logotipo de Verbolandia</string>
+    <string name="cd_back">Volver</string>
+    <string name="cd_bookmark">Guardar en marcadores</string>
+    <string name="cd_shuffle">Barajar fichas</string>
 </resources>

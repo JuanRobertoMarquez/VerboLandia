@@ -1,0 +1,227 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/cardVerb"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginHorizontal="@dimen/margin"
+    android:layout_marginVertical="@dimen/spacing_sm"
+    app:cardBackgroundColor="?attr/colorSurfaceContainerLowest"
+    app:cardCornerRadius="@dimen/rounded_lg"
+    app:cardElevation="@dimen/spacing_xs"
+    app:strokeColor="?attr/colorOutlineVariant"
+    app:strokeWidth="1dp">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/spacing_md">
+
+        <!-- Header Row: Infinitive, Phonetic, Audio Button, Level & Classification Badges -->
+        <TextView
+            android:id="@+id/tvInfinitive"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="?attr/colorOnSurface"
+            android:textSize="@dimen/text_headline_md"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="break" />
+
+        <TextView
+            android:id="@+id/tvPhonetic"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/spacing_xs"
+            android:textColor="?attr/colorOnSurfaceVariant"
+            android:textSize="@dimen/text_body_sm"
+            app:layout_constraintBaseline_toBaselineOf="@id/tvInfinitive"
+            app:layout_constraintStart_toEndOf="@id/tvInfinitive"
+            tools:text="/breɪk/" />
+
+        <ImageButton
+            android:id="@+id/btnPlayAudio"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_marginStart="@dimen/spacing_xs"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="@string/cd_play_audio"
+            android:padding="4dp"
+            android:scaleType="fitCenter"
+            android:src="@drawable/ic_volume"
+            app:layout_constraintBottom_toBottomOf="@id/tvInfinitive"
+            app:layout_constraintStart_toEndOf="@id/tvPhonetic"
+            app:layout_constraintTop_toTopOf="@id/tvInfinitive"
+            app:tint="?attr/colorPrimary" />
+
+        <TextView
+            android:id="@+id/tvTypeBadge"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_badge_small"
+            android:paddingHorizontal="@dimen/spacing_sm"
+            android:paddingVertical="2dp"
+            android:textColor="?attr/colorOnSurfaceVariant"
+            android:textSize="@dimen/text_label_sm"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="Irregular" />
+
+        <TextView
+            android:id="@+id/tvLevelBadge"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/spacing_xs"
+            android:background="@drawable/bg_badge_small"
+            android:paddingHorizontal="@dimen/spacing_sm"
+            android:paddingVertical="2dp"
+            android:textColor="?attr/colorPrimary"
+            android:textSize="@dimen/text_label_sm"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toStartOf="@id/tvTypeBadge"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="B1" />
+
+        <!-- Subtitle Row: Spanish Meaning & Mastery Percentage -->
+        <TextView
+            android:id="@+id/tvSpanishMeaning"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_xs"
+            android:layout_marginEnd="@dimen/spacing_sm"
+            android:textColor="?attr/colorOnSurfaceVariant"
+            android:textSize="@dimen/text_body_md"
+            app:layout_constraintEnd_toStartOf="@id/tvMastery"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tvInfinitive"
+            tools:text="Romper, quebrar" />
+
+        <TextView
+            android:id="@+id/tvMastery"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="?attr/colorPrimary"
+            android:textSize="@dimen/text_label_md"
+            android:textStyle="bold"
+            app:layout_constraintBaseline_toBaselineOf="@id/tvSpanishMeaning"
+            app:layout_constraintEnd_toEndOf="parent"
+            tools:text="85% Dominado" />
+
+        <!-- Syntactic Matrix (V1, V2, V3) -->
+        <LinearLayout
+            android:id="@+id/layoutSyntacticMatrix"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_md"
+            android:background="?attr/colorSurfaceContainerLow"
+            android:baselineAligned="false"
+            android:orientation="horizontal"
+            android:padding="4dp"
+            android:weightSum="3"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tvSpanishMeaning">
+
+            <!-- Columna V1 BASE -->
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:paddingVertical="@dimen/spacing_sm">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/card_col_v1"
+                    android:textColor="?attr/colorOnSurfaceVariant"
+                    android:textSize="@dimen/text_label_sm" />
+
+                <TextView
+                    android:id="@+id/tvV1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
+                    android:textColor="?attr/colorOnSurface"
+                    android:textSize="@dimen/text_headline_sm"
+                    android:textStyle="bold"
+                    tools:text="break" />
+            </LinearLayout>
+
+            <!-- Columna V2 PASADO (Destacada) -->
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@drawable/bg_v2_column_highlight"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:paddingVertical="@dimen/spacing_sm">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/card_col_v2"
+                    android:textColor="?attr/colorPrimary"
+                    android:textSize="@dimen/text_label_sm"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/tvV2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
+                    android:textColor="?attr/colorPrimary"
+                    android:textSize="@dimen/text_headline_sm"
+                    android:textStyle="bold"
+                    tools:text="broke" />
+            </LinearLayout>
+
+            <!-- Columna V3 PARTICIPIO -->
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:paddingVertical="@dimen/spacing_sm">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/card_col_v3"
+                    android:textColor="?attr/colorOnSurfaceVariant"
+                    android:textSize="@dimen/text_label_sm" />
+
+                <TextView
+                    android:id="@+id/tvV3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
+                    android:textColor="?attr/colorOnSurface"
+                    android:textSize="@dimen/text_headline_sm"
+                    android:textStyle="bold"
+                    tools:text="broken" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- Progress Indicator -->
+        <com.google.android.material.progressindicator.LinearProgressIndicator
+            android:id="@+id/progressMastery"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_md"
+            app:indicatorColor="?attr/colorPrimary"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/layoutSyntacticMatrix"
+            app:trackColor="?attr/colorSurfaceContainerHighest"
+            app:trackCornerRadius="@dimen/rounded_full"
+            app:trackThickness="@dimen/progress_track_height"
+            tools:progress="85" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</com.google.android.material.card.MaterialCardView>
