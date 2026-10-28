@@ -1,3 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">VerboLandia</string>
+    <!-- App Identifiers -->
+    <string name="app_name">Verbolandia</string>
+
+    <!-- Conjugation Table Headers -->
+    <string name="col_v1_base">V1 Infinitive</string>
+    <string name="col_v2_past">V2 Past Simple</string>
+    <string name="col_v3_participle">V3 Past Participle</string>
+
+    <!-- Category Filters -->
+    <string name="filter_all">All</string>
+    <string name="filter_irregular">Irregular</string>
+    <string name="filter_regular">Regular</string>
+    <string name="filter_a1_a2">A1-A2</string>
+    <string name="filter_b1_b2">B1-B2</string>
+    <string name="filter_c1_c2">C1-C2</string>
+
+    <!-- Search & Accessibility Content Descriptions -->
+    <string name="search_hint">Buscar verbo&#8230;</string>
+    <string name="cd_play_audio">Escuchar pronunciación</string>
+    <string name="cd_clear_search">Limpiar búsqueda</string>
 </resources>
