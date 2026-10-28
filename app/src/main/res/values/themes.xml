@@ -1,9 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <!-- Base application theme. -->
-    <style name="Base.Theme.VerboLandia" parent="Theme.Material3.DayNight.NoActionBar">
-        <!-- Customize your light theme here. -->
-        <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+    <!-- Base application theme (Light Mode) -->
+    <style name="Theme.Verbolandia" parent="Theme.Material3.DayNight.NoActionBar">
+        <!-- Brand & Accent Colors -->
+        <item name="colorPrimary">@color/primary</item>
+        <item name="colorOnPrimary">@color/on_primary</item>
+        <item name="colorPrimaryContainer">@color/primary_container</item>
+        <item name="colorOnPrimaryContainer">@color/on_primary_container</item>
+
+        <item name="colorSecondary">@color/secondary</item>
+        <item name="colorOnSecondary">@color/on_secondary</item>
+        <item name="colorSecondaryContainer">@color/secondary_container</item>
+        <item name="colorOnSecondaryContainer">@color/on_secondary_container</item>
+
+        <item name="colorTertiary">@color/tertiary</item>
+        <item name="colorOnTertiary">@color/on_tertiary</item>
+        <item name="colorTertiaryContainer">@color/tertiary_container</item>
+        <item name="colorOnTertiaryContainer">@color/on_tertiary_container</item>
+
+        <!-- Material 3 Surfaces & Containers (Light) -->
+        <item name="colorSurface">#F8F9FF</item>
+        <item name="colorSurfaceContainerLowest">#FFFFFF</item>
+        <item name="colorSurfaceContainerLow">#EFF4FF</item>
+        <item name="colorSurfaceContainer">#E5EEFF</item>
+        <item name="colorSurfaceContainerHigh">#DCE9FF</item>
+        <item name="colorSurfaceContainerHighest">#D3E4FE</item>
+        <item name="colorSurfaceVariant">#D3E4FE</item>
+
+        <item name="colorOnSurface">#0B1C30</item>
+        <item name="colorOnSurfaceVariant">#3F4850</item>
+        <item name="android:colorBackground">#F8F9FF</item>
+        <item name="colorOnBackground">#0B1C30</item>
+
+        <!-- Outlines & Borders -->
+        <item name="colorOutline">#707881</item>
+        <item name="colorOutlineVariant">#BFC7D2</item>
+
+        <!-- Error Tones -->
+        <item name="colorError">@color/error</item>
+        <item name="colorOnError">@color/on_error</item>
+        <item name="colorErrorContainer">@color/error_container</item>
+        <item name="colorOnErrorContainer">@color/on_error_container</item>
+
+        <!-- Edge-to-Edge System Bar Configuration -->
+        <item name="android:statusBarColor">#F8F9FF</item>
+        <item name="android:navigationBarColor">#E5EEFF</item>
+        <item name="android:windowLightStatusBar">true</item>
+        <item name="android:windowLightNavigationBar" tools:targetApi="27">true</item>
     </style>
 
-    <style name="Theme.VerboLandia" parent="Base.Theme.VerboLandia" />
+    <!-- Aliases for compatibility -->
+    <style name="Theme.VerboLandia" parent="Theme.Verbolandia" />
+    <style name="Base.Theme.VerboLandia" parent="Theme.Verbolandia" />
 </resources>

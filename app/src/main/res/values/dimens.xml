@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Spacing & Margins Tokens -->
+    <dimen name="spacing_xs">4dp</dimen>
+    <dimen name="spacing_sm">8dp</dimen>
+    <dimen name="spacing_md">16dp</dimen>
+    <dimen name="spacing_lg">24dp</dimen>
+    <dimen name="spacing_xl">32dp</dimen>
+    <dimen name="gutter">16dp</dimen>
+    <dimen name="margin">16dp</dimen>
+    <dimen name="gutter_tablet">24dp</dimen>
+    <dimen name="gutter_desktop">32dp</dimen>
+    <dimen name="margin_tablet">32dp</dimen>
+    <dimen name="margin_desktop">48dp</dimen>
+
+    <!-- Corner Radius Tokens -->
+    <dimen name="rounded_sm">4dp</dimen>
+    <dimen name="rounded_default">8dp</dimen>
+    <dimen name="rounded_md">12dp</dimen>
+    <dimen name="rounded_lg">16dp</dimen>
+    <dimen name="rounded_xl">24dp</dimen>
+    <dimen name="rounded_2xl">16dp</dimen>
+    <dimen name="rounded_full">9999dp</dimen>
+
+    <!-- Typography Text Sizes (Plus Jakarta Sans Scale) -->
+    <dimen name="text_display_lg">36sp</dimen>
+    <dimen name="text_headline_lg">28sp</dimen>
+    <dimen name="text_headline_lg_mobile">24sp</dimen>
+    <dimen name="text_headline_md">20sp</dimen>
+    <dimen name="text_headline_sm">16sp</dimen>
+    <dimen name="text_body_lg">16sp</dimen>
+    <dimen name="text_body_md">14sp</dimen>
+    <dimen name="text_body_sm">12sp</dimen>
+    <dimen name="text_label_lg">14sp</dimen>
+    <dimen name="text_label_md">12sp</dimen>
+    <dimen name="text_label_sm">10sp</dimen>
+
+    <!-- Key Component Heights & Heights -->
+    <dimen name="button_height">48dp</dimen>
+    <dimen name="search_bar_height">48dp</dimen>
+    <dimen name="verb_card_min_height">280dp</dimen>
+    <dimen name="progress_track_height">6dp</dimen>
+</resources>
