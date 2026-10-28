@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/nav_dictionary"
+        android:icon="@drawable/ic_dictionary"
+        android:title="@string/nav_dictionary" />
+    <item
+        android:id="@+id/nav_verb"
+        android:icon="@drawable/ic_verb"
+        android:title="@string/nav_verb" />
+    <item
+        android:id="@+id/nav_practice"
+        android:icon="@drawable/ic_practice"
+        android:title="@string/nav_practice" />
+    <item
+        android:id="@+id/nav_progress"
+        android:icon="@drawable/ic_progress"
+        android:title="@string/nav_progress" />
+</menu>
