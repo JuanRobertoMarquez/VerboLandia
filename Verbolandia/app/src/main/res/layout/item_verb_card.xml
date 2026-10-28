@@ -1,0 +1,238 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/cardVerb"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="@dimen/spacing_md"
+    app:cardBackgroundColor="@color/surface_pure"
+    app:cardCornerRadius="@dimen/rounded_lg"
+    app:cardElevation="1dp"
+    app:strokeColor="@color/border_subdued"
+    app:strokeWidth="1dp">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/card_padding_horizontal">
+
+        <!-- Verb Base Name -->
+        <TextView
+            android:id="@+id/tvVerbBase"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/brand_tertiary"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="break" />
+
+        <!-- Phonetic Guide -->
+        <TextView
+            android:id="@+id/tvVerbPhonetic"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:textColor="@color/text_muted"
+            android:textSize="14sp"
+            app:layout_constraintBottom_toBottomOf="@id/tvVerbBase"
+            app:layout_constraintStart_toEndOf="@id/tvVerbBase"
+            app:layout_constraintTop_toTopOf="@id/tvVerbBase"
+            tools:text="/breɪk/" />
+
+        <!-- Audio Button -->
+        <ImageButton
+            android:id="@+id/btnAudio"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_marginStart="4dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="@string/cd_audio_button"
+            android:padding="4dp"
+            android:src="@drawable/ic_volume"
+            app:layout_constraintBottom_toBottomOf="@id/tvVerbBase"
+            app:layout_constraintStart_toEndOf="@id/tvVerbPhonetic"
+            app:layout_constraintTop_toTopOf="@id/tvVerbBase"
+            app:tint="@color/brand_primary" />
+
+        <!-- Badges Container (Level & Type Chips) -->
+        <LinearLayout
+            android:id="@+id/layoutBadges"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:baselineAligned="false"
+            android:orientation="horizontal"
+            app:layout_constraintBottom_toBottomOf="@id/tvVerbBase"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/tvVerbBase">
+
+            <TextView
+                android:id="@+id/tvLevelChip"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bg_badge_light_blue"
+                android:paddingHorizontal="@dimen/badge_padding_horizontal"
+                android:paddingVertical="@dimen/badge_padding_vertical"
+                android:textColor="@color/brand_primary"
+                android:textSize="11sp"
+                android:textStyle="bold"
+                tools:text="B1" />
+
+            <TextView
+                android:id="@+id/tvTypeChip"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="6dp"
+                android:background="@drawable/bg_badge_light_blue"
+                android:paddingHorizontal="@dimen/badge_padding_horizontal"
+                android:paddingVertical="@dimen/badge_padding_vertical"
+                android:textColor="@color/brand_primary"
+                android:textSize="11sp"
+                tools:text="Irregular" />
+        </LinearLayout>
+
+        <!-- Spanish Meaning -->
+        <TextView
+            android:id="@+id/tvSpanishMeaning"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:textColor="@color/text_muted"
+            android:textSize="14sp"
+            app:layout_constraintEnd_toStartOf="@id/tvMasteryMetric"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tvVerbBase"
+            tools:text="Romper, quebrar" />
+
+        <!-- Mastery Metric Badge -->
+        <TextView
+            android:id="@+id/tvMasteryMetric"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/brand_primary"
+            android:textSize="12sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="@id/tvSpanishMeaning"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/tvSpanishMeaning"
+            tools:text="85% Dominado" />
+
+        <!-- 3-Column Syntactic Matrix Container (V1, V2, V3) -->
+        <LinearLayout
+            android:id="@+id/layoutSyntacticMatrix"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:background="@drawable/bg_badge_light_blue"
+            android:baselineAligned="false"
+            android:orientation="horizontal"
+            android:padding="6dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tvSpanishMeaning">
+
+            <!-- V1 BASE -->
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:paddingVertical="8dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/col_v1_base"
+                    android:textColor="@color/text_muted"
+                    android:textSize="11sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/tvV1Value"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
+                    android:textColor="@color/brand_tertiary"
+                    android:textSize="15sp"
+                    android:textStyle="bold"
+                    tools:text="break" />
+            </LinearLayout>
+
+            <!-- V2 PASADO (Highlighted) -->
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@drawable/bg_v2_highlight"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:paddingVertical="8dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/col_v2_pasado"
+                    android:textColor="@color/brand_primary"
+                    android:textSize="11sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/tvV2Value"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
+                    android:textColor="@color/brand_primary"
+                    android:textSize="15sp"
+                    android:textStyle="bold"
+                    tools:text="broke" />
+            </LinearLayout>
+
+            <!-- V3 PARTICIPIO -->
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:paddingVertical="8dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/col_v3_participio"
+                    android:textColor="@color/text_muted"
+                    android:textSize="11sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/tvV3Value"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
+                    android:textColor="@color/brand_tertiary"
+                    android:textSize="15sp"
+                    android:textStyle="bold"
+                    tools:text="broken" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- Mastery Progress Bar -->
+        <com.google.android.material.progressindicator.LinearProgressIndicator
+            android:id="@+id/progressMastery"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            app:indicatorColor="@color/brand_primary"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/layoutSyntacticMatrix"
+            app:trackColor="@color/border_subdued"
+            app:trackCornerRadius="3dp"
+            app:trackThickness="@dimen/progress_track_height"
+            tools:progress="85" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</com.google.android.material.card.MaterialCardView>
