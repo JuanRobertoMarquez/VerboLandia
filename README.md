@@ -1,4 +1,4 @@
-# Verbolandia 
+# Verbolandia
 
 Aplicación móvil para Android diseñada para facilitar el aprendizaje y la traducción rápida de verbos entre inglés y español.
 
@@ -18,3 +18,13 @@ Sigue estos pasos para ejecutar el proyecto en tu computadora:
 1. **Clonar el repositorio:**
    ```bash
    git clone https://url-de-tu-repositorio/verbolandia.git
+   ```
+
+2. **Abrir el proyecto:**
+   Abre Android Studio y selecciona **Open**, luego navega hasta la carpeta del proyecto clonado.
+
+3. **Sincronizar Gradle:**
+   Deja que Android Studio descargue e instale todas las dependencias necesarias.
+
+4. **Ejecutar la aplicación:**
+   Conecta un dispositivo Android o inicia un emulador, y presiona el botón **Run** (`Shift + F10`).
