@@ -175,6 +175,7 @@
                                 android:layout_weight="1" />
 
                             <TextView
+                                android:id="@+id/badgeMetric1Diff"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:background="@drawable/bg_pill_sync"
@@ -187,6 +188,7 @@
                         </LinearLayout>
 
                         <TextView
+                            android:id="@+id/tvMetric1Val"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="@dimen/spacing_xs"
@@ -246,6 +248,7 @@
                                 android:layout_weight="1" />
 
                             <TextView
+                                android:id="@+id/badgeMetric2Pct"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:background="@drawable/bg_pill_sync"
@@ -258,6 +261,7 @@
                         </LinearLayout>
 
                         <TextView
+                            android:id="@+id/tvMetric2Val"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="@dimen/spacing_xs"
@@ -329,6 +333,7 @@
                         </LinearLayout>
 
                         <TextView
+                            android:id="@+id/tvMetric3Val"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="@dimen/spacing_xs"
@@ -400,6 +405,7 @@
                         </LinearLayout>
 
                         <TextView
+                            android:id="@+id/tvMetric4Val"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="@dimen/spacing_xs"
@@ -488,7 +494,7 @@
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@id/tvChartSubtitle">
 
-                        <!-- Lunes -->
+                        <!-- Day 1 -->
                         <LinearLayout
                             android:layout_width="0dp"
                             android:layout_height="match_parent"
@@ -497,11 +503,13 @@
                             android:orientation="vertical">
 
                             <View
+                                android:id="@+id/bar1"
                                 android:layout_width="16dp"
-                                android:layout_height="60dp"
+                                android:layout_height="10dp"
                                 android:background="@drawable/bg_bar_normal" />
 
                             <TextView
+                                android:id="@+id/tvDay1"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="@dimen/spacing_xs"
@@ -510,7 +518,7 @@
                                 android:textSize="@dimen/text_label_sm" />
                         </LinearLayout>
 
-                        <!-- Martes -->
+                        <!-- Day 2 -->
                         <LinearLayout
                             android:layout_width="0dp"
                             android:layout_height="match_parent"
@@ -519,11 +527,13 @@
                             android:orientation="vertical">
 
                             <View
+                                android:id="@+id/bar2"
                                 android:layout_width="16dp"
-                                android:layout_height="72dp"
+                                android:layout_height="10dp"
                                 android:background="@drawable/bg_bar_normal" />
 
                             <TextView
+                                android:id="@+id/tvDay2"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="@dimen/spacing_xs"
@@ -532,7 +542,7 @@
                                 android:textSize="@dimen/text_label_sm" />
                         </LinearLayout>
 
-                        <!-- Miércoles -->
+                        <!-- Day 3 -->
                         <LinearLayout
                             android:layout_width="0dp"
                             android:layout_height="match_parent"
@@ -541,11 +551,13 @@
                             android:orientation="vertical">
 
                             <View
+                                android:id="@+id/bar3"
                                 android:layout_width="16dp"
-                                android:layout_height="68dp"
+                                android:layout_height="10dp"
                                 android:background="@drawable/bg_bar_normal" />
 
                             <TextView
+                                android:id="@+id/tvDay3"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="@dimen/spacing_xs"
@@ -554,7 +566,7 @@
                                 android:textSize="@dimen/text_label_sm" />
                         </LinearLayout>
 
-                        <!-- Jueves -->
+                        <!-- Day 4 -->
                         <LinearLayout
                             android:layout_width="0dp"
                             android:layout_height="match_parent"
@@ -563,11 +575,13 @@
                             android:orientation="vertical">
 
                             <View
+                                android:id="@+id/bar4"
                                 android:layout_width="16dp"
-                                android:layout_height="80dp"
+                                android:layout_height="10dp"
                                 android:background="@drawable/bg_bar_normal" />
 
                             <TextView
+                                android:id="@+id/tvDay4"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="@dimen/spacing_xs"
@@ -576,7 +590,7 @@
                                 android:textSize="@dimen/text_label_sm" />
                         </LinearLayout>
 
-                        <!-- Viernes -->
+                        <!-- Day 5 -->
                         <LinearLayout
                             android:layout_width="0dp"
                             android:layout_height="match_parent"
@@ -585,11 +599,13 @@
                             android:orientation="vertical">
 
                             <View
+                                android:id="@+id/bar5"
                                 android:layout_width="16dp"
-                                android:layout_height="76dp"
+                                android:layout_height="10dp"
                                 android:background="@drawable/bg_bar_normal" />
 
                             <TextView
+                                android:id="@+id/tvDay5"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="@dimen/spacing_xs"
@@ -598,7 +614,7 @@
                                 android:textSize="@dimen/text_label_sm" />
                         </LinearLayout>
 
-                        <!-- Sábado (Peak) -->
+                        <!-- Day 6 -->
                         <LinearLayout
                             android:layout_width="0dp"
                             android:layout_height="match_parent"
@@ -606,31 +622,23 @@
                             android:gravity="bottom|center_horizontal"
                             android:orientation="vertical">
 
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="@string/sat_peak_val"
-                                android:textColor="?attr/colorPrimary"
-                                android:textSize="@dimen/text_label_sm"
-                                android:textStyle="bold" />
-
                             <View
+                                android:id="@+id/bar6"
                                 android:layout_width="16dp"
-                                android:layout_height="96dp"
-                                android:layout_marginTop="2dp"
-                                android:background="@drawable/bg_bar_highlight" />
+                                android:layout_height="10dp"
+                                android:background="@drawable/bg_bar_normal" />
 
                             <TextView
+                                android:id="@+id/tvDay6"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="@dimen/spacing_xs"
                                 android:text="@string/day_sat"
-                                android:textColor="?attr/colorPrimary"
-                                android:textSize="@dimen/text_label_sm"
-                                android:textStyle="bold" />
+                                android:textColor="?attr/colorOnSurfaceVariant"
+                                android:textSize="@dimen/text_label_sm" />
                         </LinearLayout>
 
-                        <!-- Domingo -->
+                        <!-- Day 7 -->
                         <LinearLayout
                             android:layout_width="0dp"
                             android:layout_height="match_parent"
@@ -639,11 +647,13 @@
                             android:orientation="vertical">
 
                             <View
+                                android:id="@+id/bar7"
                                 android:layout_width="16dp"
-                                android:layout_height="64dp"
+                                android:layout_height="10dp"
                                 android:background="@drawable/bg_bar_normal" />
 
                             <TextView
+                                android:id="@+id/tvDay7"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="@dimen/spacing_xs"
@@ -1184,6 +1194,7 @@
                             android:textSize="@dimen/text_body_sm" />
 
                         <TextView
+                            android:id="@+id/tvTypology1Val"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/typology_1_val"
@@ -1193,6 +1204,7 @@
                     </LinearLayout>
 
                     <com.google.android.material.progressindicator.LinearProgressIndicator
+                        android:id="@+id/progressTypology1"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="4dp"
@@ -1219,6 +1231,7 @@
                             android:textSize="@dimen/text_body_sm" />
 
                         <TextView
+                            android:id="@+id/tvTypology2Val"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/typology_2_val"
@@ -1228,6 +1241,7 @@
                     </LinearLayout>
 
                     <com.google.android.material.progressindicator.LinearProgressIndicator
+                        android:id="@+id/progressTypology2"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="4dp"
@@ -1254,6 +1268,7 @@
                             android:textSize="@dimen/text_body_sm" />
 
                         <TextView
+                            android:id="@+id/tvTypology3Val"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/typology_3_val"
@@ -1263,6 +1278,7 @@
                     </LinearLayout>
 
                     <com.google.android.material.progressindicator.LinearProgressIndicator
+                        android:id="@+id/progressTypology3"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="4dp"

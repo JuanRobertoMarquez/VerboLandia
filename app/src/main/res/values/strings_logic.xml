@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="history_title">Búsquedas recientes</string>
+    <string name="history_clear">Borrar historial</string>
+    <string name="history_clear_confirm_title">¿Borrar historial de búsqueda?</string>
+    <string name="history_clear_confirm_msg">Se eliminarán todas las búsquedas recientes conservadas.</string>
+
+    <string name="empty_search_results">No encontramos verbos que coincidan con tu búsqueda.</string>
+    <string name="empty_progress_title">Sin datos de práctica aún</string>
+    <string name="empty_progress_desc">Realiza un entrenamiento en la pestaña Práctica para comenzar a registrar tu rendimiento y métricas de retención.</string>
+
+    <string name="dialog_reset_title">Restablecer Progreso</string>
+    <string name="dialog_reset_msg">¿Estás seguro de que deseas eliminar todos los intentos de práctica y estadísticas guardadas?</string>
+    <string name="dialog_reset_positive">Restablecer</string>
+    <string name="dialog_cancel">Cancelar</string>
+
+    <string name="snackbar_history_cleared">Historial de búsqueda eliminado</string>
+    <string name="snackbar_progress_reset">Progreso restablecido correctamente</string>
+</resources>

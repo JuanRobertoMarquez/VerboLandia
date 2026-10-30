@@ -2,17 +2,17 @@ package com.example.verbolandia.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import android.widget.Toast
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.verbolandia.databinding.ItemVerbCardBinding
 import com.example.verbolandia.model.Verb
 
 class VerbAdapter(
-    private var verbs: List<Verb>,
     private val onItemClick: (Verb) -> Unit
-) : RecyclerView.Adapter<VerbAdapter.VerbViewHolder>() {
+) : ListAdapter<Verb, VerbAdapter.VerbViewHolder>(VerbDiffCallback) {
 
-    inner class VerbViewHolder(val binding: ItemVerbCardBinding) :
+    class VerbViewHolder(val binding: ItemVerbCardBinding) :
         RecyclerView.ViewHolder(binding.root)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VerbViewHolder {
@@ -25,7 +25,7 @@ class VerbAdapter(
     }
 
     override fun onBindViewHolder(holder: VerbViewHolder, position: Int) {
-        val verb = verbs[position]
+        val verb = getItem(position)
         with(holder.binding) {
             tvInfinitive.text = verb.base
             tvPhonetic.text = verb.phonetic
@@ -40,24 +40,19 @@ class VerbAdapter(
             tvMastery.text = "${verb.mastery}% Dominado"
             progressMastery.progress = verb.mastery
 
-            btnPlayAudio.setOnClickListener {
-                Toast.makeText(
-                    root.context,
-                    "Reproduciendo pronunciación de: ${verb.base}",
-                    Toast.LENGTH_SHORT
-                ).show()
-            }
-
             root.setOnClickListener {
                 onItemClick(verb)
             }
         }
     }
 
-    override fun getItemCount(): Int = verbs.size
+    object VerbDiffCallback : DiffUtil.ItemCallback<Verb>() {
+        override fun areItemsTheSame(oldItem: Verb, newItem: Verb): Boolean {
+            return oldItem.base == newItem.base
+        }
 
-    fun updateData(newVerbs: List<Verb>) {
-        verbs = newVerbs
-        notifyDataSetChanged()
+        override fun areContentsTheSame(oldItem: Verb, newItem: Verb): Boolean {
+            return oldItem == newItem
+        }
     }
 }

@@ -5,18 +5,23 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import com.example.verbolandia.data.VerbRepository
+import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import com.example.verbolandia.databinding.FragmentPracticeBinding
-import com.example.verbolandia.util.NotificationHelper
+import com.example.verbolandia.model.Verb
+import com.example.verbolandia.ui.SharedViewModel
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
+import kotlinx.coroutines.launch
 
 class PracticeFragment : Fragment() {
 
     private var _binding: FragmentPracticeBinding? = null
     private val binding get() = _binding!!
 
-    private lateinit var repository: VerbRepository
+    private val viewModel: SharedViewModel by activityViewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -30,18 +35,28 @@ class PracticeFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        repository = VerbRepository(requireContext())
-
-        updateProgressUI()
         setupPracticeModalities()
+        observeViewModel()
     }
 
-    private fun updateProgressUI() {
-        val count = repository.getPracticedCount()
-        binding.tvGoalStatus.text = "$count de 10 ejercicios completados"
-        val progressPct = (count * 10).coerceAtMost(100)
-        binding.progressGoal.progress = progressPct
-        binding.tvGoalPct.text = "$progressPct%"
+    override fun onResume() {
+        super.onResume()
+        viewModel.loadInitialData()
+    }
+
+    private fun observeViewModel() {
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.progressSummary.collect { summary ->
+                    val todayCount = summary.todayCompletedCount
+                    binding.tvGoalStatus.text = "$todayCount de 10 ejercicios completados"
+                    val progressPct = ((todayCount.toDouble() / 10) * 100).coerceAtMost(100.0).toInt()
+                    binding.progressGoal.progress = progressPct
+                    binding.tvGoalPct.text = "$progressPct%"
+                    binding.tvGoalRemaining.text = if (todayCount >= 10) "¡Meta diaria cumplida!" else "¡Faltan ${10 - todayCount} ejercicios!"
+                }
+            }
+        }
     }
 
     private fun setupPracticeModalities() {
@@ -50,7 +65,7 @@ class PracticeFragment : Fragment() {
         }
 
         binding.cardModality1.setOnClickListener {
-            startQuizModal("Tríada Rápida (V1 - V2 - V3)")
+            startQuizModal("Tríada Rápida")
         }
 
         binding.cardModality2.setOnClickListener {
@@ -67,36 +82,42 @@ class PracticeFragment : Fragment() {
     }
 
     private fun startQuizModal(modalityName: String) {
-        val randomVerbs = repository.getRandomVerbs(3)
-        if (randomVerbs.isEmpty()) return
+        val verbs = viewModel.dailyVerbs.value
+        if (verbs.isEmpty()) return
 
-        val targetVerb = randomVerbs.first()
+        val targetVerb = verbs.random()
+        val correctAnswer = targetVerb.past
 
-        // 1. Alert Dialog for quiz confirmation & question
+        // Generate plausible distractors (e.g. gerund, base, or regularized past)
+        val distractor1 = targetVerb.gerund
+        val distractor2 = if (targetVerb.base.endsWith("e")) "${targetVerb.base}d" else "${targetVerb.base}ed"
+        val distractor3 = targetVerb.thirdPerson
+
+        val options = listOf(correctAnswer, distractor1, distractor2, distractor3)
+            .distinct()
+            .shuffled()
+            .take(3)
+
+        val optionsArray = options.toTypedArray()
+
         MaterialAlertDialogBuilder(requireContext())
             .setTitle("Práctica: $modalityName")
             .setMessage("¿Cuál es el PASADO SIMPLE de '${targetVerb.base.uppercase()}' (${targetVerb.spanishMeaning})?")
-            .setPositiveButton(targetVerb.past) { dialog, _ ->
+            .setItems(optionsArray) { dialog, which ->
                 dialog.dismiss()
-                repository.incrementPracticedCount()
-                repository.updateMastery(targetVerb.base, (targetVerb.mastery + 25).coerceAtMost(100))
-                updateProgressUI()
+                val selectedOption = optionsArray[which]
+                val isCorrect = selectedOption == correctAnswer
 
-                // Send Notification as part of the practice workflow
-                NotificationHelper.showVerbOfDayNotification(requireContext(), targetVerb)
+                viewModel.recordPracticeAttempt(targetVerb.base, isCorrect, modalityName)
 
-                // Show Snackbar with feedback
-                Snackbar.make(binding.root, "¡Correcto! ${targetVerb.base} -> ${targetVerb.past}", Snackbar.LENGTH_LONG)
-                    .setAction("NOTIFICACIÓN") {
-                        NotificationHelper.showVerbOfDayNotification(requireContext(), targetVerb)
-                    }
-                    .show()
+                val msg = if (isCorrect) {
+                    "¡Correcto! ${targetVerb.base} ➔ $correctAnswer"
+                } else {
+                    "Incorrecto. El pasado de ${targetVerb.base} es $correctAnswer (seleccionaste $selectedOption)"
+                }
+                Snackbar.make(binding.root, msg, Snackbar.LENGTH_LONG).show()
             }
-            .setNegativeButton(targetVerb.gerund) { dialog, _ ->
-                dialog.dismiss()
-                Snackbar.make(binding.root, "Incorrecto. El pasado de ${targetVerb.base} es ${targetVerb.past}", Snackbar.LENGTH_SHORT).show()
-            }
-            .setNeutralButton("Cancelar", null)
+            .setNegativeButton(R.string.dialog_cancel, null)
             .show()
     }
 

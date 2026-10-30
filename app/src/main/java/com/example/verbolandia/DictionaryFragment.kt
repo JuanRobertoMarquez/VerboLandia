@@ -9,21 +9,25 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import com.example.verbolandia.adapter.VerbAdapter
-import com.example.verbolandia.data.VerbRepository
 import com.example.verbolandia.databinding.FragmentDictionaryBinding
 import com.example.verbolandia.model.Verb
+import com.example.verbolandia.ui.SharedViewModel
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
+import kotlinx.coroutines.launch
 
 class DictionaryFragment : Fragment() {
 
     private var _binding: FragmentDictionaryBinding? = null
     private val binding get() = _binding!!
 
-    private lateinit var repository: VerbRepository
+    private val viewModel: SharedViewModel by activityViewModels()
     private lateinit var adapter: VerbAdapter
-
-    private var currentFilterMode: String = "ALL" // "ALL", "IRREGULAR", "REGULAR"
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -37,32 +41,19 @@ class DictionaryFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        repository = VerbRepository(requireContext())
-
-        setupVerbOfDay()
         setupRecyclerView()
         setupSearchAndFilters()
-        loadVerbs()
+        observeViewModel()
     }
 
-    private fun setupVerbOfDay() {
-        val verbOfDay = repository.getVerbOfDay()
-        binding.tvVerbOfDayTitle.text = "${verbOfDay.base} • ${verbOfDay.spanishMeaning}"
-        binding.tvVerbOfDayV1.text = "Base: ${verbOfDay.base}"
-        binding.tvVerbOfDayV2.text = "Pasado: ${verbOfDay.past}"
-        binding.tvVerbOfDayV3.text = "Part.: ${verbOfDay.pastParticiple}"
-
-        binding.cardVerbOfDay.setOnClickListener {
-            openVerbDetail(verbOfDay)
-        }
-
-        binding.btnVerbOfDayAudio.setOnClickListener {
-            Snackbar.make(binding.root, "Audio de ${verbOfDay.base} reproduciéndose", Snackbar.LENGTH_SHORT).show()
-        }
+    override fun onResume() {
+        super.onResume()
+        viewModel.loadInitialData()
     }
 
     private fun setupRecyclerView() {
-        adapter = VerbAdapter(emptyList()) { verb ->
+        adapter = VerbAdapter { verb ->
+            viewModel.onVerbOpened(verb)
             openVerbDetail(verb)
         }
         binding.rvVerbs.adapter = adapter
@@ -72,70 +63,140 @@ class DictionaryFragment : Fragment() {
         binding.etSearch.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                performSearchAndFilter(s?.toString() ?: "")
+                viewModel.onSearchQueryChanged(s?.toString() ?: "")
             }
             override fun afterTextChanged(s: Editable?) {}
         })
 
+        binding.etSearch.setOnFocusChangeListener { _, hasFocus ->
+            if (hasFocus && binding.etSearch.text.isNull_or_empty()) {
+                val history = viewModel.searchHistory.value
+                if (history.isNotEmpty()) {
+                    showHistoryList(history)
+                }
+            }
+        }
+
         binding.btnFilterAll.setOnClickListener {
-            currentFilterMode = "ALL"
-            updateFilterPillsUI()
-            performSearchAndFilter(binding.etSearch.text.toString())
+            viewModel.setFilterCategory("ALL", binding.etSearch.text.toString())
         }
 
         binding.btnFilterIrregular.setOnClickListener {
-            currentFilterMode = "IRREGULAR"
-            updateFilterPillsUI()
-            performSearchAndFilter(binding.etSearch.text.toString())
+            viewModel.setFilterCategory("IRREGULAR", binding.etSearch.text.toString())
         }
 
         binding.btnFilterRegular.setOnClickListener {
-            currentFilterMode = "REGULAR"
-            updateFilterPillsUI()
-            performSearchAndFilter(binding.etSearch.text.toString())
+            viewModel.setFilterCategory("REGULAR", binding.etSearch.text.toString())
+        }
+
+        // Hide sample card
+        binding.sampleVerbCardBreak.root.visibility = View.GONE
+    }
+
+    private fun observeViewModel() {
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                launch {
+                    viewModel.dailyVerbs.collect { verbs ->
+                        if (!viewModel.isSearching.value) {
+                            adapter.submitList(verbs)
+                            binding.tvSectionHeader.text = getString(R.string.list_header_title)
+                            binding.tvSectionResults.text = "${verbs.size} de hoy"
+                        }
+                    }
+                }
+
+                launch {
+                    viewModel.searchResults.collect { results ->
+                        if (viewModel.isSearching.value) {
+                            adapter.submitList(results)
+                            if (results.isEmpty()) {
+                                binding.tvSectionHeader.text = getString(R.string.empty_search_results)
+                                binding.tvSectionResults.text = "0 verbos"
+                            } else {
+                                binding.tvSectionHeader.text = "RESULTADOS DE BÚSQUEDA"
+                                binding.tvSectionResults.text = "${results.size} resultados"
+                            }
+                        }
+                    }
+                }
+
+                launch {
+                    viewModel.categoryCounts.collect { (total, irregular, regular) ->
+                        binding.tvActiveVerbsBadge.text = "$total Activos"
+                        binding.btnFilterAll.text = "Todos ($total)"
+                        binding.btnFilterIrregular.text = "Irregulares ($irregular)"
+                        binding.btnFilterRegular.text = "Regulares ($regular)"
+                    }
+                }
+
+                launch {
+                    viewModel.filterCategory.collect { category ->
+                        updateFilterPillsUI(category)
+                    }
+                }
+
+                launch {
+                    viewModel.currentDetailVerb.collect { verbOfToday ->
+                        if (verbOfToday != null) {
+                            binding.tvVerbOfDayTitle.text = "${verbOfToday.base} • ${verbOfToday.spanishMeaning}"
+                            binding.tvVerbOfDayV1.text = "Base: ${verbOfToday.base}"
+                            binding.tvVerbOfDayV2.text = "Pasado: ${verbOfToday.past}"
+                            binding.tvVerbOfDayV3.text = "Part.: ${verbOfToday.pastParticiple}"
+
+                            binding.cardVerbOfDay.setOnClickListener {
+                                viewModel.onVerbOpened(verbOfToday)
+                                openVerbDetail(verbOfToday)
+                            }
+                        }
+                    }
+                }
+            }
         }
     }
 
-    private fun loadVerbs() {
-        val totalCount = repository.getTotalCount()
-        binding.tvActiveVerbsBadge.text = "$totalCount Activos"
-        performSearchAndFilter("")
-    }
-
-    private fun performSearchAndFilter(query: String) {
-        val searchResults = repository.searchVerbs(query)
-
-        val filteredList = when (currentFilterMode) {
-            "IRREGULAR" -> searchResults.filter { it.isIrregular }
-            "REGULAR" -> searchResults.filter { !it.isIrregular }
-            else -> searchResults
+    private fun showHistoryList(history: List<Verb>) {
+        binding.tvSectionHeader.text = getString(R.string.history_title)
+        binding.tvSectionResults.text = getString(R.string.history_clear)
+        binding.tvSectionResults.setOnClickListener {
+            confirmClearHistory()
         }
-
-        adapter.updateData(filteredList)
-        binding.tvSectionResults.text = "${filteredList.size} verbos visibles"
-
-        // Update counts on filter pills dynamically
-        val allCount = searchResults.size
-        val irregularCount = searchResults.count { it.isIrregular }
-        val regularCount = searchResults.count { !it.isIrregular }
-
-        binding.btnFilterAll.text = "Todos ($allCount)"
-        binding.btnFilterIrregular.text = "Irregulares ($irregularCount)"
-        binding.btnFilterRegular.text = "Regulares ($regularCount)"
+        adapter.submitList(history)
     }
 
-    private fun updateFilterPillsUI() {
+    private fun confirmClearHistory() {
+        MaterialAlertDialogBuilder(requireContext())
+            .setTitle(R.string.history_clear_confirm_title)
+            .setMessage(R.string.history_clear_confirm_msg)
+            .setPositiveButton(R.string.history_clear) { dialog, _ ->
+                dialog.dismiss()
+                viewModel.clearHistory()
+                Snackbar.make(binding.root, R.string.snackbar_history_cleared, Snackbar.LENGTH_SHORT).show()
+                viewModel.onSearchQueryChanged(binding.etSearch.text.toString())
+            }
+            .setNegativeButton(R.string.dialog_cancel, null)
+            .show()
+    }
+
+    private fun updateFilterPillsUI(selectedCategory: String) {
         val primaryColor = ContextCompat.getColor(requireContext(), R.color.primary)
         val mutedColor = ContextCompat.getColor(requireContext(), R.color.on_surface_variant)
 
-        // Reset all pills
-        binding.btnFilterAll.setTextColor(if (currentFilterMode == "ALL") ContextCompat.getColor(requireContext(), R.color.white) else mutedColor)
-        binding.btnFilterIrregular.setTextColor(if (currentFilterMode == "IRREGULAR") ContextCompat.getColor(requireContext(), R.color.white) else mutedColor)
-        binding.btnFilterRegular.setTextColor(if (currentFilterMode == "REGULAR") ContextCompat.getColor(requireContext(), R.color.white) else mutedColor)
+        val isAll = selectedCategory == "ALL"
+        val isIrregular = selectedCategory == "IRREGULAR"
+        val isRegular = selectedCategory == "REGULAR"
 
-        binding.btnFilterAll.setBackgroundColor(if (currentFilterMode == "ALL") primaryColor else ContextCompat.getColor(requireContext(), R.color.surface_container_low))
-        binding.btnFilterIrregular.setBackgroundColor(if (currentFilterMode == "IRREGULAR") primaryColor else ContextCompat.getColor(requireContext(), R.color.surface_container_low))
-        binding.btnFilterRegular.setBackgroundColor(if (currentFilterMode == "REGULAR") primaryColor else ContextCompat.getColor(requireContext(), R.color.surface_container_low))
+        binding.btnFilterAll.isSelected = isAll
+        binding.btnFilterIrregular.isSelected = isIrregular
+        binding.btnFilterRegular.isSelected = isRegular
+
+        binding.btnFilterAll.setTextColor(if (isAll) ContextCompat.getColor(requireContext(), R.color.white) else mutedColor)
+        binding.btnFilterIrregular.setTextColor(if (isIrregular) ContextCompat.getColor(requireContext(), R.color.white) else mutedColor)
+        binding.btnFilterRegular.setTextColor(if (isRegular) ContextCompat.getColor(requireContext(), R.color.white) else mutedColor)
+
+        binding.btnFilterAll.setBackgroundColor(if (isAll) primaryColor else ContextCompat.getColor(requireContext(), R.color.surface_container_low))
+        binding.btnFilterIrregular.setBackgroundColor(if (isIrregular) primaryColor else ContextCompat.getColor(requireContext(), R.color.surface_container_low))
+        binding.btnFilterRegular.setBackgroundColor(if (isRegular) primaryColor else ContextCompat.getColor(requireContext(), R.color.surface_container_low))
     }
 
     private fun openVerbDetail(verb: Verb) {
@@ -144,6 +205,8 @@ class DictionaryFragment : Fragment() {
         }
         startActivity(intent)
     }
+
+    private fun CharSequence?.isNull_or_empty(): Boolean = this == null || this.isEmpty()
 
     override fun onDestroyView() {
         super.onDestroyView()
