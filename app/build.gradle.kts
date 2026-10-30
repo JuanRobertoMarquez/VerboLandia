@@ -4,7 +4,7 @@ plugins {
 
 android {
     namespace = "com.example.verbolandia"
-    compileSdk = 35
+    compileSdk = 37
 
     buildFeatures {
         viewBinding = true
@@ -25,7 +25,7 @@ android {
             isMinifyEnabled = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
+                "proguard-rules.pro",
             )
         }
     }
