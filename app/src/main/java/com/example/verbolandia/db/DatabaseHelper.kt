@@ -21,7 +21,18 @@ class DatabaseHelper(private val context: Context) : SQLiteOpenHelper(context, D
         private const val COL_PAST_PARTICIPLE = "past_participle"
         private const val COL_GERUND = "gerund"
 
-        // Common Spanish meanings dictionary for popular verbs
+        @Volatile
+        private var INSTANCE: DatabaseHelper? = null
+
+        fun getInstance(context: Context): DatabaseHelper {
+            return INSTANCE ?: synchronized(this) {
+                val instance = DatabaseHelper(context.applicationContext)
+                INSTANCE = instance
+                instance
+            }
+        }
+
+        // Expanded Spanish translations dictionary for common verbs
         private val SPANISH_TRANSLATIONS = mapOf(
             "accept" to "Aceptar",
             "add" to "Añadir, agregar",
@@ -47,34 +58,40 @@ class DatabaseHelper(private val context: Context) : SQLiteOpenHelper(context, D
             "call" to "Llamar",
             "can" to "Poder",
             "carry" to "Llevar, cargar",
-            "catch" to "Atrapar, atrapar",
+            "catch" to "Atrapar, coger",
             "change" to "Cambiar",
             "choose" to "Elegir, escoger",
             "clean" to "Limpiar",
             "close" to "Cerrar",
             "come" to "Venir",
+            "consider" to "Considerar",
+            "continue" to "Continuar",
             "cook" to "Cocinar",
             "cost" to "Costar",
             "create" to "Crear",
             "cut" to "Cortar",
             "dance" to "Bailar",
             "decide" to "Decidir",
+            "die" to "Morir",
             "do" to "Hacer",
             "draw" to "Dibujar",
             "drink" to "Beber, tomar",
             "drive" to "Conducir, manejar",
             "eat" to "Comer",
+            "expect" to "Esperar (expectativa)",
             "explain" to "Explicar",
             "fall" to "Caer",
             "feel" to "Sentir",
             "fight" to "Luchar, pelear",
             "find" to "Encontrar",
             "fly" to "Volar",
+            "follow" to "Seguir",
             "forget" to "Olvidar",
             "get" to "Obtener, conseguir",
             "give" to "Dar",
             "go" to "Ir",
             "grow" to "Crecer",
+            "happen" to "Suceder, pasar",
             "have" to "Tener, haber",
             "hear" to "Oír, escuchar",
             "help" to "Ayudar",
@@ -83,8 +100,11 @@ class DatabaseHelper(private val context: Context) : SQLiteOpenHelper(context, D
             "hold" to "Sostener, mantener",
             "hope" to "Esperar (esperanza)",
             "hurt" to "Lastimar, doler",
+            "include" to "Incluir",
             "keep" to "Mantener, guardar",
+            "kill" to "Matar",
             "know" to "Saber, conocer",
+            "lead" to "Guiar, liderar",
             "learn" to "Aprender",
             "leave" to "Salir, dejar",
             "let" to "Permitir, dejar",
@@ -92,22 +112,31 @@ class DatabaseHelper(private val context: Context) : SQLiteOpenHelper(context, D
             "listen" to "Escuchar",
             "live" to "Vivir",
             "look" to "Mirar, buscar",
+            "lose" to "Perder",
             "love" to "Amar",
             "make" to "Hacer, fabricar",
             "mean" to "Significar, querer decir",
             "meet" to "Conocer, reunirse",
+            "move" to "Mover, mudarse",
+            "must" to "Deber",
             "need" to "Necesitar",
+            "offer" to "Ofrecer",
             "open" to "Abrir",
             "pay" to "Pagar",
             "play" to "Jugar, tocar (instrumento)",
+            "provide" to "Proporcionar",
             "put" to "Poner, colocar",
+            "reach" to "Alcanzar",
             "read" to "Leer",
+            "remain" to "Permanecer",
             "remember" to "Recordar",
             "run" to "Correr",
             "say" to "Decir",
             "see" to "Ver",
             "sell" to "Vender",
             "send" to "Enviar",
+            "serve" to "Servir",
+            "set" to "Establecer, colocar",
             "show" to "Mostrar",
             "sing" to "Cantar",
             "sit" to "Sentarse",
@@ -122,6 +151,7 @@ class DatabaseHelper(private val context: Context) : SQLiteOpenHelper(context, D
             "take" to "Tomar, llevar",
             "talk" to "Hablar, conversar",
             "teach" to "Enseñar",
+            "tell" to "Decir, contar",
             "think" to "Pensar",
             "try" to "Intentar, probar",
             "understand" to "Entender, comprender",
@@ -166,13 +196,18 @@ class DatabaseHelper(private val context: Context) : SQLiteOpenHelper(context, D
 
     override fun onUpgrade(db: SQLiteDatabase?, oldVersion: Int, newVersion: Int) {}
 
-    fun getAllVerbs(limit: Int = 200): List<Verb> {
+    fun getAllVerbs(limit: Int = 1000): List<Verb> {
         val list = mutableListOf<Verb>()
         val db = readableDatabase
-        val cursor = db.rawQuery(
-            "SELECT * FROM $TABLE_VERBS WHERE base NOT GLOB '[0-9]*' ORDER BY base ASC LIMIT $limit",
-            null
-        )
+        val querySql = """
+            SELECT * FROM $TABLE_VERBS 
+            WHERE base NOT GLOB '[0-9]*' 
+              AND UPPER(base) NOT IN ('TRUE', 'FALSE', '404', '69', '911') 
+              AND LENGTH(base) > 1 
+            ORDER BY base ASC LIMIT $limit
+        """.trimIndent()
+
+        val cursor = db.rawQuery(querySql, null)
         if (cursor.moveToFirst()) {
             do {
                 list.add(cursorToVerb(cursor))
@@ -182,14 +217,41 @@ class DatabaseHelper(private val context: Context) : SQLiteOpenHelper(context, D
         return list
     }
 
+    fun getTotalVerbsCount(): Int {
+        val db = readableDatabase
+        val cursor = db.rawQuery(
+            "SELECT COUNT(*) FROM $TABLE_VERBS WHERE base NOT GLOB '[0-9]*' AND UPPER(base) NOT IN ('TRUE', 'FALSE', '404', '69', '911') AND LENGTH(base) > 1",
+            null
+        )
+        var count = 0
+        if (cursor.moveToFirst()) {
+            count = cursor.getInt(0)
+        }
+        cursor.close()
+        return count
+    }
+
     fun searchVerbs(query: String): List<Verb> {
         val list = mutableListOf<Verb>()
         val db = readableDatabase
         val cleanQuery = query.trim().lowercase()
-        val cursor = db.rawQuery(
-            "SELECT * FROM $TABLE_VERBS WHERE base LIKE ? OR past LIKE ? OR past_participle LIKE ? OR gerund LIKE ? LIMIT 100",
-            arrayOf("%$cleanQuery%", "%$cleanQuery%", "%$cleanQuery%", "%$cleanQuery%")
-        )
+        if (cleanQuery.isEmpty()) {
+            return getAllVerbs(200)
+        }
+
+        val sql = """
+            SELECT * FROM $TABLE_VERBS 
+            WHERE (base LIKE ? OR past LIKE ? OR past_participle LIKE ? OR gerund LIKE ?)
+              AND base NOT GLOB '[0-9]*' 
+              AND UPPER(base) NOT IN ('TRUE', 'FALSE', '404', '69', '911') 
+              AND LENGTH(base) > 1 
+            ORDER BY CASE WHEN base LIKE ? THEN 1 WHEN base LIKE ? THEN 2 ELSE 3 END, base ASC 
+            LIMIT 150
+        """.trimIndent()
+
+        val pattern = "%$cleanQuery%"
+        val exactPattern = "$cleanQuery%"
+        val cursor = db.rawQuery(sql, arrayOf(pattern, pattern, pattern, pattern, exactPattern, pattern))
         if (cursor.moveToFirst()) {
             do {
                 list.add(cursorToVerb(cursor))
@@ -201,7 +263,10 @@ class DatabaseHelper(private val context: Context) : SQLiteOpenHelper(context, D
 
     fun getVerbByBase(base: String): Verb? {
         val db = readableDatabase
-        val cursor = db.rawQuery("SELECT * FROM $TABLE_VERBS WHERE base = ? LIMIT 1", arrayOf(base))
+        val cursor = db.rawQuery(
+            "SELECT * FROM $TABLE_VERBS WHERE LOWER(base) = ? LIMIT 1",
+            arrayOf(base.trim().lowercase())
+        )
         var verb: Verb? = null
         if (cursor.moveToFirst()) {
             verb = cursorToVerb(cursor)
@@ -214,7 +279,7 @@ class DatabaseHelper(private val context: Context) : SQLiteOpenHelper(context, D
         val list = mutableListOf<Verb>()
         val db = readableDatabase
         val cursor = db.rawQuery(
-            "SELECT * FROM $TABLE_VERBS WHERE base NOT GLOB '[0-9]*' ORDER BY RANDOM() LIMIT $count",
+            "SELECT * FROM $TABLE_VERBS WHERE base NOT GLOB '[0-9]*' AND UPPER(base) NOT IN ('TRUE', 'FALSE', '404', '69', '911') AND LENGTH(base) > 1 ORDER BY RANDOM() LIMIT $count",
             null
         )
         if (cursor.moveToFirst()) {
@@ -227,7 +292,7 @@ class DatabaseHelper(private val context: Context) : SQLiteOpenHelper(context, D
     }
 
     fun getVerbOfDay(): Verb {
-        val popularVerbs = listOf("break", "go", "think", "make", "take", "write", "speak", "see", "bring", "find", "choose")
+        val popularVerbs = listOf("break", "go", "think", "make", "take", "write", "speak", "see", "bring", "find", "choose", "run", "eat", "drink", "know")
         val todayIndex = (System.currentTimeMillis() / (1000 * 60 * 60 * 24) % popularVerbs.size).toInt()
         val targetBase = popularVerbs[todayIndex]
         return getVerbByBase(targetBase) ?: Verb(
@@ -243,6 +308,18 @@ class DatabaseHelper(private val context: Context) : SQLiteOpenHelper(context, D
         )
     }
 
+    private fun checkIfIrregular(base: String, past: String): Boolean {
+        val cleanBase = base.lowercase().trim()
+        val cleanPast = past.lowercase().trim()
+        if (cleanBase.isEmpty() || cleanPast.isEmpty()) return false
+
+        val expected1 = cleanBase + "ed"
+        val expected2 = if (cleanBase.endsWith("e")) cleanBase + "d" else cleanBase + "ed"
+        val expected3 = if (cleanBase.endsWith("y") && cleanBase.length > 1) cleanBase.dropLast(1) + "ied" else cleanBase + "ed"
+
+        return cleanPast != expected1 && cleanPast != expected2 && cleanPast != expected3
+    }
+
     private fun cursorToVerb(cursor: android.database.Cursor): Verb {
         val baseIndex = cursor.getColumnIndex(COL_BASE)
         val thirdPersonIndex = cursor.getColumnIndex(COL_THIRD_PERSON)
@@ -256,11 +333,16 @@ class DatabaseHelper(private val context: Context) : SQLiteOpenHelper(context, D
         val pastParticiple = if (pastParticipleIndex != -1) cursor.getString(pastParticipleIndex) else ""
         val gerund = if (gerundIndex != -1) cursor.getString(gerundIndex) else ""
 
-        // Calculate if irregular (if past doesn't end with "ed" or "d")
-        val isIrregular = !past.endsWith("ed") && !past.endsWith("d")
+        // Check stored user translation or fallback to dictionary map or formatted default
+        val userPrefs = context.getSharedPreferences("verbolandia_translations", Context.MODE_PRIVATE)
+        val savedTranslation = userPrefs.getString("trans_$base", null)
 
-        val spanishMeaning = SPANISH_TRANSLATIONS[base.lowercase()] ?: "Traducir: $base"
-        val phonetic = "/${base}/"
+        val spanishMeaning = savedTranslation
+            ?: SPANISH_TRANSLATIONS[base.lowercase()]
+            ?: "Verbo: $base"
+
+        val isIrregular = checkIfIrregular(base, past)
+        val phonetic = "/${base.lowercase()}/"
         val level = if (isIrregular) "B1" else "A1"
 
         return Verb(

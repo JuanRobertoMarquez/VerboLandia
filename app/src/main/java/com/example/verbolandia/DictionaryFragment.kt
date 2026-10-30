@@ -7,6 +7,7 @@ import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.example.verbolandia.adapter.VerbAdapter
 import com.example.verbolandia.data.VerbRepository
@@ -21,7 +22,7 @@ class DictionaryFragment : Fragment() {
 
     private lateinit var repository: VerbRepository
     private lateinit var adapter: VerbAdapter
-    private var allVerbs: List<Verb> = emptyList()
+
     private var currentFilterMode: String = "ALL" // "ALL", "IRREGULAR", "REGULAR"
 
     override fun onCreateView(
@@ -46,7 +47,10 @@ class DictionaryFragment : Fragment() {
 
     private fun setupVerbOfDay() {
         val verbOfDay = repository.getVerbOfDay()
-        binding.tvVerbOfDayTitle.text = "${verbOfDay.base} (${verbOfDay.spanishMeaning})"
+        binding.tvVerbOfDayTitle.text = "${verbOfDay.base} • ${verbOfDay.spanishMeaning}"
+        binding.tvVerbOfDayV1.text = "Base: ${verbOfDay.base}"
+        binding.tvVerbOfDayV2.text = "Pasado: ${verbOfDay.past}"
+        binding.tvVerbOfDayV3.text = "Part.: ${verbOfDay.pastParticiple}"
 
         binding.cardVerbOfDay.setOnClickListener {
             openVerbDetail(verbOfDay)
@@ -68,56 +72,70 @@ class DictionaryFragment : Fragment() {
         binding.etSearch.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                applyFiltersAndSearch(s?.toString() ?: "")
+                performSearchAndFilter(s?.toString() ?: "")
             }
             override fun afterTextChanged(s: Editable?) {}
         })
 
         binding.btnFilterAll.setOnClickListener {
             currentFilterMode = "ALL"
-            applyFiltersAndSearch(binding.etSearch.text.toString())
-            Snackbar.make(binding.root, "Mostrando todos los verbos", Snackbar.LENGTH_SHORT).show()
+            updateFilterPillsUI()
+            performSearchAndFilter(binding.etSearch.text.toString())
         }
 
         binding.btnFilterIrregular.setOnClickListener {
             currentFilterMode = "IRREGULAR"
-            applyFiltersAndSearch(binding.etSearch.text.toString())
-            Snackbar.make(binding.root, "Filtrado por verbos Irregulares", Snackbar.LENGTH_SHORT).show()
+            updateFilterPillsUI()
+            performSearchAndFilter(binding.etSearch.text.toString())
         }
 
         binding.btnFilterRegular.setOnClickListener {
             currentFilterMode = "REGULAR"
-            applyFiltersAndSearch(binding.etSearch.text.toString())
-            Snackbar.make(binding.root, "Filtrado por verbos Regulares", Snackbar.LENGTH_SHORT).show()
+            updateFilterPillsUI()
+            performSearchAndFilter(binding.etSearch.text.toString())
         }
-
-        // Hide static sample card
-        binding.sampleVerbCardBreak.root.visibility = View.GONE
     }
 
     private fun loadVerbs() {
-        allVerbs = repository.getVerbs()
-        applyFiltersAndSearch("")
+        val totalCount = repository.getTotalCount()
+        binding.tvActiveVerbsBadge.text = "$totalCount Activos"
+        performSearchAndFilter("")
     }
 
-    private fun applyFiltersAndSearch(query: String) {
-        val filteredList = allVerbs.filter { verb ->
-            val matchesQuery = query.isEmpty() ||
-                    verb.base.contains(query, ignoreCase = true) ||
-                    verb.past.contains(query, ignoreCase = true) ||
-                    verb.spanishMeaning.contains(query, ignoreCase = true)
+    private fun performSearchAndFilter(query: String) {
+        val searchResults = repository.searchVerbs(query)
 
-            val matchesFilter = when (currentFilterMode) {
-                "IRREGULAR" -> verb.isIrregular
-                "REGULAR" -> !verb.isIrregular
-                else -> true
-            }
-
-            matchesQuery && matchesFilter
+        val filteredList = when (currentFilterMode) {
+            "IRREGULAR" -> searchResults.filter { it.isIrregular }
+            "REGULAR" -> searchResults.filter { !it.isIrregular }
+            else -> searchResults
         }
 
         adapter.updateData(filteredList)
-        binding.tvSectionResults.text = "${filteredList.size} verbos"
+        binding.tvSectionResults.text = "${filteredList.size} verbos visibles"
+
+        // Update counts on filter pills dynamically
+        val allCount = searchResults.size
+        val irregularCount = searchResults.count { it.isIrregular }
+        val regularCount = searchResults.count { !it.isIrregular }
+
+        binding.btnFilterAll.text = "Todos ($allCount)"
+        binding.btnFilterIrregular.text = "Irregulares ($irregularCount)"
+        binding.btnFilterRegular.text = "Regulares ($regularCount)"
+    }
+
+    private fun updateFilterPillsUI() {
+        val primaryColor = ContextCompat.getColor(requireContext(), R.color.primary)
+        val mutedColor = ContextCompat.getColor(requireContext(), R.color.on_surface_variant)
+
+        // Reset all pills
+        binding.btnFilterAll.setTextColor(if (currentFilterMode == "ALL") ContextCompat.getColor(requireContext(), R.color.white) else mutedColor)
+        binding.btnFilterIrregular.setTextColor(if (currentFilterMode == "IRREGULAR") ContextCompat.getColor(requireContext(), R.color.white) else mutedColor)
+        binding.btnFilterRegular.setTextColor(if (currentFilterMode == "REGULAR") ContextCompat.getColor(requireContext(), R.color.white) else mutedColor)
+
+        binding.btnFilterAll.setBackgroundColor(if (currentFilterMode == "ALL") primaryColor else ContextCompat.getColor(requireContext(), R.color.surface_container_low))
+        binding.btnFilterIrregular.setBackgroundColor(if (currentFilterMode == "IRREGULAR") primaryColor else ContextCompat.getColor(requireContext(), R.color.surface_container_low))
+        binding.btnFilterRegular.setBackgroundColor(if (currentFilterMode == "REGULAR") primaryColor else ContextCompat.getColor(requireContext(), R.color.surface_container_low))
     }
 
     private fun openVerbDetail(verb: Verb) {

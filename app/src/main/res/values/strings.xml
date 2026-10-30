@@ -247,4 +247,5 @@
     <string name="cd_back">Volver</string>
     <string name="cd_bookmark">Guardar en marcadores</string>
     <string name="cd_shuffle">Barajar fichas</string>
+    <string name="cd_share">Compartir verbo</string>
 </resources>
