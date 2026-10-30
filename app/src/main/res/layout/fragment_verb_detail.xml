@@ -200,6 +200,7 @@
                     android:padding="@dimen/spacing_md">
 
                     <TextView
+                        android:id="@+id/tvMeaningHeader"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/meaning_header"
@@ -208,6 +209,7 @@
                         android:textStyle="bold" />
 
                     <TextView
+                        android:id="@+id/tvMeaningPrimary"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="2dp"
@@ -277,6 +279,7 @@
                         android:textStyle="bold" />
 
                     <TextView
+                        android:id="@+id/tvMatrixV1Val"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="4dp"
@@ -286,6 +289,7 @@
                         android:textStyle="bold" />
 
                     <TextView
+                        android:id="@+id/tvMatrixV1Phonetic"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="2dp"
@@ -317,6 +321,7 @@
                         android:textStyle="bold" />
 
                     <TextView
+                        android:id="@+id/tvMatrixV2Val"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="4dp"
@@ -326,6 +331,7 @@
                         android:textStyle="bold" />
 
                     <TextView
+                        android:id="@+id/tvMatrixV2Phonetic"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="2dp"
@@ -357,6 +363,7 @@
                         android:textStyle="bold" />
 
                     <TextView
+                        android:id="@+id/tvMatrixV3Val"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="4dp"
@@ -366,6 +373,7 @@
                         android:textStyle="bold" />
 
                     <TextView
+                        android:id="@+id/tvMatrixV3Phonetic"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="2dp"
@@ -387,6 +395,7 @@
                 app:layout_constraintTop_toBottomOf="@id/layoutGrammaticalMatrix">
 
                 <TextView
+                    android:id="@+id/tvDerivedThirdPerson"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="@dimen/spacing_xs"
@@ -399,6 +408,7 @@
                     android:textSize="@dimen/text_body_sm" />
 
                 <TextView
+                    android:id="@+id/tvDerivedGerund"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/spacing_xs"
@@ -456,6 +466,7 @@
                     </LinearLayout>
 
                     <TextView
+                        android:id="@+id/tvMnemonicPattern"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/spacing_xs"
@@ -474,6 +485,7 @@
                         android:padding="@dimen/spacing_sm">
 
                         <TextView
+                            android:id="@+id/tvMnemonicFamily1"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/mnemonic_family_1"
@@ -481,6 +493,7 @@
                             android:textSize="@dimen/text_body_sm" />
 
                         <TextView
+                            android:id="@+id/tvMnemonicFamily2"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="2dp"
@@ -489,6 +502,7 @@
                             android:textSize="@dimen/text_body_sm" />
 
                         <TextView
+                            android:id="@+id/tvMnemonicFamily3"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="2dp"
@@ -555,6 +569,7 @@
                         app:layout_constraintTop_toTopOf="parent" />
 
                     <ImageButton
+                        android:id="@+id/btnEx1Audio"
                         android:layout_width="28dp"
                         android:layout_height="28dp"
                         android:background="?attr/selectableItemBackgroundBorderless"
@@ -578,6 +593,7 @@
                         app:layout_constraintTop_toBottomOf="@id/tvEx1Title" />
 
                     <TextView
+                        android:id="@+id/tvEx1Es"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="2dp"
@@ -620,6 +636,7 @@
                         app:layout_constraintTop_toTopOf="parent" />
 
                     <ImageButton
+                        android:id="@+id/btnEx2Audio"
                         android:layout_width="28dp"
                         android:layout_height="28dp"
                         android:background="?attr/selectableItemBackgroundBorderless"
@@ -643,6 +660,7 @@
                         app:layout_constraintTop_toBottomOf="@id/tvEx2Title" />
 
                     <TextView
+                        android:id="@+id/tvEx2Es"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="2dp"
@@ -709,6 +727,7 @@
                         app:layout_constraintTop_toBottomOf="@id/tvEx3Badge" />
 
                     <TextView
+                        android:id="@+id/tvEx3Es"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="2dp"
@@ -764,6 +783,7 @@
                     </LinearLayout>
 
                     <TextView
+                        android:id="@+id/tvErrorWarningDesc"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/spacing_xs"
@@ -869,14 +889,14 @@
         app:layout_constraintStart_toStartOf="parent">
 
         <ImageButton
-            android:id="@+id/btnShuffle"
+            android:id="@+id/btnShare"
             android:layout_width="48dp"
             android:layout_height="@dimen/button_height"
             android:background="@drawable/bg_matrix_card"
-            android:contentDescription="@string/cd_shuffle"
+            android:contentDescription="@string/cd_share"
             android:padding="12dp"
             android:scaleType="fitCenter"
-            android:src="@drawable/ic_shuffle"
+            android:src="@drawable/ic_flag"
             app:tint="?attr/colorOnSurfaceVariant" />
 
         <com.google.android.material.button.MaterialButton

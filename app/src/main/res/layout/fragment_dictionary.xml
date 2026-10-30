@@ -99,6 +99,7 @@
                 app:tint="?attr/colorPrimary" />
 
             <TextView
+                android:id="@+id/tvActiveVerbsBadge"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/spacing_xs"
@@ -307,6 +308,7 @@
                     app:layout_constraintTop_toBottomOf="@id/tvVerbOfDayTitle">
 
                     <TextView
+                        android:id="@+id/tvVerbOfDayV1"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginEnd="@dimen/spacing_xs"
@@ -318,6 +320,7 @@
                         android:textSize="@dimen/text_label_sm" />
 
                     <TextView
+                        android:id="@+id/tvVerbOfDayV2"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginEnd="@dimen/spacing_xs"
@@ -329,6 +332,7 @@
                         android:textSize="@dimen/text_label_sm" />
 
                     <TextView
+                        android:id="@+id/tvVerbOfDayV3"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:background="@drawable/bg_badge_small"
@@ -366,13 +370,14 @@
             app:layout_constraintBaseline_toBaselineOf="@id/tvSectionHeader"
             app:layout_constraintEnd_toEndOf="parent" />
 
-        <!-- Sample Verb Card ("break") that navigates to detail -->
+        <!-- Sample Verb Card ("break") - hidden dynamically -->
         <include
             android:id="@+id/sampleVerbCardBreak"
             layout="@layout/item_verb_card"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/spacing_sm"
+            android:visibility="gone"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tvSectionHeader" />

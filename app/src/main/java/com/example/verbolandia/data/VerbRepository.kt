@@ -6,12 +6,17 @@ import com.example.verbolandia.model.Verb
 
 class VerbRepository(context: Context) {
 
-    private val dbHelper = DatabaseHelper(context)
+    private val dbHelper = DatabaseHelper.getInstance(context)
     private val prefs = context.getSharedPreferences("verbolandia_prefs", Context.MODE_PRIVATE)
+    private val transPrefs = context.getSharedPreferences("verbolandia_translations", Context.MODE_PRIVATE)
 
     fun getVerbs(): List<Verb> {
-        val verbs = dbHelper.getAllVerbs()
+        val verbs = dbHelper.getAllVerbs(500)
         return applySavedState(verbs)
+    }
+
+    fun getTotalCount(): Int {
+        return dbHelper.getTotalVerbsCount()
     }
 
     fun searchVerbs(query: String): List<Verb> {
@@ -25,6 +30,10 @@ class VerbRepository(context: Context) {
         verb.isFavorite = favorites.contains(verb.base)
         verb.mastery = prefs.getInt("mastery_${verb.base}", 0)
         return verb
+    }
+
+    fun saveTranslation(verbBase: String, translation: String) {
+        transPrefs.edit().putString("trans_$verbBase", translation).apply()
     }
 
     fun getRandomVerbs(count: Int = 10): List<Verb> {
