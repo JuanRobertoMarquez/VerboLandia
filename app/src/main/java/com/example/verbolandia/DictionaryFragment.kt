@@ -148,6 +148,10 @@ class DictionaryFragment : Fragment() {
                                 viewModel.onVerbOpened(verbOfToday)
                                 openVerbDetail(verbOfToday)
                             }
+
+                            binding.btnVerbOfDayAudio.setOnClickListener {
+                                com.example.verbolandia.util.AudioSpeaker.speak(requireContext(), verbOfToday.base)
+                            }
                         }
                     }
                 }

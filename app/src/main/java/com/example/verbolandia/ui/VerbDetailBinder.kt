@@ -35,9 +35,14 @@ object VerbDetailBinder {
         binding.tvMeaningPrimary.text = if (verb.spanishMeaning.isNotBlank()) verb.spanishMeaning else "Toca para traducir"
         binding.cardMeaning.setOnClickListener { onTranslateClick() }
 
+        // Audio button
+        binding.btnPlayAudio.visibility = View.VISIBLE
+        binding.btnPlayAudio.setOnClickListener {
+            com.example.verbolandia.util.AudioSpeaker.speak(context, verb.base)
+        }
+
         // Hide static fields without real data
         binding.tvPhonetic.visibility = View.GONE
-        binding.btnPlayAudio.visibility = View.GONE
         binding.cardMnemonic.visibility = View.GONE
         binding.cardEx1.visibility = View.GONE
         binding.cardEx2.visibility = View.GONE

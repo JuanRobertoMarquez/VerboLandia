@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.verbolandia.databinding.ItemVerbCardBinding
 import com.example.verbolandia.model.Verb
+import com.example.verbolandia.util.AudioSpeaker
 
 class VerbAdapter(
     private val onItemClick: (Verb) -> Unit
@@ -39,6 +40,10 @@ class VerbAdapter(
 
             tvMastery.text = "${verb.mastery}% Dominado"
             progressMastery.progress = verb.mastery
+
+            btnPlayAudio.setOnClickListener {
+                AudioSpeaker.speak(root.context, verb.base)
+            }
 
             root.setOnClickListener {
                 onItemClick(verb)
