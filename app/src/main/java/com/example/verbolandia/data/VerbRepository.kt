@@ -203,6 +203,11 @@ class VerbRepository(
         filterByCategory(enriched, category)
     }
 
+    suspend fun getVerbOfDay(): Verb = withContext(Dispatchers.IO) {
+        val daily = getDailyVerbs("ALL")
+        daily.firstOrNull() ?: Verb(base = "break", thirdPerson = "breaks", past = "broke", pastParticiple = "broken", gerund = "breaking", spanishMeaning = "Romper, quebrar")
+    }
+
     suspend fun getSearchHistory(): List<Verb> = withContext(Dispatchers.IO) {
         val now = clock.currentTimeMillis()
         val cutoff = historyPolicy.getCutoffTimestamp(now)

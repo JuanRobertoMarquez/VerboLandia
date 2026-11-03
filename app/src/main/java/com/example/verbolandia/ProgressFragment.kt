@@ -13,6 +13,7 @@ import androidx.navigation.fragment.findNavController
 import com.example.verbolandia.databinding.FragmentProgressBinding
 import com.example.verbolandia.ui.SharedViewModel
 import com.example.verbolandia.util.ProgressSummary
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.launch
 
@@ -46,13 +47,40 @@ class ProgressFragment : Fragment() {
 
     private fun setupButtons() {
         binding.btnGenerateTestErrors.setOnClickListener {
-            val summary = viewModel.progressSummary.value
-            if (summary.topWeakVerbs.isEmpty()) {
-                Snackbar.make(binding.root, "¡Excelente! Aún no tienes verbos débiles identificados.", Snackbar.LENGTH_LONG).show()
-            } else {
-                findNavController().navigate(R.id.nav_practice)
-            }
+            val options = arrayOf("Generar Test Enfocado", "Restablecer Progreso", "Cancelar")
+            MaterialAlertDialogBuilder(requireContext())
+                .setTitle("Opciones de Progreso & Test")
+                .setItems(options) { dialog, which ->
+                    dialog.dismiss()
+                    when (which) {
+                        0 -> {
+                            val summary = viewModel.progressSummary.value
+                            if (summary.topWeakVerbs.isEmpty()) {
+                                Snackbar.make(binding.root, "Aún no tienes verbos en zona crítica. ¡Practica para evaluar tu rendimiento!", Snackbar.LENGTH_LONG).show()
+                            } else {
+                                findNavController().navigate(R.id.nav_practice)
+                            }
+                        }
+                        1 -> {
+                            showConfirmResetDialog()
+                        }
+                    }
+                }
+                .show()
         }
+    }
+
+    private fun showConfirmResetDialog() {
+        MaterialAlertDialogBuilder(requireContext())
+            .setTitle(R.string.dialog_reset_title)
+            .setMessage(R.string.dialog_reset_msg)
+            .setPositiveButton(R.string.dialog_reset_positive) { dialog, _ ->
+                dialog.dismiss()
+                viewModel.resetProgress()
+                Snackbar.make(binding.root, R.string.snackbar_progress_reset, Snackbar.LENGTH_LONG).show()
+            }
+            .setNegativeButton(R.string.dialog_cancel, null)
+            .show()
     }
 
     private fun observeViewModel() {
@@ -88,6 +116,13 @@ class ProgressFragment : Fragment() {
         binding.badgeChartMax.text = "Máx ${summary.weeklyMaxPct}%"
         bindWeeklyChart(summary.weeklyAccuracyPctList)
 
+        // CalendarView Widget (Android Widgets Lesson 8)
+        binding.myCalendarView.setOnDateChangeListener { _, year, month, dayOfMonth ->
+            val dateStr = "$dayOfMonth/${month + 1}/$year"
+            binding.tvCalendarSelectedDate.text = "Actividad del $dateStr: ${summary.todayCompletedCount} ejercicios registrados"
+            Snackbar.make(binding.root, "Fecha seleccionada en CalendarView: $dateStr", Snackbar.LENGTH_SHORT).show()
+        }
+
         // Typology Accuracy
         binding.tvTypology1Val.text = "${summary.regularAccuracyPct}%"
         binding.progressTypology1.progress = summary.regularAccuracyPct
@@ -109,7 +144,6 @@ class ProgressFragment : Fragment() {
             binding.bar4, binding.bar5, binding.bar6, binding.bar7
         )
 
-        // Set bar heights proportionally (max height 100dp)
         val maxHeightDp = 100
         val density = resources.displayMetrics.density
 

@@ -665,6 +665,51 @@
                 </androidx.constraintlayout.widget.ConstraintLayout>
             </com.google.android.material.card.MaterialCardView>
 
+            <!-- CalendarView Widget Card -->
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/cardCalendar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/spacing_lg"
+                app:cardBackgroundColor="?attr/colorSurfaceContainerLow"
+                app:cardCornerRadius="@dimen/rounded_xl"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/cardChart"
+                app:strokeColor="?attr/colorOutlineVariant"
+                app:strokeWidth="1dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="@dimen/spacing_md">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="📅 CALENDARIO DE ACTIVIDAD (CALENDAR VIEW)"
+                        android:textColor="?attr/colorPrimary"
+                        android:textSize="@dimen/text_label_sm"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/tvCalendarSelectedDate"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="2dp"
+                        android:text="Selecciona un día para consultar el historial"
+                        android:textColor="?attr/colorOnSurface"
+                        android:textSize="@dimen/text_body_sm" />
+
+                    <CalendarView
+                        android:id="@+id/myCalendarView"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/spacing_xs" />
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
             <!-- Section: Puntos Débiles Recurrentes -->
             <TextView
                 android:id="@+id/tvWeakTitle"
@@ -676,7 +721,7 @@
                 android:textSize="@dimen/text_headline_sm"
                 android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/cardChart" />
+                app:layout_constraintTop_toBottomOf="@id/cardCalendar" />
 
             <TextView
                 android:id="@+id/badgeWeakCritical"
