@@ -196,6 +196,54 @@
                 </androidx.constraintlayout.widget.ConstraintLayout>
             </com.google.android.material.card.MaterialCardView>
 
+            <!-- Date/Time Picker Reminder Card -->
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/cardReminder"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/spacing_md"
+                app:cardBackgroundColor="?attr/colorSurfaceContainerLow"
+                app:cardCornerRadius="@dimen/rounded_xl"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/cardGoal"
+                app:strokeColor="?attr/colorOutlineVariant"
+                app:strokeWidth="1dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="@dimen/spacing_md">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="📅 RECORDATORIO DE ESTUDIO (DATE &amp; TIME PICKER)"
+                        android:textColor="?attr/colorPrimary"
+                        android:textSize="@dimen/text_label_sm"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/tvReminderResult"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="2dp"
+                        android:text="Sin recordatorio programado"
+                        android:textColor="?attr/colorOnSurface"
+                        android:textSize="@dimen/text_body_sm" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btnScheduleReminder"
+                        style="@style/Widget.Material3.Button.OutlinedButton"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/spacing_xs"
+                        android:text="Programar Fecha y Hora de Estudio"
+                        android:textSize="@dimen/text_label_sm" />
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
             <!-- "NIVEL PEDAGÓGICO" Block -->
             <TextView
                 android:id="@+id/tvLevelLabel"
@@ -207,7 +255,7 @@
                 android:textSize="@dimen/text_label_md"
                 android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/cardGoal" />
+                app:layout_constraintTop_toBottomOf="@id/cardReminder" />
 
             <HorizontalScrollView
                 android:id="@+id/scrollLevels"

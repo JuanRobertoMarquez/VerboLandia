@@ -4,22 +4,17 @@ import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
 import com.example.verbolandia.model.Verb
+import java.io.File
 import java.io.FileOutputStream
-import java.io.InputStream
 import java.io.OutputStream
 
-class DatabaseHelper(private val context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION) {
+class DatabaseHelper private constructor(private val context: Context) :
+    SQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION) {
 
     companion object {
         private const val DATABASE_NAME = "verbs.db"
         private const val DATABASE_VERSION = 1
         private const val TABLE_VERBS = "verbs"
-
-        private const val COL_BASE = "base"
-        private const val COL_THIRD_PERSON = "third_person"
-        private const val COL_PAST = "past"
-        private const val COL_PAST_PARTICIPLE = "past_participle"
-        private const val COL_GERUND = "gerund"
 
         @Volatile
         private var INSTANCE: DatabaseHelper? = null
@@ -31,164 +26,69 @@ class DatabaseHelper(private val context: Context) : SQLiteOpenHelper(context, D
                 instance
             }
         }
-
-        // Expanded Spanish translations dictionary for common verbs
-        private val SPANISH_TRANSLATIONS = mapOf(
-            "accept" to "Aceptar",
-            "add" to "Añadir, agregar",
-            "admit" to "Admitir",
-            "agree" to "Estar de acuerdo",
-            "allow" to "Permitir",
-            "answer" to "Responder",
-            "appear" to "Aparecer",
-            "apply" to "Aplicar",
-            "argue" to "Discutir",
-            "arrive" to "Llegar",
-            "ask" to "Preguntar, pedir",
-            "be" to "Ser, estar",
-            "become" to "Convertirse, llegar a ser",
-            "begin" to "Empezar, comenzar",
-            "believe" to "Creer",
-            "bite" to "Morder",
-            "blow" to "Soplar",
-            "break" to "Romper, quebrar",
-            "bring" to "Traer",
-            "build" to "Construir",
-            "buy" to "Comprar",
-            "call" to "Llamar",
-            "can" to "Poder",
-            "carry" to "Llevar, cargar",
-            "catch" to "Atrapar, coger",
-            "change" to "Cambiar",
-            "choose" to "Elegir, escoger",
-            "clean" to "Limpiar",
-            "close" to "Cerrar",
-            "come" to "Venir",
-            "consider" to "Considerar",
-            "continue" to "Continuar",
-            "cook" to "Cocinar",
-            "cost" to "Costar",
-            "create" to "Crear",
-            "cut" to "Cortar",
-            "dance" to "Bailar",
-            "decide" to "Decidir",
-            "die" to "Morir",
-            "do" to "Hacer",
-            "draw" to "Dibujar",
-            "drink" to "Beber, tomar",
-            "drive" to "Conducir, manejar",
-            "eat" to "Comer",
-            "expect" to "Esperar (expectativa)",
-            "explain" to "Explicar",
-            "fall" to "Caer",
-            "feel" to "Sentir",
-            "fight" to "Luchar, pelear",
-            "find" to "Encontrar",
-            "fly" to "Volar",
-            "follow" to "Seguir",
-            "forget" to "Olvidar",
-            "get" to "Obtener, conseguir",
-            "give" to "Dar",
-            "go" to "Ir",
-            "grow" to "Crecer",
-            "happen" to "Suceder, pasar",
-            "have" to "Tener, haber",
-            "hear" to "Oír, escuchar",
-            "help" to "Ayudar",
-            "hide" to "Esconder, ocultar",
-            "hit" to "Golpear",
-            "hold" to "Sostener, mantener",
-            "hope" to "Esperar (esperanza)",
-            "hurt" to "Lastimar, doler",
-            "include" to "Incluir",
-            "keep" to "Mantener, guardar",
-            "kill" to "Matar",
-            "know" to "Saber, conocer",
-            "lead" to "Guiar, liderar",
-            "learn" to "Aprender",
-            "leave" to "Salir, dejar",
-            "let" to "Permitir, dejar",
-            "like" to "Gustar",
-            "listen" to "Escuchar",
-            "live" to "Vivir",
-            "look" to "Mirar, buscar",
-            "lose" to "Perder",
-            "love" to "Amar",
-            "make" to "Hacer, fabricar",
-            "mean" to "Significar, querer decir",
-            "meet" to "Conocer, reunirse",
-            "move" to "Mover, mudarse",
-            "must" to "Deber",
-            "need" to "Necesitar",
-            "offer" to "Ofrecer",
-            "open" to "Abrir",
-            "pay" to "Pagar",
-            "play" to "Jugar, tocar (instrumento)",
-            "provide" to "Proporcionar",
-            "put" to "Poner, colocar",
-            "reach" to "Alcanzar",
-            "read" to "Leer",
-            "remain" to "Permanecer",
-            "remember" to "Recordar",
-            "run" to "Correr",
-            "say" to "Decir",
-            "see" to "Ver",
-            "sell" to "Vender",
-            "send" to "Enviar",
-            "serve" to "Servir",
-            "set" to "Establecer, colocar",
-            "show" to "Mostrar",
-            "sing" to "Cantar",
-            "sit" to "Sentarse",
-            "sleep" to "Dormir",
-            "speak" to "Hablar",
-            "spend" to "Gastar, pasar tiempo",
-            "stand" to "Estar de pie",
-            "start" to "Empezar, iniciar",
-            "stay" to "Permanecer, quedarse",
-            "stop" to "Detener, parar",
-            "swim" to "Nadar",
-            "take" to "Tomar, llevar",
-            "talk" to "Hablar, conversar",
-            "teach" to "Enseñar",
-            "tell" to "Decir, contar",
-            "think" to "Pensar",
-            "try" to "Intentar, probar",
-            "understand" to "Entender, comprender",
-            "use" to "Usar, utilizar",
-            "visit" to "Visitar",
-            "wait" to "Esperar (tiempo)",
-            "walk" to "Caminar",
-            "want" to "Querer",
-            "watch" to "Ver, observar",
-            "win" to "Ganar",
-            "work" to "Trabajar",
-            "write" to "Escribir"
-        )
     }
 
     init {
-        copyDatabaseIfNeeded()
+        ensureDatabaseUpdated()
     }
 
-    private fun copyDatabaseIfNeeded() {
-        val dbPath = context.getDatabasePath(DATABASE_NAME)
-        if (!dbPath.exists()) {
-            dbPath.parentFile?.mkdirs()
-            try {
-                val inputStream: InputStream = context.assets.open("verbs.db")
-                val outputStream: OutputStream = FileOutputStream(dbPath)
-                val buffer = ByteArray(1024)
-                var length: Int
-                while (inputStream.read(buffer).also { length = it } > 0) {
-                    outputStream.write(buffer, 0, length)
+    @Synchronized
+    private fun ensureDatabaseUpdated() {
+        val dbFile = context.getDatabasePath(DATABASE_NAME)
+        val assetVersion = getAssetUserVersion()
+        val currentVersion = getCurrentDbUserVersion(dbFile)
+
+        if (!dbFile.exists() || currentVersion < assetVersion) {
+            copyDatabaseFromAssetsAtomic(dbFile)
+        }
+    }
+
+    private fun getAssetUserVersion(): Int {
+        var version = 1
+        try {
+            val tmpAssetFile = File.createTempFile("asset_ver_check", ".db", context.cacheDir)
+            context.assets.open(DATABASE_NAME).use { input ->
+                FileOutputStream(tmpAssetFile).use { output ->
+                    input.copyTo(output)
                 }
-                outputStream.flush()
-                outputStream.close()
-                inputStream.close()
-            } catch (e: Exception) {
-                e.printStackTrace()
             }
+            SQLiteDatabase.openDatabase(tmpAssetFile.absolutePath, null, SQLiteDatabase.OPEN_READONLY).use { db ->
+                version = db.version
+            }
+            tmpAssetFile.delete()
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+        return version
+    }
+
+    private fun getCurrentDbUserVersion(dbFile: File): Int {
+        if (!dbFile.exists()) return 0
+        return try {
+            SQLiteDatabase.openDatabase(dbFile.absolutePath, null, SQLiteDatabase.OPEN_READONLY).use { db ->
+                db.version
+            }
+        } catch (e: Exception) {
+            0
+        }
+    }
+
+    private fun copyDatabaseFromAssetsAtomic(targetFile: File) {
+        targetFile.parentFile?.mkdirs()
+        val tmpFile = File(targetFile.parentFile, "$DATABASE_NAME.tmp")
+
+        try {
+            context.assets.open(DATABASE_NAME).use { input ->
+                FileOutputStream(tmpFile).use { output ->
+                    input.copyTo(output)
+                }
+            }
+            if (targetFile.exists()) {
+                targetFile.delete()
+            }
+            tmpFile.renameTo(targetFile)
+        } catch (e: Exception) {
+            e.printStackTrace()
         }
     }
 
@@ -196,167 +96,180 @@ class DatabaseHelper(private val context: Context) : SQLiteOpenHelper(context, D
 
     override fun onUpgrade(db: SQLiteDatabase?, oldVersion: Int, newVersion: Int) {}
 
-    fun getAllVerbs(limit: Int = 1000): List<Verb> {
+    fun getAllVerbs(limit: Int = 2000): List<Verb> {
         val list = mutableListOf<Verb>()
-        val db = readableDatabase
-        val querySql = """
-            SELECT * FROM $TABLE_VERBS 
-            WHERE base NOT GLOB '[0-9]*' 
-              AND UPPER(base) NOT IN ('TRUE', 'FALSE', '404', '69', '911') 
-              AND LENGTH(base) > 1 
-            ORDER BY base ASC LIMIT $limit
-        """.trimIndent()
-
-        val cursor = db.rawQuery(querySql, null)
-        if (cursor.moveToFirst()) {
-            do {
-                list.add(cursorToVerb(cursor))
-            } while (cursor.moveToNext())
+        readableDatabase.rawQuery(
+            "SELECT id, base, third_person, past, past_participle, gerund, irregular, common FROM $TABLE_VERBS ORDER BY base ASC LIMIT $limit",
+            null
+        ).use { cursor ->
+            if (cursor.moveToFirst()) {
+                do {
+                    list.add(cursorToVerb(cursor))
+                } while (cursor.moveToNext())
+            }
         }
-        cursor.close()
+        return list
+    }
+
+    fun getCommonVerbs(limit: Int = 500): List<Verb> {
+        val list = mutableListOf<Verb>()
+        readableDatabase.rawQuery(
+            "SELECT id, base, third_person, past, past_participle, gerund, irregular, common FROM $TABLE_VERBS WHERE common = 1 ORDER BY base ASC LIMIT $limit",
+            null
+        ).use { cursor ->
+            if (cursor.moveToFirst()) {
+                do {
+                    list.add(cursorToVerb(cursor))
+                } while (cursor.moveToNext())
+            }
+        }
         return list
     }
 
     fun getTotalVerbsCount(): Int {
-        val db = readableDatabase
-        val cursor = db.rawQuery(
-            "SELECT COUNT(*) FROM $TABLE_VERBS WHERE base NOT GLOB '[0-9]*' AND UPPER(base) NOT IN ('TRUE', 'FALSE', '404', '69', '911') AND LENGTH(base) > 1",
-            null
-        )
-        var count = 0
-        if (cursor.moveToFirst()) {
-            count = cursor.getInt(0)
+        readableDatabase.rawQuery("SELECT COUNT(*) FROM $TABLE_VERBS", null).use { cursor ->
+            if (cursor.moveToFirst()) {
+                return cursor.getInt(0)
+            }
         }
-        cursor.close()
-        return count
+        return 0
     }
 
-    fun searchVerbs(query: String): List<Verb> {
-        val list = mutableListOf<Verb>()
-        val db = readableDatabase
-        val cleanQuery = query.trim().lowercase()
-        if (cleanQuery.isEmpty()) {
-            return getAllVerbs(200)
+    fun getCountsByCategory(): Triple<Int, Int, Int> {
+        var total = 0
+        var irregular = 0
+        var regular = 0
+        readableDatabase.rawQuery("SELECT COUNT(*), SUM(irregular) FROM $TABLE_VERBS", null).use { cursor ->
+            if (cursor.moveToFirst()) {
+                total = cursor.getInt(0)
+                irregular = cursor.getInt(1)
+                regular = total - irregular
+            }
         }
+        return Triple(total, irregular, regular)
+    }
 
+    fun searchVerbs(
+        query: String,
+        translationsMap: Map<String, String> = emptyMap(),
+        limit: Int = 20
+    ): List<Verb> {
+        val cleanQuery = query.trim().lowercase()
+        if (cleanQuery.isEmpty()) return emptyList()
+
+        // Find bases whose translation contains spanish query
+        val matchedBasesFromSpanish = translationsMap.entries
+            .filter { it.value.lowercase().contains(cleanQuery) }
+            .map { it.key }
+            .take(20)
+
+        val list = mutableListOf<Verb>()
         val sql = """
-            SELECT * FROM $TABLE_VERBS 
-            WHERE (base LIKE ? OR past LIKE ? OR past_participle LIKE ? OR gerund LIKE ?)
-              AND base NOT GLOB '[0-9]*' 
-              AND UPPER(base) NOT IN ('TRUE', 'FALSE', '404', '69', '911') 
-              AND LENGTH(base) > 1 
-            ORDER BY CASE WHEN base LIKE ? THEN 1 WHEN base LIKE ? THEN 2 ELSE 3 END, base ASC 
-            LIMIT 150
+            SELECT id, base, third_person, past, past_participle, gerund, irregular, common 
+            FROM $TABLE_VERBS 
+            WHERE base LIKE ? OR past LIKE ? OR past_participle LIKE ? OR gerund LIKE ?
+            ORDER BY 
+              CASE 
+                WHEN LOWER(base) = ? THEN 1 
+                WHEN LOWER(base) LIKE ? THEN 2 
+                WHEN LOWER(base) LIKE ? THEN 3 
+                WHEN LOWER(past) = ? OR LOWER(past_participle) = ? THEN 4
+                ELSE 5 
+              END, base ASC 
+            LIMIT ?
         """.trimIndent()
 
         val pattern = "%$cleanQuery%"
-        val exactPattern = "$cleanQuery%"
-        val cursor = db.rawQuery(sql, arrayOf(pattern, pattern, pattern, pattern, exactPattern, pattern))
-        if (cursor.moveToFirst()) {
-            do {
-                list.add(cursorToVerb(cursor))
-            } while (cursor.moveToNext())
+        val prefixPattern = "$cleanQuery%"
+
+        readableDatabase.rawQuery(
+            sql,
+            arrayOf(
+                pattern, pattern, pattern, pattern,
+                cleanQuery, prefixPattern, pattern, cleanQuery, cleanQuery,
+                limit.toString()
+            )
+        ).use { cursor ->
+            if (cursor.moveToFirst()) {
+                do {
+                    list.add(cursorToVerb(cursor))
+                } while (cursor.moveToNext())
+            }
         }
-        cursor.close()
+
+        // If results < limit and we have spanish matches, append missing spanish matches
+        if (list.size < limit && matchedBasesFromSpanish.isNotEmpty()) {
+            val existingBases = list.map { it.base }.toSet()
+            for (base in matchedBasesFromSpanish) {
+                if (base !in existingBases) {
+                    val verb = getVerbByBase(base)
+                    if (verb != null) {
+                        list.add(verb)
+                        if (list.size >= limit) break
+                    }
+                }
+            }
+        }
+
         return list
     }
 
     fun getVerbByBase(base: String): Verb? {
-        val db = readableDatabase
-        val cursor = db.rawQuery(
-            "SELECT * FROM $TABLE_VERBS WHERE LOWER(base) = ? LIMIT 1",
+        readableDatabase.rawQuery(
+            "SELECT id, base, third_person, past, past_participle, gerund, irregular, common FROM $TABLE_VERBS WHERE LOWER(base) = ? LIMIT 1",
             arrayOf(base.trim().lowercase())
-        )
-        var verb: Verb? = null
-        if (cursor.moveToFirst()) {
-            verb = cursorToVerb(cursor)
+        ).use { cursor ->
+            if (cursor.moveToFirst()) {
+                return cursorToVerb(cursor)
+            }
         }
-        cursor.close()
-        return verb
+        return null
     }
 
-    fun getRandomVerbs(count: Int = 10): List<Verb> {
+    fun getVerbsByBases(bases: List<String>): List<Verb> {
+        if (bases.isEmpty()) return emptyList()
         val list = mutableListOf<Verb>()
-        val db = readableDatabase
-        val cursor = db.rawQuery(
-            "SELECT * FROM $TABLE_VERBS WHERE base NOT GLOB '[0-9]*' AND UPPER(base) NOT IN ('TRUE', 'FALSE', '404', '69', '911') AND LENGTH(base) > 1 ORDER BY RANDOM() LIMIT $count",
-            null
-        )
-        if (cursor.moveToFirst()) {
-            do {
-                list.add(cursorToVerb(cursor))
-            } while (cursor.moveToNext())
+        val placeholders = bases.joinToString(",") { "?" }
+        readableDatabase.rawQuery(
+            "SELECT id, base, third_person, past, past_participle, gerund, irregular, common FROM $TABLE_VERBS WHERE base IN ($placeholders)",
+            bases.toTypedArray()
+        ).use { cursor ->
+            if (cursor.moveToFirst()) {
+                do {
+                    list.add(cursorToVerb(cursor))
+                } while (cursor.moveToNext())
+            }
         }
-        cursor.close()
-        return list
-    }
-
-    fun getVerbOfDay(): Verb {
-        val popularVerbs = listOf("break", "go", "think", "make", "take", "write", "speak", "see", "bring", "find", "choose", "run", "eat", "drink", "know")
-        val todayIndex = (System.currentTimeMillis() / (1000 * 60 * 60 * 24) % popularVerbs.size).toInt()
-        val targetBase = popularVerbs[todayIndex]
-        return getVerbByBase(targetBase) ?: Verb(
-            base = "break",
-            thirdPerson = "breaks",
-            past = "broke",
-            pastParticiple = "broken",
-            gerund = "breaking",
-            spanishMeaning = "Romper, quebrar",
-            phonetic = "/breɪk/",
-            isIrregular = true,
-            level = "B1"
-        )
-    }
-
-    private fun checkIfIrregular(base: String, past: String): Boolean {
-        val cleanBase = base.lowercase().trim()
-        val cleanPast = past.lowercase().trim()
-        if (cleanBase.isEmpty() || cleanPast.isEmpty()) return false
-
-        val expected1 = cleanBase + "ed"
-        val expected2 = if (cleanBase.endsWith("e")) cleanBase + "d" else cleanBase + "ed"
-        val expected3 = if (cleanBase.endsWith("y") && cleanBase.length > 1) cleanBase.dropLast(1) + "ied" else cleanBase + "ed"
-
-        return cleanPast != expected1 && cleanPast != expected2 && cleanPast != expected3
+        // Retain original order of bases
+        val map = list.associateBy { it.base }
+        return bases.mapNotNull { map[it] }
     }
 
     private fun cursorToVerb(cursor: android.database.Cursor): Verb {
-        val baseIndex = cursor.getColumnIndex(COL_BASE)
-        val thirdPersonIndex = cursor.getColumnIndex(COL_THIRD_PERSON)
-        val pastIndex = cursor.getColumnIndex(COL_PAST)
-        val pastParticipleIndex = cursor.getColumnIndex(COL_PAST_PARTICIPLE)
-        val gerundIndex = cursor.getColumnIndex(COL_GERUND)
+        val id = cursor.getInt(0)
+        val base = cursor.getString(1)
+        val thirdPerson = cursor.getString(2)
+        val past = cursor.getString(3)
+        val pastParticiple = cursor.getString(4)
+        val gerund = cursor.getString(5)
+        val irregular = cursor.getInt(6) == 1
+        val common = cursor.getInt(7) == 1
 
-        val base = if (baseIndex != -1) cursor.getString(baseIndex) else ""
-        val thirdPerson = if (thirdPersonIndex != -1) cursor.getString(thirdPersonIndex) else ""
-        val past = if (pastIndex != -1) cursor.getString(pastIndex) else ""
-        val pastParticiple = if (pastParticipleIndex != -1) cursor.getString(pastParticipleIndex) else ""
-        val gerund = if (gerundIndex != -1) cursor.getString(gerundIndex) else ""
-
-        // Check stored user translation or fallback to dictionary map or formatted default
-        val userPrefs = context.getSharedPreferences("verbolandia_translations", Context.MODE_PRIVATE)
-        val savedTranslation = userPrefs.getString("trans_$base", null)
-
-        val spanishMeaning = savedTranslation
-            ?: SPANISH_TRANSLATIONS[base.lowercase()]
-            ?: "Verbo: $base"
-
-        val isIrregular = checkIfIrregular(base, past)
         val phonetic = "/${base.lowercase()}/"
-        val level = if (isIrregular) "B1" else "A1"
+        val level = if (irregular) "B1" else "A1"
 
         return Verb(
+            id = id,
             base = base,
             thirdPerson = thirdPerson,
             past = past,
             pastParticiple = pastParticiple,
             gerund = gerund,
-            spanishMeaning = spanishMeaning,
+            isIrregular = irregular,
+            isCommon = common,
+            spanishMeaning = "", // populated by repository
             phonetic = phonetic,
-            isIrregular = isIrregular,
-            level = level,
-            mastery = 0,
-            isFavorite = false
+            level = level
         )
     }
 }
