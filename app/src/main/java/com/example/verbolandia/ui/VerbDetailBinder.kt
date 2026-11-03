@@ -1,7 +1,12 @@
 package com.example.verbolandia.ui
 
+import android.content.Intent
 import android.view.View
+import android.widget.SeekBar
+import android.widget.Toast
+import com.example.verbolandia.GrammarWebActivity
 import com.example.verbolandia.R
+import com.example.verbolandia.VideoTutorialActivity
 import com.example.verbolandia.databinding.FragmentVerbDetailBinding
 import com.example.verbolandia.model.Verb
 import com.example.verbolandia.util.VerbClassifier
@@ -15,8 +20,11 @@ object VerbDetailBinder {
         stats: VerbStatsRecord,
         onBookmarkClick: () -> Unit,
         onShareClick: () -> Unit,
-        onPracticeClick: () -> Unit
+        onPracticeClick: () -> Unit,
+        onTranslateClick: () -> Unit
     ) {
+        val context = binding.root.context
+
         // Title & Badges
         binding.tvVerbName.text = verb.base
         binding.badgeIrregular.text = if (verb.isIrregular) "IRREGULAR" else "REGULAR"
@@ -25,6 +33,7 @@ object VerbDetailBinder {
 
         // Meaning
         binding.tvMeaningPrimary.text = if (verb.spanishMeaning.isNotBlank()) verb.spanishMeaning else "Toca para traducir"
+        binding.cardMeaning.setOnClickListener { onTranslateClick() }
 
         // Hide static fields without real data
         binding.tvPhonetic.visibility = View.GONE
@@ -72,9 +81,48 @@ object VerbDetailBinder {
             binding.tvRetentionLastSuccess.text = "Visto ${stats.views} veces"
         }
 
+        // Android Widgets Integration (RatingBar & SeekBar)
+        binding.myRatingBar.rating = if (verb.isIrregular) 4.0f else 2.0f
+        binding.rateText.text = "Dificultad: ${binding.myRatingBar.rating.toInt()} / 5 ⭐"
+
+        binding.myRatingBar.setOnRatingBarChangeListener { _, rating, _ ->
+            binding.rateText.text = "Dificultad: ${rating.toInt()} / 5 ⭐"
+            Toast.makeText(context, "Valoración de dificultad guardada: ${rating.toInt()} estrellas", Toast.LENGTH_SHORT).show()
+        }
+
+        binding.seekBarResult.text = "Ajuste de velocidad: ${binding.mySeekBar.progress}%"
+        binding.mySeekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+            override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
+                binding.seekBarResult.text = "Ajuste de velocidad: ${progress}%"
+            }
+
+            override fun onStartTrackingTouch(seekBar: SeekBar?) {
+                binding.seekBarResult.text = "Ajustando velocidad..."
+            }
+
+            override fun onStopTrackingTouch(seekBar: SeekBar?) {
+                binding.seekBarResult.text = "Velocidad establecida: ${seekBar?.progress}%"
+            }
+        })
+
+        // Web & Video Buttons
+        binding.btnOpenWebView.setOnClickListener {
+            val intent = Intent(context, GrammarWebActivity::class.java).apply {
+                putExtra(GrammarWebActivity.EXTRA_VERB_BASE, verb.base)
+            }
+            context.startActivity(intent)
+        }
+
+        binding.btnOpenVideoView.setOnClickListener {
+            val intent = Intent(context, VideoTutorialActivity::class.java).apply {
+                putExtra(VideoTutorialActivity.EXTRA_VERB_TITLE, verb.base.uppercase())
+            }
+            context.startActivity(intent)
+        }
+
         // Bookmark Icon Tint
         if (stats.isFavorite) {
-            binding.btnBookmark.setColorFilter(binding.root.context.getColor(R.color.primary_accent))
+            binding.btnBookmark.setColorFilter(context.getColor(R.color.primary_accent))
         } else {
             binding.btnBookmark.clearColorFilter()
         }
