@@ -139,7 +139,7 @@ class DatabaseHelper private constructor(private val context: Context) :
         var total = 0
         var irregular = 0
         var regular = 0
-        readableDatabase.rawQuery("SELECT COUNT(*), SUM(irregular) FROM $TABLE_VERBS", null).use { cursor ->
+        readableDatabase.rawQuery("SELECT COUNT(*), SUM(irregular) FROM $TABLE_VERBS WHERE common = 1", null).use { cursor ->
             if (cursor.moveToFirst()) {
                 total = cursor.getInt(0)
                 irregular = cursor.getInt(1)
@@ -256,7 +256,7 @@ class DatabaseHelper private constructor(private val context: Context) :
         val common = cursor.getInt(7) == 1
 
         val phonetic = "/${base.lowercase()}/"
-        val level = if (irregular) "B1" else "A1"
+        val level = com.example.verbolandia.util.VerbClassifier.getLevel(base, irregular)
 
         return Verb(
             id = id,

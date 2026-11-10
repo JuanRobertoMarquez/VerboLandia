@@ -97,8 +97,8 @@ class ProgressFragment : Fragment() {
         // Metric 1: Retención Global 30 días
         binding.tvMetric1Val.text = "${summary.globalRetention30DaysPct}%"
         binding.badgeMetric1Diff.text = when {
-            summary.globalRetentionDiffPct > 0 -> "📈 +${summary.globalRetentionDiffPct}%"
-            summary.globalRetentionDiffPct < 0 -> "📉 ${summary.globalRetentionDiffPct}%"
+            summary.globalRetentionDiffPct > 0 -> "+${summary.globalRetentionDiffPct}%"
+            summary.globalRetentionDiffPct < 0 -> "${summary.globalRetentionDiffPct}%"
             else -> "—"
         }
 

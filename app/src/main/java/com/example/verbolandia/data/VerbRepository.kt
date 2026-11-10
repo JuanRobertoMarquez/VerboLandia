@@ -196,11 +196,38 @@ class VerbRepository(
         filterByCategory(enriched, category)
     }
 
-    suspend fun searchVerbs(query: String, category: String = "ALL"): List<Verb> = withContext(Dispatchers.IO) {
+    suspend fun getCatalogVerbs(category: String = "ALL", level: String = "ALL"): List<Verb> = withContext(Dispatchers.IO) {
+        val candidates = dbHelper.getCommonVerbs(500)
+        val enriched = enrichVerbs(candidates)
+        filterVerbs(enriched, category, level)
+    }
+
+    suspend fun searchVerbs(query: String, category: String = "ALL", level: String = "ALL"): List<Verb> = withContext(Dispatchers.IO) {
         val translationsMap = userDbHelper.getAllTranslations() + LOCAL_SPANISH_DICTIONARY
-        val results = dbHelper.searchVerbs(query, translationsMap, limit = 20)
+        val results = dbHelper.searchVerbs(query, translationsMap, limit = 50)
         val enriched = enrichVerbs(results)
-        filterByCategory(enriched, category)
+        filterVerbs(enriched, category, level)
+    }
+
+    suspend fun searchVerbs(query: String, category: String = "ALL"): List<Verb> = searchVerbs(query, category, "ALL")
+
+    private fun filterVerbs(verbs: List<Verb>, category: String, level: String): List<Verb> {
+        return verbs.filter { verb ->
+            val matchesCategory = when (category.uppercase()) {
+                "IRREGULAR" -> verb.isIrregular
+                "REGULAR" -> !verb.isIrregular
+                else -> true
+            }
+            val matchesLevel = when (level.uppercase()) {
+                "ALL", "" -> true
+                else -> verb.level.equals(level, ignoreCase = true)
+            }
+            matchesCategory && matchesLevel
+        }
+    }
+
+    private fun filterByCategory(verbs: List<Verb>, category: String): List<Verb> {
+        return filterVerbs(verbs, category, "ALL")
     }
 
     suspend fun getVerbOfDay(): Verb = withContext(Dispatchers.IO) {
@@ -300,13 +327,5 @@ class VerbRepository(
             isFavorite = stats.isFavorite,
             mastery = stats.mastery
         )
-    }
-
-    private fun filterByCategory(verbs: List<Verb>, category: String): List<Verb> {
-        return when (category.uppercase()) {
-            "IRREGULAR" -> verbs.filter { it.isIrregular }
-            "REGULAR" -> verbs.filter { !it.isIrregular }
-            else -> verbs
-        }
     }
 }

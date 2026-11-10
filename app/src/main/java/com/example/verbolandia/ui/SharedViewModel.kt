@@ -12,13 +12,32 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import kotlin.math.ceil
 
 class SharedViewModel(application: Application) : AndroidViewModel(application) {
+
+    companion object {
+        const val PAGE_SIZE = 15
+    }
 
     private val repository = VerbRepository.getInstance(application)
 
     private val _dailyVerbs = MutableStateFlow<List<Verb>>(emptyList())
     val dailyVerbs: StateFlow<List<Verb>> = _dailyVerbs.asStateFlow()
+
+    private var allMatchingVerbs: List<Verb> = emptyList()
+
+    private val _paginatedVerbs = MutableStateFlow<List<Verb>>(emptyList())
+    val paginatedVerbs: StateFlow<List<Verb>> = _paginatedVerbs.asStateFlow()
+
+    private val _currentPage = MutableStateFlow(1)
+    val currentPage: StateFlow<Int> = _currentPage.asStateFlow()
+
+    private val _totalPages = MutableStateFlow(1)
+    val totalPages: StateFlow<Int> = _totalPages.asStateFlow()
+
+    private val _totalMatchingCount = MutableStateFlow(0)
+    val totalMatchingCount: StateFlow<Int> = _totalMatchingCount.asStateFlow()
 
     private val _searchResults = MutableStateFlow<List<Verb>>(emptyList())
     val searchResults: StateFlow<List<Verb>> = _searchResults.asStateFlow()
@@ -32,6 +51,12 @@ class SharedViewModel(application: Application) : AndroidViewModel(application) 
     private val _filterCategory = MutableStateFlow("ALL") // "ALL", "IRREGULAR", "REGULAR"
     val filterCategory: StateFlow<String> = _filterCategory.asStateFlow()
 
+    private val _filterLevel = MutableStateFlow("ALL") // "ALL", "A1", "A2", "B1", "B2"
+    val filterLevel: StateFlow<String> = _filterLevel.asStateFlow()
+
+    private val _isFilterActive = MutableStateFlow(false)
+    val isFilterActive: StateFlow<Boolean> = _isFilterActive.asStateFlow()
+
     private val _categoryCounts = MutableStateFlow(Triple(0, 0, 0))
     val categoryCounts: StateFlow<Triple<Int, Int, Int>> = _categoryCounts.asStateFlow()
 
@@ -42,6 +67,7 @@ class SharedViewModel(application: Application) : AndroidViewModel(application) 
     val currentDetailVerb: StateFlow<Verb?> = _currentDetailVerb.asStateFlow()
 
     private var searchJob: Job? = null
+    private var lastQuery: String = ""
 
     init {
         loadInitialData()
@@ -54,47 +80,104 @@ class SharedViewModel(application: Application) : AndroidViewModel(application) 
             _searchHistory.value = repository.getSearchHistory()
             _progressSummary.value = repository.getProgressSummary()
 
+            refreshVerbs(lastQuery)
+
             if (_currentDetailVerb.value == null) {
                 _currentDetailVerb.value = repository.getLastOpenedOrFirstDailyVerb()
             }
         }
     }
 
-    fun setFilterCategory(category: String, currentQuery: String) {
+    fun applyFilters(category: String, level: String) {
         _filterCategory.value = category
+        _filterLevel.value = level
+        _isFilterActive.value = (category != "ALL" || level != "ALL")
+        _currentPage.value = 1
+        refreshVerbs(lastQuery)
+    }
+
+    fun resetFilters() {
+        applyFilters("ALL", "ALL")
+    }
+
+    fun setPage(page: Int) {
+        val total = _totalPages.value
+        val validPage = page.coerceIn(1, maxOf(1, total))
+        if (_currentPage.value != validPage) {
+            _currentPage.value = validPage
+            updatePaginationSlice()
+        }
+    }
+
+    fun nextPage() {
+        if (_currentPage.value < _totalPages.value) {
+            setPage(_currentPage.value + 1)
+        }
+    }
+
+    fun prevPage() {
+        if (_currentPage.value > 1) {
+            setPage(_currentPage.value - 1)
+        }
+    }
+
+    private fun refreshVerbs(query: String) {
+        lastQuery = query
         viewModelScope.launch {
-            if (_isSearching.value) {
-                performSearch(currentQuery)
+            if (_isSearching.value && query.isNotBlank()) {
+                val results = repository.searchVerbs(query, _filterCategory.value, _filterLevel.value)
+                allMatchingVerbs = results
+                _searchResults.value = results
             } else {
-                _dailyVerbs.value = repository.getDailyVerbs(category)
+                val catalog = repository.getCatalogVerbs(_filterCategory.value, _filterLevel.value)
+                allMatchingVerbs = catalog
             }
+
+            _totalMatchingCount.value = allMatchingVerbs.size
+            val calcTotalPages = ceil(allMatchingVerbs.size.toDouble() / PAGE_SIZE).toInt()
+            _totalPages.value = maxOf(1, calcTotalPages)
+
+            if (_currentPage.value > _totalPages.value) {
+                _currentPage.value = 1
+            }
+
+            updatePaginationSlice()
+        }
+    }
+
+    private fun updatePaginationSlice() {
+        val page = _currentPage.value
+        val startIndex = (page - 1) * PAGE_SIZE
+        if (startIndex >= allMatchingVerbs.size) {
+            _paginatedVerbs.value = allMatchingVerbs.take(PAGE_SIZE)
+        } else {
+            val endIndex = minOf(startIndex + PAGE_SIZE, allMatchingVerbs.size)
+            _paginatedVerbs.value = allMatchingVerbs.subList(startIndex, endIndex)
         }
     }
 
     fun onSearchQueryChanged(query: String) {
         searchJob?.cancel()
-
+        lastQuery = query
         val cleanQuery = query.trim()
+
         if (cleanQuery.isEmpty()) {
             _isSearching.value = false
             _searchResults.value = emptyList()
+            _currentPage.value = 1
             viewModelScope.launch {
                 _searchHistory.value = repository.getSearchHistory()
-                _dailyVerbs.value = repository.getDailyVerbs(_filterCategory.value)
+                refreshVerbs("")
             }
             return
         }
 
         _isSearching.value = true
+        _currentPage.value = 1
         searchJob = viewModelScope.launch {
             delay(250) // 250 ms debounce
-            performSearch(cleanQuery)
+            refreshVerbs(cleanQuery)
         }
-    }
-
-    private suspend fun performSearch(query: String) {
-        val results = repository.searchVerbs(query, _filterCategory.value)
-        _searchResults.value = results
     }
 
     fun onVerbOpened(verb: Verb) {
@@ -103,9 +186,12 @@ class SharedViewModel(application: Application) : AndroidViewModel(application) 
             repository.addSearchHistory(verb.base)
             _searchHistory.value = repository.getSearchHistory()
 
-            // Fetch refreshed verb with updated stats
             val refreshed = repository.getVerbByBase(verb.base) ?: verb
             _currentDetailVerb.value = refreshed
+
+            // Refresh list in place
+            allMatchingVerbs = allMatchingVerbs.map { if (it.base == verb.base) refreshed else it }
+            updatePaginationSlice()
         }
     }
 
@@ -122,12 +208,8 @@ class SharedViewModel(application: Application) : AndroidViewModel(application) 
             val refreshed = repository.getVerbByBase(verb.base) ?: verb
             _currentDetailVerb.value = refreshed
 
-            // Refresh current lists
-            if (_isSearching.value) {
-                _searchResults.value = _searchResults.value.map { if (it.base == verb.base) refreshed else it }
-            } else {
-                _dailyVerbs.value = _dailyVerbs.value.map { if (it.base == verb.base) refreshed else it }
-            }
+            allMatchingVerbs = allMatchingVerbs.map { if (it.base == verb.base) refreshed else it }
+            updatePaginationSlice()
         }
     }
 
@@ -139,6 +221,11 @@ class SharedViewModel(application: Application) : AndroidViewModel(application) 
             val refreshed = repository.getVerbByBase(base)
             if (refreshed != null && _currentDetailVerb.value?.base == base) {
                 _currentDetailVerb.value = refreshed
+            }
+
+            if (refreshed != null) {
+                allMatchingVerbs = allMatchingVerbs.map { if (it.base == base) refreshed else it }
+                updatePaginationSlice()
             }
         }
     }

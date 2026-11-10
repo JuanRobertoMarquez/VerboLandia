@@ -125,7 +125,7 @@
 
     <string name="metric_1_label">Retención Global</string>
     <string name="metric_1_val">84%</string>
-    <string name="metric_1_badge">📈 +6%</string>
+    <string name="metric_1_badge">+6%</string>
 
     <string name="metric_2_label">Verbos Dominados</string>
     <string name="metric_2_val">142 / 200</string>
@@ -141,7 +141,7 @@
 
     <string name="chart_title">Evolución de Precisión</string>
     <string name="chart_subtitle">Últimos 7 días de práctica activa</string>
-    <string name="chart_max_badge">📈 Máx 92%</string>
+    <string name="chart_max_badge">Máx 92%</string>
     <string name="day_mon">L</string>
     <string name="day_tue">M</string>
     <string name="day_wed">X</string>
@@ -154,7 +154,7 @@
     <string name="weak_points_title">Puntos Débiles Recurrentes</string>
     <string name="weak_points_subtitle">Prioridad alta para repetición espaciada</string>
     <string name="weak_points_badge">4 Críticos</string>
-    <string name="btn_review">🔄 Repasar</string>
+    <string name="btn_review">Repasar</string>
 
     <string name="weak_1_name">Choose</string>
     <string name="weak_1_phonetic">/tʃuːz/</string>
@@ -223,7 +223,7 @@
     <string name="verbo_del_dia_v3">Part.: frozen</string>
 
     <!-- Section Headers -->
-    <string name="list_header_title">LISTADO SINTÁCTICO</string>
+    <string name="list_header_title">LISTA DE VERBOS</string>
     <string name="list_header_results">5 resultados visibles</string>
 
     <!-- Category Filters -->

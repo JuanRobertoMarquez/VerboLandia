@@ -8,8 +8,8 @@
     android:layout_marginHorizontal="@dimen/margin"
     android:layout_marginVertical="@dimen/spacing_sm"
     app:cardBackgroundColor="?attr/colorSurfaceContainerLowest"
-    app:cardCornerRadius="@dimen/rounded_lg"
-    app:cardElevation="@dimen/spacing_xs"
+    app:cardCornerRadius="@dimen/rounded_2xl"
+    app:cardElevation="0dp"
     app:strokeColor="?attr/colorOutlineVariant"
     app:strokeWidth="1dp">
 

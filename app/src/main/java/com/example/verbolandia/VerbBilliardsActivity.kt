@@ -139,7 +139,7 @@ class VerbBilliardsActivity : AppCompatActivity() {
             if (isCorrect) {
                 scoreCount++
                 streakCount++
-                binding.tvScore.text = "Aciertos: $scoreCount | 🔥 $streakCount"
+                binding.tvScore.text = "Aciertos: $scoreCount | Racha: $streakCount"
                 selectedCard.setCardBackgroundColor(ContextCompat.getColor(this, R.color.primary))
                 binding.tvBilliardsFeedback.text = "¡TIRO PERFECTO! ${targetVerb.base} ➔ $correctAnswer"
 
@@ -152,7 +152,7 @@ class VerbBilliardsActivity : AppCompatActivity() {
                     .show()
             } else {
                 streakCount = 0
-                binding.tvScore.text = "Aciertos: $scoreCount | 🔥 0"
+                binding.tvScore.text = "Aciertos: $scoreCount | Racha: 0"
                 selectedCard.setCardBackgroundColor(ContextCompat.getColor(this, R.color.error))
                 binding.tvBilliardsFeedback.text = "¡Fallaste la tronera! El pasado de ${targetVerb.base} es $correctAnswer"
             }
