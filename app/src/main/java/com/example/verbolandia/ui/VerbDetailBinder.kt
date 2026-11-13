@@ -1,5 +1,8 @@
 package com.example.verbolandia.ui
 
+import android.content.ClipData
+import android.content.ClipboardManager
+import android.content.Context
 import android.content.Intent
 import android.view.View
 import android.widget.SeekBar
@@ -228,8 +231,43 @@ object VerbDetailBinder {
         }
 
         // Click Handlers
-        binding.btnShare.setImageResource(R.drawable.ic_flag)
+        binding.btnShare.setImageResource(R.drawable.ic_share)
+        binding.btnShare.contentDescription = context.getString(R.string.cd_share)
         binding.btnShare.setOnClickListener { onShareClick() }
         binding.btnPractice.setOnClickListener { onPracticeClick() }
+    }
+
+    fun shareVerb(context: Context, verb: Verb) {
+        val tapToTranslate = context.getString(R.string.tap_to_translate)
+        val meaning = if (verb.spanishMeaning.isNotBlank() && verb.spanishMeaning != tapToTranslate) {
+            verb.spanishMeaning
+        } else {
+            "—"
+        }
+
+        val shareText = context.getString(
+            R.string.share_verb_format,
+            verb.base.uppercase(),
+            meaning,
+            verb.past,
+            verb.pastParticiple,
+            verb.gerund
+        )
+
+        val sendIntent = Intent().apply {
+            action = Intent.ACTION_SEND
+            putExtra(Intent.EXTRA_TEXT, shareText)
+            type = "text/plain"
+        }
+        val shareIntent = Intent.createChooser(sendIntent, context.getString(R.string.share_verb_title))
+
+        try {
+            context.startActivity(shareIntent)
+        } catch (e: Exception) {
+            val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as? ClipboardManager
+            val clip = ClipData.newPlainText("Verbolandia", shareText)
+            clipboard?.setPrimaryClip(clip)
+            Toast.makeText(context, context.getString(R.string.share_copied_clipboard), Toast.LENGTH_SHORT).show()
+        }
     }
 }

@@ -59,6 +59,7 @@ class VerbDetailActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
         val verbFromExtra = intent.getSerializableExtra(EXTRA_VERB) as? Verb
         if (verbFromExtra != null) {
             currentVerb = verbFromExtra
+            renderVerb(verbFromExtra)
             viewModel.onVerbOpened(verbFromExtra)
         }
 
@@ -102,43 +103,47 @@ class VerbDetailActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
         }
     }
 
+    private fun renderVerb(verb: Verb) {
+        currentVerb = verb
+        val stats = viewModel.progressSummary.value.topWeakVerbs.find { it.base == verb.base }
+            ?: com.example.verbolandia.util.VerbStatsRecord(verb.base, isFavorite = verb.isFavorite, mastery = verb.mastery)
+
+        VerbDetailBinder.bindVerb(
+            binding = binding,
+            verb = verb,
+            stats = stats,
+            onBookmarkClick = {
+                viewModel.toggleFavorite(verb)
+                val msg = if (verb.isFavorite) {
+                    getString(R.string.snackbar_favorite_removed)
+                } else {
+                    getString(R.string.snackbar_favorite_added)
+                }
+                Snackbar.make(binding.root, msg, Snackbar.LENGTH_LONG)
+                    .setAction(getString(R.string.snackbar_action_undo)) {
+                        viewModel.toggleFavorite(verb)
+                    }
+                    .show()
+            },
+            onShareClick = {
+                shareVerb(verb)
+            },
+            onPracticeClick = {
+                com.example.verbolandia.ui.VerbPracticeBottomSheetFragment.newInstance(verb)
+                    .show(supportFragmentManager, "VerbPracticeBottomSheet")
+            },
+            onTranslateClick = {
+                requestTranslationDownload(verb)
+            }
+        )
+    }
+
     private fun observeViewModel() {
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.currentDetailVerb.collect { verb ->
                     if (verb != null) {
-                        currentVerb = verb
-                        val stats = viewModel.progressSummary.value.topWeakVerbs.find { it.base == verb.base }
-                            ?: com.example.verbolandia.util.VerbStatsRecord(verb.base, isFavorite = verb.isFavorite, mastery = verb.mastery)
-
-                        VerbDetailBinder.bindVerb(
-                            binding = binding,
-                            verb = verb,
-                            stats = stats,
-                            onBookmarkClick = {
-                                viewModel.toggleFavorite(verb)
-                                val msg = if (verb.isFavorite) {
-                                    getString(R.string.snackbar_favorite_removed)
-                                } else {
-                                    getString(R.string.snackbar_favorite_added)
-                                }
-                                Snackbar.make(binding.root, msg, Snackbar.LENGTH_LONG)
-                                    .setAction(getString(R.string.snackbar_action_undo)) {
-                                        viewModel.toggleFavorite(verb)
-                                    }
-                                    .show()
-                            },
-                            onShareClick = {
-                                shareVerb(verb)
-                            },
-                            onPracticeClick = {
-                                com.example.verbolandia.ui.VerbPracticeBottomSheetFragment.newInstance(verb)
-                                    .show(supportFragmentManager, "VerbPracticeBottomSheet")
-                            },
-                            onTranslateClick = {
-                                requestTranslationDownload(verb)
-                            }
-                        )
+                        renderVerb(verb)
                     }
                 }
             }
@@ -187,22 +192,7 @@ class VerbDetailActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
     }
 
     private fun shareVerb(verb: Verb) {
-        val shareText = getString(
-            R.string.share_verb_format,
-            verb.base.uppercase(),
-            verb.spanishMeaning,
-            verb.past,
-            verb.pastParticiple,
-            verb.gerund
-        )
-
-        val sendIntent = Intent().apply {
-            action = Intent.ACTION_SEND
-            putExtra(Intent.EXTRA_TEXT, shareText)
-            type = "text/plain"
-        }
-        val shareIntent = Intent.createChooser(sendIntent, getString(R.string.share_verb_title))
-        startActivity(shareIntent)
+        VerbDetailBinder.shareVerb(this, verb)
     }
 
     override fun onDestroy() {

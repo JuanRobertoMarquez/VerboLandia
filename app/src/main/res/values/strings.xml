@@ -490,4 +490,5 @@
     <string name="snackbar_action_undo">DESHACER</string>
     <string name="share_verb_title">Compartir Verbo</string>
     <string name="share_verb_format">Verbo en Verbolandia: %1$s (%2$s)\nPasado: %3$s\nParticipio: %4$s\nGerundio: %5$s</string>
+    <string name="share_copied_clipboard">Información del verbo copiada al portapapeles</string>
 </resources>

@@ -141,22 +141,7 @@ class VerbDetailFragment : Fragment() {
     }
 
     private fun shareVerb(verb: Verb) {
-        val shareText = getString(
-            R.string.share_verb_format,
-            verb.base.uppercase(),
-            verb.spanishMeaning,
-            verb.past,
-            verb.pastParticiple,
-            verb.gerund
-        )
-
-        val sendIntent = Intent().apply {
-            action = Intent.ACTION_SEND
-            putExtra(Intent.EXTRA_TEXT, shareText)
-            type = "text/plain"
-        }
-        val shareIntent = Intent.createChooser(sendIntent, getString(R.string.share_verb_title))
-        startActivity(shareIntent)
+        VerbDetailBinder.shareVerb(requireContext(), verb)
     }
 
     override fun onDestroyView() {
