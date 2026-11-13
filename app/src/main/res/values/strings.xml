@@ -64,14 +64,14 @@
 
     <!-- Dynamic Verb in Action Templates -->
     <string name="ex_v1_title">PRESENT SIMPLE (V1)</string>
-    <string name="ex_v1_en_format">I always %1$s in the morning.</string>
-    <string name="ex_v1_es_format">Siempre suelo %1$s por la mañana.</string>
+    <string name="ex_v1_en_format">I always %1$s this in the morning.</string>
+    <string name="ex_v1_es_format">Siempre suelo %1$s esto por la mañana.</string>
     <string name="ex_v2_title">PAST SIMPLE (V2)</string>
-    <string name="ex_v2_en_format">Yesterday, she %1$s carefully.</string>
-    <string name="ex_v2_es_format">Ayer, ella %1$s con cuidado.</string>
+    <string name="ex_v2_en_format">Yesterday, she %1$s it carefully.</string>
+    <string name="ex_v2_es_format">Ayer logró %1$s esto con cuidado.</string>
     <string name="ex_v3_title">PRESENT PERFECT (V3)</string>
-    <string name="ex_v3_en_format">They have %1$s three times this year.</string>
-    <string name="ex_v3_es_format">Ellos han realizado la acción de %1$s este año.</string>
+    <string name="ex_v3_en_format">They have %1$s it three times this year.</string>
+    <string name="ex_v3_es_format">Han vuelto a %1$s esto tres veces este año.</string>
 
     <!-- Common Error Block -->
     <string name="error_warning_title">ERROR COMÚN A EVITAR</string>
@@ -95,7 +95,7 @@
     <string name="study_tools_header">HERRAMIENTAS DE ESTUDIO</string>
     <string name="difficulty_rating_format">Dificultad: %1$d / 5</string>
     <string name="difficulty_toast_format">Valoración de dificultad guardada: %1$d estrellas</string>
-    <string name="difficulty_default_text">3.0 / 5.0</string>
+    <string name="difficulty_default_text">Dificultad: 3 / 5</string>
     <string name="speed_pronunciation_format">Velocidad de pronunciación: %1$s</string>
     <string name="speed_adjustment_format">Ajuste de velocidad: %1$d%%</string>
     <string name="speed_setting_adjusting">Ajustando velocidad...</string>
@@ -180,6 +180,9 @@
     <string name="mod_2_desc">Elige la conjugación precisa atendiendo al contexto narrativo de la oración real en prosa natural.</string>
     <string name="mod_2_quote">"By next month, the architects will have..."</string>
     <string name="mod_2_options">drawn   drew   drawn up</string>
+    <string name="mod_2_opt_1">drawn</string>
+    <string name="mod_2_opt_2">drew</string>
+    <string name="mod_2_opt_3">drawn up</string>
 
     <string name="mod_3_title">Billar de verbos</string>
     <string name="mod_3_subtitle">Pattern Match</string>
@@ -203,7 +206,7 @@
     <string name="cognitive_perf_label">RENDIMIENTO COGNITIVO</string>
     <string name="sync_today_label">• Sincronizado hoy</string>
     <string name="domain_metrics_title">Progreso</string>
-    <string name="domain_metrics_subtitle">Análisis detallado de tu retención y patrones de error verbal.</string>
+    <string name="domain_metrics_subtitle">Análisis detallado de progrso.</string>
 
     <string name="metric_1_label">Retención Global</string>
     <string name="metric_1_val">84%</string>
@@ -287,7 +290,7 @@
     <string name="weak_4_last">Último fallo: hace 3 días</string>
 
     <!-- Calendar View Block -->
-    <string name="calendar_activity_header">CALENDARIO DE ACTIVIDAD (CALENDAR VIEW)</string>
+    <string name="calendar_activity_header">CALENDARIO DE ACTIVIDAD</string>
     <string name="calendar_select_prompt">Selecciona un día para consultar el historial</string>
     <string name="calendar_selected_format">Actividad del %1$s: %2$d completados</string>
     <string name="calendar_snackbar_format">Fecha seleccionada en CalendarView: %1$s</string>
@@ -303,13 +306,15 @@
 
     <string name="btn_generate_test_errors">Generar Test Enfocado en Mis Errores</string>
     <string name="btn_test_subtext">Sesión adaptativa calibrada con tus 18 verbos más frágiles.</string>
+    <string name="btn_test_subtext_format">Sesión adaptativa calibrada con tus %1$d verbos más frágiles.</string>
+    <string name="btn_test_subtext_empty">Practica nuevas sesiones para detectar tus puntos de mejora.</string>
     <string name="dialog_test_options_title">Opciones de Progreso y Test</string>
     <string name="dialog_opt_generate_test">Generar Test Enfocado</string>
     <string name="dialog_opt_reset_progress">Restablecer Progreso</string>
     <string name="snackbar_no_weak_verbs">Aún no tienes verbos en zona crítica. ¡Practica para evaluar tu rendimiento!</string>
 
     <!-- Bottom Actions -->
-    <string name="btn_practice_verb">Practicar verbo</string>
+    <string name="btn_practice_verb">Practicar este verbo</string>
 
     <!-- Navigation Bar Labels -->
     <string name="nav_dictionary">Diccionario</string>

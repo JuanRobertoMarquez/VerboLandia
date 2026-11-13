@@ -162,18 +162,19 @@ object VerbDetailBinder {
 
         // Android Widgets Integration (RatingBar & SeekBar)
         val prefs = context.getSharedPreferences("verb_ratings", android.content.Context.MODE_PRIVATE)
-        val defaultRating = if (verb.isIrregular) 4.0f else 2.0f
-        val savedRating = prefs.getFloat("rating_${verb.base}", defaultRating)
+        val defaultRating = if (verb.isIrregular) 3.0f else 2.0f
+        val savedRating = prefs.getFloat("rating_${verb.base}", defaultRating).coerceIn(1.0f, 5.0f)
         binding.myRatingBar.rating = savedRating
         binding.rateText.text = context.getString(R.string.difficulty_rating_format, savedRating.toInt())
 
         binding.myRatingBar.setOnRatingBarChangeListener { _, rating, fromUser ->
             if (fromUser) {
-                prefs.edit().putFloat("rating_${verb.base}", rating).apply()
-                binding.rateText.text = context.getString(R.string.difficulty_rating_format, rating.toInt())
+                val clampedRating = rating.coerceIn(1.0f, 5.0f)
+                prefs.edit().putFloat("rating_${verb.base}", clampedRating).apply()
+                binding.rateText.text = context.getString(R.string.difficulty_rating_format, clampedRating.toInt())
                 Toast.makeText(
                     context,
-                    context.getString(R.string.difficulty_toast_format, rating.toInt()),
+                    context.getString(R.string.difficulty_toast_format, clampedRating.toInt()),
                     Toast.LENGTH_SHORT
                 ).show()
             }
@@ -187,8 +188,10 @@ object VerbDetailBinder {
             context.getString(R.string.speed_1_25x),
             context.getString(R.string.speed_1_5x)
         )
-        val currentRate = com.example.verbolandia.util.AudioSpeaker.speechRate
-        val initialSpeedIndex = speedRates.indexOfFirst { kotlin.math.abs(it - currentRate) < 0.05f }.let {
+        val speedPrefs = context.getSharedPreferences("tts_prefs", android.content.Context.MODE_PRIVATE)
+        val savedSpeedRate = speedPrefs.getFloat("speech_rate", 1.0f)
+        com.example.verbolandia.util.AudioSpeaker.setSpeechRate(savedSpeedRate)
+        val initialSpeedIndex = speedRates.indexOfFirst { kotlin.math.abs(it - savedSpeedRate) < 0.05f }.let {
             if (it >= 0) it else 2
         }
         binding.mySeekBar.progress = initialSpeedIndex
@@ -200,6 +203,9 @@ object VerbDetailBinder {
                 val rate = speedRates[index]
                 binding.seekBarResult.text = context.getString(R.string.speed_pronunciation_format, speedLabels[index])
                 com.example.verbolandia.util.AudioSpeaker.setSpeechRate(rate)
+                if (fromUser) {
+                    speedPrefs.edit().putFloat("speech_rate", rate).apply()
+                }
             }
 
             override fun onStartTrackingTouch(seekBar: SeekBar?) {}

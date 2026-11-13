@@ -569,15 +569,47 @@
                         android:textStyle="bold"
                         app:layout_constraintTop_toBottomOf="@id/tvMod2Desc" />
 
-                    <TextView
-                        android:layout_width="wrap_content"
+                    <LinearLayout
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/spacing_xs"
-                        android:text="@string/mod_2_options"
-                        android:textColor="?attr/colorPrimary"
-                        android:textSize="@dimen/text_label_sm"
-                        app:layout_constraintStart_toStartOf="@id/tvMod2Title"
-                        app:layout_constraintTop_toBottomOf="@id/tvMod2Quote" />
+                        android:layout_marginTop="@dimen/spacing_sm"
+                        android:baselineAligned="false"
+                        android:orientation="horizontal"
+                        app:layout_constraintTop_toBottomOf="@id/tvMod2Quote">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginEnd="@dimen/spacing_xs"
+                            android:background="@drawable/bg_practice_quote_card"
+                            android:paddingHorizontal="@dimen/spacing_sm"
+                            android:paddingVertical="4dp"
+                            android:text="@string/mod_2_opt_1"
+                            android:textColor="?attr/colorOnSurfaceVariant"
+                            android:textSize="@dimen/text_label_sm" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginEnd="@dimen/spacing_xs"
+                            android:background="@drawable/bg_practice_quote_card"
+                            android:paddingHorizontal="@dimen/spacing_sm"
+                            android:paddingVertical="4dp"
+                            android:text="@string/mod_2_opt_2"
+                            android:textColor="?attr/colorOnSurfaceVariant"
+                            android:textSize="@dimen/text_label_sm" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/bg_focus_pill"
+                            android:paddingHorizontal="@dimen/spacing_sm"
+                            android:paddingVertical="4dp"
+                            android:text="@string/mod_2_opt_3"
+                            android:textColor="?attr/colorPrimary"
+                            android:textSize="@dimen/text_label_sm"
+                            android:textStyle="bold" />
+                    </LinearLayout>
                 </androidx.constraintlayout.widget.ConstraintLayout>
             </com.google.android.material.card.MaterialCardView>
 
@@ -798,16 +830,25 @@
                         android:textStyle="bold"
                         app:layout_constraintTop_toBottomOf="@id/tvMod4Desc" />
 
-                    <TextView
-                        android:layout_width="wrap_content"
+                    <LinearLayout
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/spacing_xs"
-                        android:text="@string/mod_4_link"
-                        android:textColor="?attr/colorPrimary"
-                        android:textSize="@dimen/text_label_sm"
-                        android:textStyle="bold"
-                        app:layout_constraintStart_toStartOf="@id/tvMod4Title"
-                        app:layout_constraintTop_toBottomOf="@id/tvMod4Quote" />
+                        android:layout_marginTop="@dimen/spacing_sm"
+                        android:baselineAligned="false"
+                        android:orientation="horizontal"
+                        app:layout_constraintTop_toBottomOf="@id/tvMod4Quote">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/bg_focus_pill"
+                            android:paddingHorizontal="@dimen/spacing_sm"
+                            android:paddingVertical="4dp"
+                            android:text="@string/mod_4_link"
+                            android:textColor="?attr/colorPrimary"
+                            android:textSize="@dimen/text_label_sm"
+                            android:textStyle="bold" />
+                    </LinearLayout>
                 </androidx.constraintlayout.widget.ConstraintLayout>
             </com.google.android.material.card.MaterialCardView>
 

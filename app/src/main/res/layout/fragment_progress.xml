@@ -643,20 +643,11 @@
                         app:drawableStartCompat="@drawable/ic_calendar"
                         app:drawableTint="?attr/colorPrimary" />
 
-                    <TextView
-                        android:id="@+id/tvCalendarSelectedDate"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="4dp"
-                        android:text="@string/calendar_select_prompt"
-                        android:textColor="?attr/colorOnSurface"
-                        android:textSize="@dimen/text_body_sm" />
-
                     <CalendarView
                         android:id="@+id/myCalendarView"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/spacing_xs" />
+                        android:layout_marginTop="@dimen/spacing_sm" />
 
                     <!-- 1dp Subtle Divider -->
                     <View

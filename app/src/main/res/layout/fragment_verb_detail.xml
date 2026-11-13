@@ -823,11 +823,14 @@
 
                             <RatingBar
                                 android:id="@+id/myRatingBar"
-                                style="?android:attr/ratingBarStyleSmall"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
+                                android:minHeight="40dp"
+                                android:isIndicator="false"
                                 android:numStars="5"
-                                android:stepSize="1.0" />
+                                android:stepSize="1.0"
+                                android:progressTint="@color/accent_gold"
+                                android:secondaryProgressTint="@color/accent_gold" />
 
                             <TextView
                                 android:id="@+id/rateText"
@@ -836,7 +839,8 @@
                                 android:layout_marginStart="@dimen/spacing_sm"
                                 android:text="@string/difficulty_default_text"
                                 android:textColor="?attr/colorOnSurface"
-                                android:textSize="@dimen/text_body_sm" />
+                                android:textSize="@dimen/text_body_sm"
+                                android:textStyle="bold" />
                         </LinearLayout>
                     </LinearLayout>
 
@@ -942,7 +946,7 @@
             android:contentDescription="@string/cd_share"
             android:padding="12dp"
             android:scaleType="fitCenter"
-            android:src="@drawable/ic_flag"
+            android:src="@drawable/ic_share"
             app:tint="?attr/colorOnSurfaceVariant" />
 
         <com.google.android.material.button.MaterialButton

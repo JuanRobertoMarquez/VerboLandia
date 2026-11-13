@@ -31,6 +31,16 @@ class ProgressFragment : Fragment() {
 
     private val viewModel: SharedViewModel by activityViewModels()
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        val localeEs = Locale.forLanguageTag("es-ES")
+        Locale.setDefault(localeEs)
+        val config = resources.configuration
+        config.setLocale(localeEs)
+        @Suppress("DEPRECATION")
+        resources.updateConfiguration(config, resources.displayMetrics)
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -116,15 +126,12 @@ class ProgressFragment : Fragment() {
     }
 
     private fun queryAndDisplayDaySummary(year: Int, month: Int, dayOfMonth: Int) {
-        val dateFormatted = String.format(Locale.getDefault(), "%02d/%02d/%04d", dayOfMonth, month + 1, year)
-        binding.tvCalendarSelectedDate.text = getString(R.string.calendar_selected_format, dateFormatted, 0)
+        val dateFormatted = String.format(Locale.forLanguageTag("es-ES"), "%02d/%02d/%04d", dayOfMonth, month + 1, year)
         binding.tvDaySummaryDate.text = dateFormatted
 
         viewLifecycleOwner.lifecycleScope.launch {
             val attempts = viewModel.getAttemptsForDate(year, month, dayOfMonth)
             if (!isAdded) return@launch
-
-            binding.tvCalendarSelectedDate.text = getString(R.string.calendar_selected_format, dateFormatted, attempts.size)
 
             if (attempts.isNotEmpty()) {
                 binding.layoutDayActivity.visibility = View.VISIBLE
@@ -201,6 +208,14 @@ class ProgressFragment : Fragment() {
 
         // Weak Points Cards
         bindWeakCards(summary)
+
+        // Bottom Action Subtitle (Dynamic based on critical verbs count)
+        val criticalCount = summary.criticalZoneCount
+        if (criticalCount > 0) {
+            binding.tvTestSubtext.text = getString(R.string.btn_test_subtext_format, criticalCount)
+        } else {
+            binding.tvTestSubtext.text = getString(R.string.btn_test_subtext_empty)
+        }
     }
 
     private fun bindWeeklyChart(pctList: List<Int>) {
