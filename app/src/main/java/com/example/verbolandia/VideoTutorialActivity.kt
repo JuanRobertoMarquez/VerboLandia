@@ -36,12 +36,16 @@ class VideoTutorialActivity : AppCompatActivity() {
             insets
         }
 
-        binding.btnBack.setOnClickListener {
-            finish()
-        }
+        val verbTitle = intent.getStringExtra(EXTRA_VERB_TITLE) ?: getString(R.string.lesson_default_title)
 
-        val verbTitle = intent.getStringExtra(EXTRA_VERB_TITLE) ?: "Verbos en Inglés"
-        binding.tvVideoDescTitle.text = "Lección de Pronunciación: $verbTitle"
+        com.example.verbolandia.ui.AppBarHelper.configure(
+            binding = binding.appBar,
+            left = com.example.verbolandia.ui.LeftSlot.Back { finish() },
+            eyebrow = getString(R.string.video_eyebrow),
+            title = getString(R.string.video_title)
+        )
+
+        binding.tvVideoDescTitle.text = getString(R.string.lesson_pronunciation_format, verbTitle)
 
         val videoUrl = intent.getStringExtra(EXTRA_VIDEO_URL)
             ?: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4"

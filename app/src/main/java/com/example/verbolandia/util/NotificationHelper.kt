@@ -21,10 +21,10 @@ object NotificationHelper {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val channel = NotificationChannel(
                 CHANNEL_ID,
-                CHANNEL_NAME,
+                context.getString(R.string.notif_channel_name),
                 NotificationManager.IMPORTANCE_DEFAULT
             ).apply {
-                description = "Notificaciones diarias para aprender nuevos verbos"
+                description = context.getString(R.string.notif_channel_desc)
             }
 
             val notificationManager: NotificationManager =
@@ -49,11 +49,18 @@ object NotificationHelper {
 
         val builder = NotificationCompat.Builder(context, CHANNEL_ID)
             .setSmallIcon(R.drawable.ic_dictionary)
-            .setContentTitle("Verbo del Día: ${verb.base.uppercase()}")
-            .setContentText("${verb.spanishMeaning} | Pasado: ${verb.past}")
+            .setContentTitle(context.getString(R.string.notif_title_format, verb.base.uppercase()))
+            .setContentText(context.getString(R.string.notif_content_format, verb.spanishMeaning, verb.past))
             .setStyle(
                 NotificationCompat.BigTextStyle()
-                    .bigText("Significado: ${verb.spanishMeaning}\nPasado: ${verb.past}\nParticipio: ${verb.pastParticiple}")
+                    .bigText(
+                        context.getString(
+                            R.string.notif_big_text_format,
+                            verb.spanishMeaning,
+                            verb.past,
+                            verb.pastParticiple
+                        )
+                    )
             )
             .setPriority(NotificationCompat.PRIORITY_DEFAULT)
             .setContentIntent(pendingIntent)

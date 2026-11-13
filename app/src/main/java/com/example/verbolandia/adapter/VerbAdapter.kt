@@ -36,7 +36,11 @@ class VerbAdapter(
             tvSpanishMeaning.text = verb.spanishMeaning
 
             tvLevelBadge.text = verb.level
-            tvTypeBadge.text = if (verb.isIrregular) "Irregular" else "Regular"
+            tvTypeBadge.text = if (verb.isIrregular) {
+                context.getString(R.string.verb_type_irregular)
+            } else {
+                context.getString(R.string.verb_type_regular)
+            }
 
             tvV1.text = verb.base
             tvV2.text = verb.past
@@ -44,25 +48,25 @@ class VerbAdapter(
 
             when {
                 verb.mastery == 100 -> {
-                    tvMastery.text = "100% Dominado"
+                    tvMastery.text = context.getString(R.string.mastery_100)
                     tvMastery.setTextColor(ContextCompat.getColor(context, R.color.primary))
                     tvMastery.setBackgroundResource(R.drawable.bg_badge_small)
                     tvMastery.setPadding(16, 6, 16, 6)
                 }
                 verb.mastery in 1..65 -> {
-                    tvMastery.text = "Repaso frecuente"
+                    tvMastery.text = context.getString(R.string.mastery_review_frequent)
                     tvMastery.setTextColor(ContextCompat.getColor(context, R.color.error))
                     tvMastery.setBackgroundResource(R.drawable.bg_error_pill)
                     tvMastery.setPadding(16, 6, 16, 6)
                 }
                 verb.mastery > 65 -> {
-                    tvMastery.text = "${verb.mastery}% Dominado"
+                    tvMastery.text = context.getString(R.string.mastery_pct_format, verb.mastery)
                     tvMastery.setTextColor(ContextCompat.getColor(context, R.color.primary))
                     tvMastery.background = null
                     tvMastery.setPadding(0, 0, 0, 0)
                 }
                 else -> {
-                    tvMastery.text = "Sin practicar"
+                    tvMastery.text = context.getString(R.string.mastery_unpracticed)
                     tvMastery.setTextColor(ContextCompat.getColor(context, R.color.on_surface_variant))
                     tvMastery.background = null
                     tvMastery.setPadding(0, 0, 0, 0)

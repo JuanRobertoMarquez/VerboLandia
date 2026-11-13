@@ -37,9 +37,12 @@ class GrammarWebActivity : AppCompatActivity() {
             insets
         }
 
-        binding.btnBack.setOnClickListener {
-            finish()
-        }
+        com.example.verbolandia.ui.AppBarHelper.configure(
+            binding = binding.appBar,
+            left = com.example.verbolandia.ui.LeftSlot.Back { finish() },
+            eyebrow = getString(R.string.web_grammar_eyebrow),
+            title = getString(R.string.web_grammar_title)
+        )
 
         val verbBase = intent.getStringExtra(EXTRA_VERB_BASE) ?: "break"
         val customUrl = intent.getStringExtra(EXTRA_URL)

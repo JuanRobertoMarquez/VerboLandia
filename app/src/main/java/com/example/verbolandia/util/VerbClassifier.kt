@@ -60,6 +60,17 @@ object VerbClassifier {
         }
     }
 
+    fun generateCommonError(context: android.content.Context, verb: Verb): String? {
+        if (!verb.isIrregular) return null
+        val regularizedPast = if (verb.base.endsWith("e")) "${verb.base}d" else "${verb.base}ed"
+        return context.getString(
+            com.example.verbolandia.R.string.error_warning_format,
+            regularizedPast,
+            verb.past,
+            verb.pastParticiple
+        )
+    }
+
     fun generateCommonError(verb: Verb): String? {
         if (!verb.isIrregular) return null
         val regularizedPast = if (verb.base.endsWith("e")) "${verb.base}d" else "${verb.base}ed"

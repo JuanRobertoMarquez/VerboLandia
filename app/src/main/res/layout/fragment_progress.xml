@@ -7,60 +7,15 @@
     android:layout_height="match_parent"
     android:background="?android:attr/colorBackground">
 
-    <!-- Top Bar -->
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/topBar"
+    <!-- Top Bar unificado (include_app_bar: variante raíz — logo + título + avatar) -->
+    <include
+        android:id="@+id/appBar"
+        layout="@layout/include_app_bar"
         android:layout_width="match_parent"
         android:layout_height="56dp"
-        android:paddingHorizontal="@dimen/margin"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-
-        <ImageView
-            android:id="@+id/ivLogo"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:contentDescription="@string/cd_logo"
-            android:src="@drawable/ic_dictionary"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:tint="?attr/colorPrimary" />
-
-        <TextView
-            android:id="@+id/tvHeaderTitle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/spacing_xs"
-            android:text="@string/app_name"
-            android:textColor="?attr/colorOnSurface"
-            android:textSize="@dimen/text_headline_sm"
-            android:textStyle="bold"
-            app:layout_constraintStart_toEndOf="@id/ivLogo"
-            app:layout_constraintTop_toTopOf="@id/ivLogo" />
-
-        <TextView
-            android:id="@+id/tvHeaderSubtitle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/progress_top_title"
-            android:textColor="?attr/colorPrimary"
-            android:textSize="@dimen/text_label_sm"
-            android:textStyle="bold"
-            app:layout_constraintStart_toStartOf="@id/tvHeaderTitle"
-            app:layout_constraintTop_toBottomOf="@id/tvHeaderTitle" />
-
-        <ImageView
-            android:id="@+id/ivAvatar"
-            android:layout_width="32dp"
-            android:layout_height="32dp"
-            android:contentDescription="@string/cd_avatar"
-            android:src="@drawable/ic_avatar_placeholder"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-    </androidx.constraintlayout.widget.ConstraintLayout>
+        app:layout_constraintTop_toTopOf="parent" />
 
     <!-- Scrollable Content -->
     <androidx.core.widget.NestedScrollView
@@ -69,91 +24,49 @@
         android:layout_height="0dp"
         android:fillViewport="true"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/topBar">
+        app:layout_constraintTop_toBottomOf="@id/appBar">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingHorizontal="@dimen/margin"
+            android:paddingHorizontal="@dimen/screen_horizontal_padding"
             android:paddingBottom="@dimen/spacing_xl">
 
-            <!-- Status Row -->
+            <!-- Clean Subtitle below Header -->
             <TextView
-                android:id="@+id/badgeCognitivePerf"
-                android:layout_width="wrap_content"
+                android:id="@+id/tvProgressSubtitle"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/spacing_sm"
-                android:background="@drawable/bg_pill_sync"
-                android:paddingHorizontal="@dimen/spacing_md"
-                android:paddingVertical="@dimen/spacing_xs"
-                android:text="@string/cognitive_perf_label"
-                android:textColor="?attr/colorPrimary"
-                android:textSize="@dimen/text_label_md"
-                android:textStyle="bold"
+                android:text="@string/domain_metrics_subtitle"
+                android:textColor="?attr/colorOnSurfaceVariant"
+                android:textSize="@dimen/text_body_sm"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <TextView
-                android:id="@+id/badgeSyncToday"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@drawable/bg_pill_sync"
-                android:paddingHorizontal="@dimen/spacing_sm"
-                android:paddingVertical="4dp"
-                android:text="@string/sync_today_label"
-                android:textColor="?attr/colorOnSurfaceVariant"
-                android:textSize="@dimen/text_label_sm"
-                app:layout_constraintBaseline_toBaselineOf="@id/badgeCognitivePerf"
-                app:layout_constraintEnd_toEndOf="parent" />
-
-            <!-- Title & Subtitle -->
-            <TextView
-                android:id="@+id/tvDomainTitle"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/spacing_sm"
-                android:text="@string/domain_metrics_title"
-                android:textColor="?attr/colorOnSurface"
-                android:textSize="@dimen/text_headline_lg"
-                android:textStyle="bold"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/badgeCognitivePerf" />
-
-            <TextView
-                android:id="@+id/tvDomainSubtitle"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/spacing_xs"
-                android:text="@string/domain_metrics_subtitle"
-                android:textColor="?attr/colorOnSurfaceVariant"
-                android:textSize="@dimen/text_body_md"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/tvDomainTitle" />
-
-            <!-- 2x2 Grid of Main Metrics -->
+            <!-- 2x2 Grid of Main Metrics (Strictly Symmetrical) -->
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/gridMetrics"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/spacing_lg"
+                android:layout_marginTop="@dimen/section_spacing_vertical"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/tvDomainSubtitle">
+                app:layout_constraintTop_toBottomOf="@id/tvProgressSubtitle">
 
                 <!-- Metric 1: Retención Global -->
                 <com.google.android.material.card.MaterialCardView
                     android:id="@+id/cardMetric1"
                     android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="@dimen/spacing_xs"
-                    android:layout_marginBottom="@dimen/spacing_xs"
+                    android:layout_height="116dp"
+                    android:layout_marginEnd="6dp"
+                    android:layout_marginBottom="6dp"
                     app:cardBackgroundColor="?attr/colorSurfaceContainerLowest"
-                    app:cardCornerRadius="@dimen/rounded_lg"
+                    app:cardCornerRadius="@dimen/card_corner_radius"
                     app:cardElevation="1dp"
                     app:layout_constraintBottom_toTopOf="@id/cardMetric3"
                     app:layout_constraintEnd_toStartOf="@id/cardMetric2"
+                    app:layout_constraintHorizontal_weight="1"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
                     app:strokeColor="?attr/colorOutlineVariant"
@@ -161,9 +74,10 @@
 
                     <LinearLayout
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
+                        android:layout_height="match_parent"
+                        android:gravity="center_vertical"
                         android:orientation="vertical"
-                        android:padding="@dimen/spacing_md">
+                        android:padding="@dimen/card_internal_padding">
 
                         <LinearLayout
                             android:layout_width="match_parent"
@@ -201,14 +115,18 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="@dimen/spacing_xs"
+                            android:ellipsize="end"
+                            android:maxLines="1"
                             android:text="@string/metric_1_val"
                             android:textColor="?attr/colorOnSurface"
-                            android:textSize="@dimen/text_headline_lg"
+                            android:textSize="@dimen/text_headline_md"
                             android:textStyle="bold" />
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:ellipsize="end"
+                            android:maxLines="1"
                             android:text="@string/metric_1_label"
                             android:textColor="?attr/colorOnSurfaceVariant"
                             android:textSize="@dimen/text_label_md" />
@@ -219,14 +137,15 @@
                 <com.google.android.material.card.MaterialCardView
                     android:id="@+id/cardMetric2"
                     android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/spacing_xs"
-                    android:layout_marginBottom="@dimen/spacing_xs"
+                    android:layout_height="116dp"
+                    android:layout_marginStart="6dp"
+                    android:layout_marginBottom="6dp"
                     app:cardBackgroundColor="?attr/colorSurfaceContainerLowest"
-                    app:cardCornerRadius="@dimen/rounded_lg"
+                    app:cardCornerRadius="@dimen/card_corner_radius"
                     app:cardElevation="1dp"
                     app:layout_constraintBottom_toTopOf="@id/cardMetric4"
                     app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_weight="1"
                     app:layout_constraintStart_toEndOf="@id/cardMetric1"
                     app:layout_constraintTop_toTopOf="parent"
                     app:strokeColor="?attr/colorOutlineVariant"
@@ -234,9 +153,10 @@
 
                     <LinearLayout
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
+                        android:layout_height="match_parent"
+                        android:gravity="center_vertical"
                         android:orientation="vertical"
-                        android:padding="@dimen/spacing_md">
+                        android:padding="@dimen/card_internal_padding">
 
                         <LinearLayout
                             android:layout_width="match_parent"
@@ -274,14 +194,18 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="@dimen/spacing_xs"
+                            android:ellipsize="end"
+                            android:maxLines="1"
                             android:text="@string/metric_2_val"
                             android:textColor="?attr/colorOnSurface"
-                            android:textSize="@dimen/text_headline_sm"
+                            android:textSize="@dimen/text_headline_md"
                             android:textStyle="bold" />
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:ellipsize="end"
+                            android:maxLines="1"
                             android:text="@string/metric_2_label"
                             android:textColor="?attr/colorOnSurfaceVariant"
                             android:textSize="@dimen/text_label_md" />
@@ -292,14 +216,15 @@
                 <com.google.android.material.card.MaterialCardView
                     android:id="@+id/cardMetric3"
                     android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/spacing_xs"
-                    android:layout_marginEnd="@dimen/spacing_xs"
+                    android:layout_height="116dp"
+                    android:layout_marginTop="6dp"
+                    android:layout_marginEnd="6dp"
                     app:cardBackgroundColor="?attr/colorSurfaceContainerLowest"
-                    app:cardCornerRadius="@dimen/rounded_lg"
+                    app:cardCornerRadius="@dimen/card_corner_radius"
                     app:cardElevation="1dp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toStartOf="@id/cardMetric4"
+                    app:layout_constraintHorizontal_weight="1"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/cardMetric1"
                     app:strokeColor="?attr/colorOutlineVariant"
@@ -307,9 +232,10 @@
 
                     <LinearLayout
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
+                        android:layout_height="match_parent"
+                        android:gravity="center_vertical"
                         android:orientation="vertical"
-                        android:padding="@dimen/spacing_md">
+                        android:padding="@dimen/card_internal_padding">
 
                         <LinearLayout
                             android:layout_width="match_parent"
@@ -346,14 +272,18 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="@dimen/spacing_xs"
+                            android:ellipsize="end"
+                            android:maxLines="1"
                             android:text="@string/metric_3_val"
                             android:textColor="?attr/colorError"
-                            android:textSize="@dimen/text_headline_lg"
+                            android:textSize="@dimen/text_headline_md"
                             android:textStyle="bold" />
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:ellipsize="end"
+                            android:maxLines="1"
                             android:text="@string/metric_3_label"
                             android:textColor="?attr/colorOnSurfaceVariant"
                             android:textSize="@dimen/text_label_md" />
@@ -364,14 +294,15 @@
                 <com.google.android.material.card.MaterialCardView
                     android:id="@+id/cardMetric4"
                     android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/spacing_xs"
-                    android:layout_marginTop="@dimen/spacing_xs"
+                    android:layout_height="116dp"
+                    android:layout_marginStart="6dp"
+                    android:layout_marginTop="6dp"
                     app:cardBackgroundColor="?attr/colorSurfaceContainerLowest"
-                    app:cardCornerRadius="@dimen/rounded_lg"
+                    app:cardCornerRadius="@dimen/card_corner_radius"
                     app:cardElevation="1dp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_weight="1"
                     app:layout_constraintStart_toEndOf="@id/cardMetric3"
                     app:layout_constraintTop_toBottomOf="@id/cardMetric2"
                     app:strokeColor="?attr/colorOutlineVariant"
@@ -379,9 +310,10 @@
 
                     <LinearLayout
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
+                        android:layout_height="match_parent"
+                        android:gravity="center_vertical"
                         android:orientation="vertical"
-                        android:padding="@dimen/spacing_md">
+                        android:padding="@dimen/card_internal_padding">
 
                         <LinearLayout
                             android:layout_width="match_parent"
@@ -402,6 +334,7 @@
                                 android:layout_weight="1" />
 
                             <TextView
+                                android:id="@+id/badgeMetric4Goal"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:background="@drawable/bg_pill_sync"
@@ -418,14 +351,18 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="@dimen/spacing_xs"
+                            android:ellipsize="end"
+                            android:maxLines="1"
                             android:text="@string/metric_4_val"
                             android:textColor="?attr/colorOnSurface"
-                            android:textSize="@dimen/text_headline_lg"
+                            android:textSize="@dimen/text_headline_md"
                             android:textStyle="bold" />
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:ellipsize="end"
+                            android:maxLines="1"
                             android:text="@string/metric_4_label"
                             android:textColor="?attr/colorOnSurfaceVariant"
                             android:textSize="@dimen/text_label_md" />
@@ -438,9 +375,9 @@
                 android:id="@+id/cardChart"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/spacing_lg"
+                android:layout_marginTop="@dimen/section_spacing_vertical"
                 app:cardBackgroundColor="?attr/colorSurfaceContainerLowest"
-                app:cardCornerRadius="@dimen/rounded_xl"
+                app:cardCornerRadius="@dimen/card_corner_radius"
                 app:cardElevation="1dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -451,7 +388,7 @@
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:padding="@dimen/spacing_md">
+                    android:padding="@dimen/card_internal_padding">
 
                     <TextView
                         android:id="@+id/tvChartTitle"
@@ -679,9 +616,9 @@
                 android:id="@+id/cardCalendar"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/spacing_lg"
+                android:layout_marginTop="@dimen/section_spacing_vertical"
                 app:cardBackgroundColor="?attr/colorSurfaceContainerLow"
-                app:cardCornerRadius="@dimen/rounded_xl"
+                app:cardCornerRadius="@dimen/card_corner_radius"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/cardChart"
@@ -692,22 +629,26 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:padding="@dimen/spacing_md">
+                    android:padding="@dimen/card_internal_padding">
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="📅 CALENDARIO DE ACTIVIDAD (CALENDAR VIEW)"
+                        android:text="@string/calendar_activity_header"
                         android:textColor="?attr/colorPrimary"
                         android:textSize="@dimen/text_label_sm"
-                        android:textStyle="bold" />
+                        android:textStyle="bold"
+                        android:gravity="center_vertical"
+                        android:drawablePadding="6dp"
+                        app:drawableStartCompat="@drawable/ic_calendar"
+                        app:drawableTint="?attr/colorPrimary" />
 
                     <TextView
                         android:id="@+id/tvCalendarSelectedDate"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="2dp"
-                        android:text="Selecciona un día para consultar el historial"
+                        android:layout_marginTop="4dp"
+                        android:text="@string/calendar_select_prompt"
                         android:textColor="?attr/colorOnSurface"
                         android:textSize="@dimen/text_body_sm" />
 
@@ -716,6 +657,96 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/spacing_xs" />
+
+                    <!-- 1dp Subtle Divider -->
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:layout_marginTop="@dimen/spacing_sm"
+                        android:background="?attr/colorOutlineVariant" />
+
+                    <!-- Daily Activity Summary Section -->
+                    <LinearLayout
+                        android:id="@+id/layoutDailySummary"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/spacing_sm"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:id="@+id/tvDaySummaryTitle"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/day_summary_header"
+                            android:textColor="?attr/colorPrimary"
+                            android:textSize="@dimen/text_label_sm"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:id="@+id/tvDaySummaryDate"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="2dp"
+                            android:textColor="?attr/colorOnSurface"
+                            android:textSize="@dimen/text_body_md"
+                            android:textStyle="bold" />
+
+                        <!-- Active State: There were exercises on this date -->
+                        <LinearLayout
+                            android:id="@+id/layoutDayActivity"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/spacing_xs"
+                            android:orientation="vertical"
+                            android:visibility="gone">
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:gravity="center_vertical"
+                                android:orientation="horizontal">
+
+                                <TextView
+                                    android:id="@+id/tvDayExercisesCount"
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:textColor="?attr/colorOnSurface"
+                                    android:textSize="@dimen/text_body_sm"
+                                    android:textStyle="bold" />
+
+                                <TextView
+                                    android:id="@+id/tvDayAccuracy"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:background="@drawable/bg_pill_sync"
+                                    android:paddingHorizontal="6dp"
+                                    android:paddingVertical="1dp"
+                                    android:textColor="?attr/colorPrimary"
+                                    android:textSize="@dimen/text_label_sm"
+                                    android:textStyle="bold" />
+                            </LinearLayout>
+
+                            <TextView
+                                android:id="@+id/tvDayVerbsPracticed"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="4dp"
+                                android:textColor="?attr/colorOnSurfaceVariant"
+                                android:textSize="@dimen/text_body_sm" />
+                        </LinearLayout>
+
+                        <!-- Empty State: No activity on this date -->
+                        <TextView
+                            android:id="@+id/tvDayNoActivity"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/spacing_xs"
+                            android:text="@string/day_no_activity"
+                            android:textColor="?attr/colorOnSurfaceVariant"
+                            android:textSize="@dimen/text_body_sm"
+                            android:visibility="visible" />
+                    </LinearLayout>
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
@@ -724,7 +755,7 @@
                 android:id="@+id/tvWeakTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/spacing_xl"
+                android:layout_marginTop="@dimen/section_spacing_vertical"
                 android:text="@string/weak_points_title"
                 android:textColor="?attr/colorOnSurface"
                 android:textSize="@dimen/text_headline_sm"
@@ -763,9 +794,9 @@
                 android:id="@+id/cardWeak1"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/spacing_sm"
+                android:layout_marginTop="@dimen/card_grid_spacing"
                 app:cardBackgroundColor="?attr/colorSurfaceContainerLowest"
-                app:cardCornerRadius="@dimen/rounded_lg"
+                app:cardCornerRadius="@dimen/card_corner_radius"
                 app:cardElevation="1dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -776,7 +807,7 @@
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:padding="@dimen/spacing_md">
+                    android:padding="@dimen/card_internal_padding">
 
                     <TextView
                         android:id="@+id/tvWeak1Name"
@@ -872,9 +903,9 @@
                 android:id="@+id/cardWeak2"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/spacing_sm"
+                android:layout_marginTop="@dimen/card_grid_spacing"
                 app:cardBackgroundColor="?attr/colorSurfaceContainerLowest"
-                app:cardCornerRadius="@dimen/rounded_lg"
+                app:cardCornerRadius="@dimen/card_corner_radius"
                 app:cardElevation="1dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -885,7 +916,7 @@
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:padding="@dimen/spacing_md">
+                    android:padding="@dimen/card_internal_padding">
 
                     <TextView
                         android:id="@+id/tvWeak2Name"
@@ -981,9 +1012,9 @@
                 android:id="@+id/cardWeak3"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/spacing_sm"
+                android:layout_marginTop="@dimen/card_grid_spacing"
                 app:cardBackgroundColor="?attr/colorSurfaceContainerLowest"
-                app:cardCornerRadius="@dimen/rounded_lg"
+                app:cardCornerRadius="@dimen/card_corner_radius"
                 app:cardElevation="1dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -994,7 +1025,7 @@
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:padding="@dimen/spacing_md">
+                    android:padding="@dimen/card_internal_padding">
 
                     <TextView
                         android:id="@+id/tvWeak3Name"
@@ -1090,9 +1121,9 @@
                 android:id="@+id/cardWeak4"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/spacing_sm"
+                android:layout_marginTop="@dimen/card_grid_spacing"
                 app:cardBackgroundColor="?attr/colorSurfaceContainerLowest"
-                app:cardCornerRadius="@dimen/rounded_lg"
+                app:cardCornerRadius="@dimen/card_corner_radius"
                 app:cardElevation="1dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -1103,7 +1134,7 @@
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:padding="@dimen/spacing_md">
+                    android:padding="@dimen/card_internal_padding">
 
                     <TextView
                         android:id="@+id/tvWeak4Name"
@@ -1199,9 +1230,9 @@
                 android:id="@+id/cardTypology"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/spacing_xl"
+                android:layout_marginTop="@dimen/section_spacing_vertical"
                 app:cardBackgroundColor="?attr/colorSurfaceContainerLow"
-                app:cardCornerRadius="@dimen/rounded_xl"
+                app:cardCornerRadius="@dimen/card_corner_radius"
                 app:cardElevation="0dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -1213,7 +1244,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:padding="@dimen/spacing_md">
+                    android:padding="@dimen/card_internal_padding">
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -1348,14 +1379,19 @@
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnGenerateTestErrors"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/button_height"
-                android:layout_marginTop="@dimen/spacing_xl"
+                android:layout_height="wrap_content"
+                android:minHeight="@dimen/button_height"
+                android:layout_marginTop="@dimen/section_spacing_vertical"
+                android:paddingVertical="12dp"
+                android:paddingHorizontal="16dp"
                 android:text="@string/btn_generate_test_errors"
                 android:textColor="?attr/colorOnPrimary"
-                android:textSize="@dimen/text_headline_sm"
+                android:textSize="14sp"
                 android:textStyle="bold"
+                android:maxLines="2"
+                android:gravity="center"
                 app:backgroundTint="?attr/colorPrimary"
-                app:cornerRadius="@dimen/rounded_lg"
+                app:cornerRadius="@dimen/button_pill_radius"
                 app:icon="@drawable/ic_flash"
                 app:iconGravity="textStart"
                 app:iconTint="?attr/colorOnPrimary"

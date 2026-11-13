@@ -74,16 +74,16 @@ class VerbAppWidgetProvider : AppWidgetProvider() {
         CoroutineScope(Dispatchers.IO).launch {
             val repository = VerbRepository.getInstance(context)
             val verb = repository.getVerbOfDay()
-            updateViewsWithVerb(views, verb)
+            updateViewsWithVerb(context, views, verb)
             appWidgetManager.updateAppWidget(appWidgetId, views)
         }
     }
 
-    private fun updateViewsWithVerb(views: RemoteViews, verb: Verb) {
+    private fun updateViewsWithVerb(context: Context, views: RemoteViews, verb: Verb) {
         views.setTextViewText(R.id.tvWidgetVerbBase, verb.base.uppercase())
         views.setTextViewText(R.id.tvWidgetMeaning, verb.spanishMeaning)
-        views.setTextViewText(R.id.tvWidgetV1, "V1: ${verb.base}")
-        views.setTextViewText(R.id.tvWidgetV2, "V2: ${verb.past}")
-        views.setTextViewText(R.id.tvWidgetV3, "V3: ${verb.pastParticiple}")
+        views.setTextViewText(R.id.tvWidgetV1, context.getString(R.string.widget_v1_format, verb.base))
+        views.setTextViewText(R.id.tvWidgetV2, context.getString(R.string.widget_v2_format, verb.past))
+        views.setTextViewText(R.id.tvWidgetV3, context.getString(R.string.widget_v3_format, verb.pastParticiple))
     }
 }

@@ -9,13 +9,18 @@
 
     <!-- Verb Detail Screen -->
     <string name="verb_detail_title">Detalle De Verbo</string>
-    <string name="badge_irregular">• IRREGULAR</string>
+    <string name="eyebrow_verb_irregular">VERBO IRREGULAR</string>
+    <string name="eyebrow_verb_regular">VERBO REGULAR</string>
+    <string name="badge_irregular">IRREGULAR</string>
+    <string name="badge_regular">REGULAR</string>
     <string name="badge_high_freq">ALTA FRECUENCIA</string>
     <string name="badge_level">A2 · B1</string>
     <string name="detail_verb_name">Break</string>
     <string name="detail_phonetic">/breɪk/</string>
     <string name="meaning_header">SIGNIFICADO PRINCIPAL</string>
     <string name="meaning_primary">Romper, quebrar, interrumpir</string>
+    <string name="meaning_prompt_format">Significado: %1$s</string>
+    <string name="tap_to_translate">Toca para traducir</string>
 
     <!-- Grammatical Forms Block -->
     <string name="grammatical_forms_title">FORMAS GRAMATICALES</string>
@@ -33,13 +38,15 @@
     <string name="sample_v3_phonetic">/ˈbroʊkən/</string>
     <string name="derived_third_person">3ª Persona: breaks</string>
     <string name="derived_gerund">Gerundio (-ing): breaking</string>
+    <string name="derived_third_person_format">3ª Persona: %1$s</string>
+    <string name="derived_gerund_format">Gerundio (-ing): %1$s</string>
 
     <!-- Mnemonic Pattern Block -->
     <string name="mnemonic_title">PATRÓN MNEMOTÉCNICO</string>
-    <string name="mnemonic_pattern">Sigue la familia I / EA &#8594; O &#8594; O&#8230;EN. Aprende uno y recordarás tres con idéntica melodía vocálica:</string>
-    <string name="mnemonic_family_1">speak  ➔  spoke  ➔  spoken</string>
-    <string name="mnemonic_family_2">freeze  ➔  froze  ➔  frozen</string>
-    <string name="mnemonic_family_3">break  ➔  broke  ➔  broken</string>
+    <string name="mnemonic_pattern">Sigue la familia I / EA -> O -> O...EN. Aprende uno y recordarás tres con idéntica melodía vocálica:</string>
+    <string name="mnemonic_family_1">speak -> spoke -> spoken</string>
+    <string name="mnemonic_family_2">freeze -> froze -> frozen</string>
+    <string name="mnemonic_family_3">break -> broke -> broken</string>
 
     <!-- Examples Block -->
     <string name="examples_title">Verbo en Acción</string>
@@ -55,48 +62,123 @@
     <string name="ex_3_en">Break down</string>
     <string name="ex_3_es">1. Dejar de funcionar (máquina, auto).\n2. Colapsar emocionalmente / quebrar en llanto.</string>
 
+    <!-- Dynamic Verb in Action Templates -->
+    <string name="ex_v1_title">PRESENT SIMPLE (V1)</string>
+    <string name="ex_v1_en_format">I always %1$s in the morning.</string>
+    <string name="ex_v1_es_format">Siempre suelo %1$s por la mañana.</string>
+    <string name="ex_v2_title">PAST SIMPLE (V2)</string>
+    <string name="ex_v2_en_format">Yesterday, she %1$s carefully.</string>
+    <string name="ex_v2_es_format">Ayer, ella %1$s con cuidado.</string>
+    <string name="ex_v3_title">PRESENT PERFECT (V3)</string>
+    <string name="ex_v3_en_format">They have %1$s three times this year.</string>
+    <string name="ex_v3_es_format">Ellos han realizado la acción de %1$s este año.</string>
+
     <!-- Common Error Block -->
     <string name="error_warning_title">ERROR COMÚN A EVITAR</string>
     <string name="error_warning_desc">NUNCA digas "broked" ni "have broke". Con los auxiliares have / has / had la forma obligatoria siempre es broken.</string>
+    <string name="error_warning_format">NUNCA digas \"%1$s\" ni \"have %2$s\". Con los auxiliares have / has / had la forma obligatoria siempre es %3$s.</string>
 
     <!-- Retention Metrics Block -->
     <string name="retention_title">TU NIVEL DE RETENCIÓN</string>
     <string name="retention_metric">82%</string>
     <string name="retention_views">Visto 14 veces</string>
     <string name="retention_last_success">Último acierto: Hoy</string>
+    <string name="retention_views_format">Visto %1$d veces • %2$d intentos</string>
+    <string name="retention_views_only_format">Visto %1$d veces</string>
+    <string name="retention_not_practiced">Aún no has practicado este verbo</string>
+    <string name="retention_last_correct">Último acierto registrado</string>
+    <string name="retention_no_correct_yet">Sin aciertos aún</string>
+
+    <!-- Rating & Tools Block (No emojis) -->
+    <string name="rating_tools_header">VALORA DIFICULTAD Y HERRAMIENTAS</string>
+    <string name="personal_rating_header">VALORACIÓN PERSONAL</string>
+    <string name="study_tools_header">HERRAMIENTAS DE ESTUDIO</string>
+    <string name="difficulty_rating_format">Dificultad: %1$d / 5</string>
+    <string name="difficulty_toast_format">Valoración de dificultad guardada: %1$d estrellas</string>
+    <string name="difficulty_default_text">3.0 / 5.0</string>
+    <string name="speed_pronunciation_format">Velocidad de pronunciación: %1$s</string>
+    <string name="speed_adjustment_format">Ajuste de velocidad: %1$d%%</string>
+    <string name="speed_setting_adjusting">Ajustando velocidad...</string>
+    <string name="speed_setting_set_format">Velocidad establecida: %1$d%%</string>
+    <string name="speed_default_text">Velocidad de pronunciación: 1.0x (Normal)</string>
+    <string name="speed_0_5x">0.5x</string>
+    <string name="speed_0_75x">0.75x</string>
+    <string name="speed_1_0x">1.0x (Normal)</string>
+    <string name="speed_1_25x">1.25x</string>
+    <string name="speed_1_5x">1.5x</string>
+    <string name="btn_web_query">Consulta Web</string>
+    <string name="btn_video_lesson">Video Lección</string>
+
+    <!-- Focused Verb Practice Micro-Session -->
+    <string name="practice_sheet_title">Práctica Rápida: %1$s</string>
+    <string name="practice_step_indicator">Paso %1$d de 3</string>
+    <string name="practice_step_1_title">Paso 1 de 3: Formas Verbales</string>
+    <string name="practice_step_1_prompt">¿Cuál es el Pasado (V2) y Participio (V3) de \"%1$s\"?</string>
+    <string name="practice_step_2_title">Paso 2 de 3: Verbo en Contexto</string>
+    <string name="practice_step_2_prompt">Completa la oración contextual:</string>
+    <string name="practice_step_2_sentence_format">Yesterday, they ________ carefully.</string>
+    <string name="practice_step_3_title">Paso 3 de 3: Detección de Error</string>
+    <string name="practice_step_3_prompt">Identifica la oración gramaticalmente correcta:</string>
+    <string name="practice_btn_continue">Continuar</string>
+    <string name="practice_btn_finish">Finalizar Práctica</string>
+    <string name="practice_result_success_title">¡Práctica Completada!</string>
+    <string name="practice_result_success_desc">Has completado la micro-sesión de este verbo. Nivel de retención actualizado.</string>
+    <string name="practice_feedback_correct">¡Respuesta correcta!</string>
+    <string name="practice_feedback_incorrect">Incorrecto. La opción correcta era: %1$s</string>
 
     <!-- Practice / Training Screen -->
     <string name="practice_top_title">SESIÓN DE PRÁCTICA</string>
-    <string name="focus_mode_label">&#9889; MODO FOCUS</string>
-    <string name="practice_title">Entrenamiento Activo</string>
+    <string name="focus_mode_label">MODO FOCUS</string>
+    <string name="practice_title">Entrenamiento</string>
     <string name="practice_subtitle">Afianza patrones verbales con ejercicios dinámicos sin presiones infantiles ni temporizadores punitivos.</string>
     <string name="goal_card_title">META DE HOY</string>
     <string name="goal_card_status">15 de 20 verbos consolidados</string>
+    <string name="goal_status_format">%1$d de %2$d ejercicios completados</string>
     <string name="goal_card_pct">75% completado</string>
+    <string name="goal_pct_format">%1$d%%</string>
     <string name="goal_card_remaining">¡A solo 5 verbos!</string>
+    <string name="goal_completed">¡Meta diaria cumplida!</string>
+    <string name="goal_remaining_format">¡Faltan %1$d para la meta!</string>
+    <string name="dialog_daily_goal_title">Meta Diaria de Ejercicios</string>
+    <string name="goal_option_format">%1$d ejercicios</string>
+    <string name="cd_edit_goal">Editar meta diaria</string>
+    <string name="toast_goal_updated">Meta diaria actualizada a %1$d ejercicios</string>
     <string name="pedagogical_level_label">NIVEL PEDAGÓGICO</string>
     <string name="level_basic">Básico (A1–A2)</string>
     <string name="level_intermediate">Intermedio (B1–B2)</string>
     <string name="level_advanced">Avanzado (C1–C2)</string>
     <string name="reinforcement_title">Batería de refuerzo</string>
     <string name="reinforcement_badge">10 VERBOS</string>
-    <string name="reinforcement_desc">Verbos con más vacilaciones recientes (arise, shrink, tread&#8230;).</string>
+    <string name="reinforcement_desc">Verbos con más vacilaciones recientes (arise, shrink, tread...).</string>
     <string name="reinforcement_v_badge">V1 V2 V3</string>
-    <string name="btn_start_guided_review">Iniciar repaso guiado &#8594;</string>
+    <string name="btn_start_guided_review">Iniciar repaso guiado</string>
+    <string name="guided_review_title_format">Repaso Guiado: %1$s (%2$s)</string>
+    <string name="guided_review_success_format">¡Excelente repaso! Pasado de %1$s: %2$s</string>
+    <string name="guided_review_error_format">Repaso: El pasado de %1$s es %2$s</string>
+    <string name="quiz_modal_title_format">[%1$s] ¿Pasado simple de \'%2$s\'? (%3$s)</string>
+    <string name="quiz_success_format">¡Correcto! %1$s • %2$s</string>
+    <string name="quiz_error_format">Incorrecto. El pasado de %1$s es %2$s</string>
+    <string name="action_notification">NOTIFICACIÓN</string>
     <string name="modalities_title">Modalidades de práctica</string>
     <string name="no_punishment_badge">SIN VIDAS NI CASTIGOS</string>
+
+    <!-- Study Reminder -->
+    <string name="study_reminder_header">RECORDATORIO DE ESTUDIO</string>
+    <string name="study_reminder_none">Sin recordatorio programado</string>
+    <string name="btn_schedule_reminder">Programar Fecha y Hora de Estudio</string>
+    <string name="reminder_scheduled_format">Recordatorio programado para: %1$s a las %2$s</string>
 
     <string name="mod_1_title">Tríada Rápida</string>
     <string name="mod_1_subtitle">Speed Conjugation</string>
     <string name="mod_1_badge">Popular • 3 min</string>
     <string name="mod_1_desc">Te damos el infinitivo base, selecciona en segundos sus formas de pasado simple y participio correctas.</string>
-    <string name="mod_1_sample">FORBID  ➔  FORBADE  ➔  FORBIDDEN   +10 pts</string>
+    <string name="mod_1_sample">FORBID • FORBADE • FORBIDDEN   +10 pts</string>
 
     <string name="mod_2_title">Completar en Contexto</string>
     <string name="mod_2_subtitle">Fill the Gap</string>
     <string name="mod_2_badge">Conocimiento Real</string>
     <string name="mod_2_desc">Elige la conjugación precisa atendiendo al contexto narrativo de la oración real en prosa natural.</string>
-    <string name="mod_2_quote">"By next month, the architects will have&#8230;"</string>
+    <string name="mod_2_quote">"By next month, the architects will have..."</string>
     <string name="mod_2_options">drawn   drew   drawn up</string>
 
     <string name="mod_3_title">Billar de verbos</string>
@@ -112,7 +194,7 @@
     <string name="mod_4_badge">Atención al Detalle</string>
     <string name="mod_4_desc">Identifica fallos típicos cometidos comúnmente por hispanohablantes en concordancia y tiempo pretérito.</string>
     <string name="mod_4_quote">"He didn\'t went there"</string>
-    <string name="mod_4_link">Corregir &#8594;</string>
+    <string name="mod_4_link">Corregir</string>
 
     <string name="banner_tip_text">Aprende a tu ritmo. Cada práctica se adapta a tus intervalos de retención espaciada.</string>
 
@@ -120,28 +202,35 @@
     <string name="progress_top_title">PROGRESO Y DOMINIO</string>
     <string name="cognitive_perf_label">RENDIMIENTO COGNITIVO</string>
     <string name="sync_today_label">• Sincronizado hoy</string>
-    <string name="domain_metrics_title">Métricas de Dominio</string>
+    <string name="domain_metrics_title">Progreso</string>
     <string name="domain_metrics_subtitle">Análisis detallado de tu retención y patrones de error verbal.</string>
 
     <string name="metric_1_label">Retención Global</string>
     <string name="metric_1_val">84%</string>
     <string name="metric_1_badge">+6%</string>
+    <string name="retention_pct_format">%1$d%%</string>
 
     <string name="metric_2_label">Verbos Dominados</string>
     <string name="metric_2_val">142 / 200</string>
     <string name="metric_2_badge">71% total</string>
+    <string name="mastered_count_format">%1$d / %2$d</string>
+    <string name="mastered_pct_format">%1$d%% dominados</string>
 
     <string name="metric_3_label">Zona Crítica</string>
     <string name="metric_3_val">18</string>
     <string name="metric_3_badge">Atención</string>
+    <string name="critical_zone_format">%1$d</string>
 
     <string name="metric_4_label">Práctica Diaria</string>
     <string name="metric_4_val">12 min</string>
     <string name="metric_4_badge">Meta: 15m</string>
+    <string name="daily_practice_format">%1$d / %2$d ej.</string>
+    <string name="daily_practice_goal_badge_format">%1$d%% de meta</string>
 
     <string name="chart_title">Evolución de Precisión</string>
     <string name="chart_subtitle">Últimos 7 días de práctica activa</string>
     <string name="chart_max_badge">Máx 92%</string>
+    <string name="chart_max_format">Máx %1$d%%</string>
     <string name="day_mon">L</string>
     <string name="day_tue">M</string>
     <string name="day_wed">X</string>
@@ -151,23 +240,36 @@
     <string name="day_sun">D</string>
     <string name="sat_peak_val">92%</string>
 
-    <string name="weak_points_title">Puntos Débiles Recurrentes</string>
+    <!-- Calendar Day Summary -->
+    <string name="day_summary_header">ACTIVIDAD DEL DÍA</string>
+    <string name="day_summary_title_format">Resumen: %1$s</string>
+    <string name="day_exercises_count_format">%1$d ejercicios realizados</string>
+    <string name="day_accuracy_format">%1$d%% de precisión</string>
+    <string name="day_verbs_practiced_format">Verbos: %1$s</string>
+    <string name="day_no_activity">Sin ejercicios registrados en esta fecha</string>
+
+    <string name="weak_points_title">Puntos de Mejora</string>
     <string name="weak_points_subtitle">Prioridad alta para repetición espaciada</string>
     <string name="weak_points_badge">4 Críticos</string>
+    <string name="weak_critical_count_format">%1$d Críticos</string>
+    <string name="weak_error_pct_format">%1$d%% error</string>
+    <string name="weak_attempts_format">%1$d aciertos de %2$d intentos</string>
+    <string name="weak_last_error_recent">Último fallo reciente</string>
+    <string name="weak_last_error_never">Sin fallos registrados</string>
     <string name="btn_review">Repasar</string>
 
     <string name="weak_1_name">Choose</string>
     <string name="weak_1_phonetic">/tʃuːz/</string>
     <string name="weak_1_err">38% error</string>
-    <string name="weak_1_forms">Chose ➔ Chosen</string>
+    <string name="weak_1_forms">Chose -> Chosen</string>
     <string name="weak_1_note">Confusión típica: tendencia a regularizar (*choosed) o confusión fonética en participio.</string>
     <string name="weak_1_last">Último fallo: ayer</string>
 
     <string name="weak_2_name">Freeze</string>
     <string name="weak_2_phonetic">/friːz/</string>
     <string name="weak_2_err">32% error</string>
-    <string name="weak_2_forms">Froze ➔ Frozen</string>
-    <string name="weak_2_note">Patrón vocálico /i:/ ➔ /oʊ/ ➔ /oʊzən/</string>
+    <string name="weak_2_forms">Froze -> Frozen</string>
+    <string name="weak_2_note">Patrón vocálico /i:/ -> /oʊ/ -> /oʊzən/</string>
     <string name="weak_2_last">Último fallo: hace 2 días</string>
 
     <string name="weak_3_name">Lie vs. Lay</string>
@@ -180,9 +282,15 @@
     <string name="weak_4_name">Begin</string>
     <string name="weak_4_phonetic">/bɪˈɡɪn/</string>
     <string name="weak_4_err">24% error</string>
-    <string name="weak_4_forms">Began ➔ Begun</string>
+    <string name="weak_4_forms">Began -> Begun</string>
     <string name="weak_4_note">Intercambio de \'a\' por \'u\' en pasado simple</string>
     <string name="weak_4_last">Último fallo: hace 3 días</string>
+
+    <!-- Calendar View Block -->
+    <string name="calendar_activity_header">CALENDARIO DE ACTIVIDAD (CALENDAR VIEW)</string>
+    <string name="calendar_select_prompt">Selecciona un día para consultar el historial</string>
+    <string name="calendar_selected_format">Actividad del %1$s: %2$d completados</string>
+    <string name="calendar_snackbar_format">Fecha seleccionada en CalendarView: %1$s</string>
 
     <string name="typology_title">Dominio por Tipología Verbal</string>
     <string name="typology_subtitle">Distribución morfológica en tu memoria activa</string>
@@ -193,16 +301,20 @@
     <string name="typology_3_title">Irregulares con cambio vocálico</string>
     <string name="typology_3_val">78%</string>
 
-    <string name="btn_generate_test_errors">&#9889; Generar Test Enfocado en Mis Errores</string>
+    <string name="btn_generate_test_errors">Generar Test Enfocado en Mis Errores</string>
     <string name="btn_test_subtext">Sesión adaptativa calibrada con tus 18 verbos más frágiles.</string>
+    <string name="dialog_test_options_title">Opciones de Progreso y Test</string>
+    <string name="dialog_opt_generate_test">Generar Test Enfocado</string>
+    <string name="dialog_opt_reset_progress">Restablecer Progreso</string>
+    <string name="snackbar_no_weak_verbs">Aún no tienes verbos en zona crítica. ¡Practica para evaluar tu rendimiento!</string>
 
     <!-- Bottom Actions -->
-    <string name="btn_practice_verb">Practicar este verbo &#9889;</string>
+    <string name="btn_practice_verb">Practicar verbo</string>
 
     <!-- Navigation Bar Labels -->
     <string name="nav_dictionary">Diccionario</string>
     <string name="nav_verb">Verbo</string>
-    <string name="nav_practice">Práctica</string>
+    <string name="nav_practice">Entrenamiento</string>
     <string name="nav_progress">Progreso</string>
 
     <!-- Conjugation Table Headers -->
@@ -218,13 +330,21 @@
     <!-- Verbo del Día -->
     <string name="verbo_del_dia_label">VERBO DEL DÍA</string>
     <string name="verbo_del_dia_title">freeze /fri:z/ • Congelar</string>
+    <string name="verbo_del_dia_title_dynamic">%1$s • %2$s</string>
     <string name="verbo_del_dia_v1">Base: freeze</string>
+    <string name="verbo_del_dia_v1_dynamic">Base: %1$s</string>
     <string name="verbo_del_dia_v2">Pasado: froze</string>
+    <string name="verbo_del_dia_v2_dynamic">Pasado: %1$s</string>
     <string name="verbo_del_dia_v3">Part.: frozen</string>
+    <string name="verbo_del_dia_v3_dynamic">Part.: %1$s</string>
 
     <!-- Section Headers -->
     <string name="list_header_title">LISTA DE VERBOS</string>
     <string name="list_header_results">5 resultados visibles</string>
+    <string name="search_results_title">RESULTADOS DE BÚSQUEDA</string>
+    <string name="page_indicator">Página %1$d de %2$d</string>
+    <string name="pagination_summary">Página %1$d de %2$d • %3$d verbos en total</string>
+    <string name="active_filter_desc">Filtro activo: %1$s%2$s</string>
 
     <!-- Category Filters -->
     <string name="filter_all">Todos</string>
@@ -239,13 +359,130 @@
 
     <!-- Search & Accessibility Content Descriptions -->
     <string name="search_hint">Buscar verbo&#8230;</string>
-    <string name="dict_search_hint">Buscar verbo en inglés o español&#8230; (ej. bre</string>
+    <string name="dict_search_hint">Buscar verbo en inglés o español…</string>
+    <string name="cd_search">Buscar</string>
     <string name="cd_play_audio">Escuchar pronunciación</string>
     <string name="cd_clear_search">Limpiar búsqueda</string>
     <string name="cd_avatar">Foto de perfil del usuario</string>
+    <string name="cd_audio">Reproducir pronunciación</string>
     <string name="cd_logo">Logotipo de Verbolandia</string>
     <string name="cd_back">Volver</string>
     <string name="cd_bookmark">Guardar en marcadores</string>
     <string name="cd_shuffle">Barajar fichas</string>
     <string name="cd_share">Compartir verbo</string>
+    <string name="cd_close">Cerrar</string>
+    <string name="cd_prev_page">Página anterior</string>
+    <string name="cd_next_page">Página siguiente</string>
+
+    <!-- Web Grammar Activity -->
+    <string name="web_grammar_eyebrow">CONSULTA ONLINE</string>
+    <string name="web_grammar_title">Gramática Web</string>
+
+    <!-- Notifications -->
+    <string name="notif_channel_name">Verbo del Día</string>
+    <string name="notif_channel_desc">Notificaciones diarias para aprender nuevos verbos</string>
+    <string name="notif_title_format">Verbo del Día: %1$s</string>
+    <string name="notif_content_format">%1$s | Pasado: %2$s</string>
+    <string name="notif_big_text_format">Significado: %1$s\nPasado: %2$s\nParticipio: %3$s</string>
+
+    <!-- Billar de Verbos (No emojis) -->
+    <string name="billiards_pocket_1">Tronera 1</string>
+    <string name="billiards_pocket_2">Tronera 2</string>
+    <string name="billiards_pocket_3">Tronera 3</string>
+    <string name="billiards_pocket_4">Tronera 4</string>
+    <string name="billiards_shoot_header">TIRA A LA TRONERA</string>
+    <string name="billiards_question">¿Cuál es el Pasado Simple?</string>
+    <string name="billiards_instructions">Elige la tronera correcta con el pasado del verbo.</string>
+    <string name="billiards_next_button">Siguiente</string>
+    <string name="billiards_points_format">%1$d pts</string>
+    <string name="billiards_streak_format">Racha: %1$d</string>
+    <string name="billiards_score_summary">Aciertos: %1$d | Racha: %2$d</string>
+    <string name="billiards_perfect_shot">¡TIRO PERFECTO! %1$s -> %2$s</string>
+    <string name="billiards_missed_shot">¡Fallaste la tronera! El pasado de %1$s es %2$s</string>
+    <string name="billiards_snackbar_success">¡Encestaste en la tronera correcta! +10 pts</string>
+    <string name="billiards_notification_action">NOTIFICACIÓN</string>
+
+    <!-- TextureView Stream (No emojis) -->
+    <string name="texture_eyebrow">MULTIMEDIA Y CÁMARA</string>
+    <string name="texture_title">TextureView Stream</string>
+    <string name="texture_stream_header">Stream de Vistas con TextureView</string>
+    <string name="texture_status_init">Inicializando SurfaceTexture...</string>
+    <string name="texture_status_ready">SurfaceTexture lista (%1$d x %2$d). Renderizando stream...</string>
+    <string name="texture_status_resized">Tamaño cambiado: %1$d x %2$d</string>
+    <string name="texture_status_destroyed">SurfaceTexture destruida</string>
+    <string name="texture_toast_ready">TextureView lista para renderizado</string>
+
+    <!-- Video Lección -->
+    <string name="video_eyebrow">PRONUNCIACIÓN Y AUDIO</string>
+    <string name="video_title">Video Lección</string>
+    <string name="video_guide_title">Guía Visual de Pronunciación</string>
+    <string name="video_guide_desc">Usa los controles del reproductor para pausar, avanzar o repasar la articulación fonética.</string>
+    <string name="lesson_pronunciation_format">Lección de Pronunciación: %1$s</string>
+    <string name="lesson_default_title">Verbos en Inglés</string>
+
+    <!-- Filter Dialog -->
+    <string name="filters_dialog_title">Filtros de Verbos</string>
+    <string name="filters_dialog_subtitle">Selecciona el tipo y nivel para enfocar tu estudio</string>
+    <string name="filter_type_header">TIPO DE VERBO</string>
+    <string name="filter_level_header">NIVEL DE DIFICULTAD (MCER)</string>
+    <string name="filter_all_levels">Todos los niveles</string>
+    <string name="filter_a1">A1 • Principiante</string>
+    <string name="filter_a2">A2 • Básico</string>
+    <string name="filter_b1">B1 • Intermedio</string>
+    <string name="filter_b2">B2 • Avanzado</string>
+    <string name="btn_reset">Restablecer</string>
+    <string name="btn_apply">Aplicar</string>
+    <string name="btn_clear">Limpiar</string>
+
+    <!-- Mastery & History -->
+    <string name="mastery_pct_format">%1$d%% Dominado</string>
+    <string name="mastery_100">100% Dominado</string>
+    <string name="mastery_review_frequent">Repaso frecuente</string>
+    <string name="mastery_unpracticed">Sin practicar</string>
+    <string name="verb_type_irregular">Irregular</string>
+    <string name="verb_type_regular">Regular</string>
+    <string name="history_title">BÚSQUEDAS RECIENTES</string>
+    <string name="history_clear">Limpiar historial</string>
+    <string name="badge_recent">Reciente</string>
+    <string name="widget_refresh_desc">Actualizar verbo del día</string>
+    <string name="diff_pct_up">+%1$d%%</string>
+    <string name="diff_pct_down">-%1$d%%</string>
+    <string name="diff_pct_equal">0%</string>
+
+    <!-- Widget -->
+    <string name="widget_header">VERBOLANDIA • VERBO DEL DÍA</string>
+    <string name="widget_default_base">FREEZE</string>
+    <string name="widget_default_meaning">Congelar</string>
+    <string name="widget_default_v1">V1: freeze</string>
+    <string name="widget_default_v2">V2: froze</string>
+    <string name="widget_default_v3">V3: frozen</string>
+    <string name="widget_v1_format">V1: %1$s</string>
+    <string name="widget_v2_format">V2: %1$s</string>
+    <string name="widget_v3_format">V3: %1$s</string>
+    <!-- Dialogs & Empty States -->
+    <string name="history_clear_confirm_title">¿Borrar historial de búsqueda?</string>
+    <string name="history_clear_confirm_msg">Se eliminarán todas las búsquedas recientes conservadas.</string>
+    <string name="empty_search_results">No encontramos verbos que coincidan con tu búsqueda.</string>
+    <string name="empty_progress_title">Sin datos de práctica aún</string>
+    <string name="empty_progress_desc">Realiza un entrenamiento en la pestaña Práctica para comenzar a registrar tu rendimiento y métricas de retención.</string>
+    <string name="dialog_reset_title">Restablecer Progreso</string>
+    <string name="dialog_reset_msg">¿Estás seguro de que deseas eliminar todos los intentos de práctica y estadísticas guardadas?</string>
+    <string name="dialog_reset_positive">Restablecer</string>
+    <string name="dialog_cancel">Cancelar</string>
+    <string name="snackbar_history_cleared">Historial de búsqueda eliminado</string>
+    <string name="snackbar_progress_reset">Progreso restablecido correctamente</string>
+
+    <!-- ML Kit Translation & Details -->
+    <string name="dialog_download_model_title">Descargar Modelo On-Device (~30 MB)</string>
+    <string name="dialog_download_model_msg">¿Deseas descargar el modelo de traducción inglés a español de Google ML Kit para traducir \'%1$s\'?</string>
+    <string name="dialog_download_model_positive">Descargar y Traducir</string>
+    <string name="snackbar_translating">Descargando / Traduciendo...</string>
+    <string name="snackbar_translated_format">Traducción completada: %1$s</string>
+    <string name="snackbar_translate_error_format">Error al traducir: %1$s</string>
+    <string name="snackbar_action_retry">Reintentar</string>
+    <string name="snackbar_favorite_added">Añadido a favoritos</string>
+    <string name="snackbar_favorite_removed">Eliminado de favoritos</string>
+    <string name="snackbar_action_undo">DESHACER</string>
+    <string name="share_verb_title">Compartir Verbo</string>
+    <string name="share_verb_format">Verbo en Verbolandia: %1$s (%2$s)\nPasado: %3$s\nParticipio: %4$s\nGerundio: %5$s</string>
 </resources>

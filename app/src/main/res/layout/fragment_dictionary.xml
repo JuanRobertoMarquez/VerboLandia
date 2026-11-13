@@ -14,106 +14,29 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <!-- Top Bar (56dp, pixel-perfect alignment with Practice & Progress) -->
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/topBar"
+        <!-- Top Bar unificado (include_app_bar: variante raíz — logo + título + avatar) -->
+        <include
+            android:id="@+id/appBar"
+            layout="@layout/include_app_bar"
             android:layout_width="match_parent"
             android:layout_height="56dp"
-            android:paddingHorizontal="@dimen/margin"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
-
-            <ImageView
-                android:id="@+id/ivLogo"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:contentDescription="@string/cd_logo"
-                android:src="@drawable/ic_dictionary"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:tint="?attr/colorPrimary" />
-
-            <TextView
-                android:id="@+id/tvHeaderTitle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/spacing_xs"
-                android:text="@string/app_name"
-                android:textColor="?attr/colorOnSurface"
-                android:textSize="@dimen/text_headline_sm"
-                android:textStyle="bold"
-                app:layout_constraintBottom_toTopOf="@id/tvHeaderSubtitle"
-                app:layout_constraintStart_toEndOf="@id/ivLogo"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <TextView
-                android:id="@+id/tvHeaderSubtitle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/app_subtitle"
-                android:textColor="?attr/colorPrimary"
-                android:textSize="@dimen/text_label_sm"
-                android:textStyle="bold"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="@id/tvHeaderTitle"
-                app:layout_constraintTop_toBottomOf="@id/tvHeaderTitle" />
-
-            <ImageView
-                android:id="@+id/ivAvatar"
-                android:layout_width="32dp"
-                android:layout_height="32dp"
-                android:contentDescription="@string/cd_avatar"
-                android:src="@drawable/ic_avatar_placeholder"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-        </androidx.constraintlayout.widget.ConstraintLayout>
-
-        <!-- Main Title (Without '239 activos') -->
-        <TextView
-            android:id="@+id/tvExplorerTitle"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/margin"
-            android:layout_marginTop="@dimen/spacing_md"
-            android:layout_marginEnd="@dimen/margin"
-            android:text="@string/explorer_title"
-            android:textColor="?attr/colorOnSurface"
-            android:textSize="@dimen/text_headline_lg"
-            android:textStyle="bold"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/topBar" />
-
-        <TextView
-            android:id="@+id/tvExplorerSubtitle"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/margin"
-            android:layout_marginTop="@dimen/spacing_xs"
-            android:layout_marginEnd="@dimen/margin"
-            android:text="@string/explorer_subtitle"
-            android:textColor="?attr/colorOnSurfaceVariant"
-            android:textSize="@dimen/text_body_md"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tvExplorerTitle" />
+            app:layout_constraintTop_toTopOf="parent" />
 
         <!-- Search Bar Card with Filter Button -->
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/cardSearch"
             android:layout_width="match_parent"
             android:layout_height="@dimen/search_bar_height"
-            android:layout_marginHorizontal="@dimen/margin"
-            android:layout_marginTop="@dimen/spacing_lg"
+            android:layout_marginHorizontal="@dimen/screen_horizontal_padding"
+            android:layout_marginTop="@dimen/section_spacing_vertical"
             app:cardBackgroundColor="?attr/colorSurfaceContainerLow"
-            app:cardCornerRadius="@dimen/rounded_xl"
+            app:cardCornerRadius="@dimen/button_pill_radius"
             app:cardElevation="1dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tvExplorerSubtitle"
+            app:layout_constraintTop_toBottomOf="@id/appBar"
             app:strokeColor="?attr/colorOutlineVariant"
             app:strokeWidth="1dp">
 
@@ -122,7 +45,7 @@
                 android:layout_height="match_parent"
                 android:gravity="center_vertical"
                 android:orientation="horizontal"
-                android:paddingHorizontal="@dimen/spacing_md">
+                android:paddingHorizontal="@dimen/card_internal_padding">
 
                 <ImageView
                     android:layout_width="20dp"
@@ -157,7 +80,7 @@
                         android:layout_width="36dp"
                         android:layout_height="36dp"
                         android:background="?attr/selectableItemBackgroundBorderless"
-                        android:contentDescription="Filtros"
+                        android:contentDescription="@string/filters_dialog_title"
                         android:padding="6dp"
                         android:scaleType="fitCenter"
                         android:src="@drawable/ic_filter"
@@ -182,7 +105,7 @@
             android:id="@+id/layoutActiveFilterTag"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginHorizontal="@dimen/margin"
+            android:layout_marginHorizontal="@dimen/screen_horizontal_padding"
             android:layout_marginTop="@dimen/spacing_xs"
             android:gravity="center_vertical"
             android:orientation="horizontal"
@@ -208,7 +131,7 @@
                 android:layout_height="wrap_content"
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:padding="4dp"
-                android:text="Limpiar"
+                android:text="@string/btn_clear"
                 android:textColor="?attr/colorError"
                 android:textSize="@dimen/text_label_sm"
                 android:textStyle="bold" />
@@ -219,10 +142,10 @@
             android:id="@+id/cardVerbOfDay"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginHorizontal="@dimen/margin"
-            android:layout_marginTop="@dimen/spacing_md"
+            android:layout_marginHorizontal="@dimen/screen_horizontal_padding"
+            android:layout_marginTop="@dimen/section_spacing_vertical"
             app:cardBackgroundColor="?attr/colorSurfaceContainerLow"
-            app:cardCornerRadius="@dimen/rounded_2xl"
+            app:cardCornerRadius="@dimen/card_corner_radius"
             app:cardElevation="0dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -233,7 +156,7 @@
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:padding="@dimen/spacing_md">
+                android:padding="@dimen/card_internal_padding">
 
                 <ImageView
                     android:id="@+id/ivPin"
@@ -338,8 +261,8 @@
             android:id="@+id/tvSectionHeader"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/margin"
-            android:layout_marginTop="@dimen/spacing_lg"
+            android:layout_marginStart="@dimen/screen_horizontal_padding"
+            android:layout_marginTop="@dimen/section_spacing_vertical"
             android:text="@string/list_header_title"
             android:textColor="?attr/colorOnSurfaceVariant"
             android:textSize="@dimen/text_label_md"
@@ -351,7 +274,7 @@
             android:id="@+id/tvSectionResults"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="@dimen/margin"
+            android:layout_marginEnd="@dimen/screen_horizontal_padding"
             android:text="@string/list_header_results"
             android:textColor="?attr/colorOnSurfaceVariant"
             android:textSize="@dimen/text_label_md"
@@ -393,8 +316,8 @@
             android:id="@+id/layoutPagination"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginHorizontal="@dimen/margin"
-            android:layout_marginTop="@dimen/spacing_md"
+            android:layout_marginHorizontal="@dimen/screen_horizontal_padding"
+            android:layout_marginTop="@dimen/section_spacing_vertical"
             android:gravity="center"
             android:orientation="vertical"
             app:layout_constraintEnd_toEndOf="parent"
@@ -413,7 +336,7 @@
                     style="@style/Widget.Material3.Button.IconButton.Filled.Tonal"
                     android:layout_width="44dp"
                     android:layout_height="44dp"
-                    android:contentDescription="Página anterior"
+                    android:contentDescription="@string/cd_prev_page"
                     app:cornerRadius="@dimen/rounded_full"
                     app:icon="@drawable/ic_chevron_left"
                     app:iconGravity="textStart"
@@ -443,7 +366,7 @@
                     style="@style/Widget.Material3.Button.IconButton.Filled.Tonal"
                     android:layout_width="44dp"
                     android:layout_height="44dp"
-                    android:contentDescription="Página siguiente"
+                    android:contentDescription="@string/cd_next_page"
                     app:cornerRadius="@dimen/rounded_full"
                     app:icon="@drawable/ic_chevron_right"
                     app:iconGravity="textStart"

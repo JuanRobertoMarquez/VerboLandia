@@ -237,4 +237,28 @@ class SharedViewModel(application: Application) : AndroidViewModel(application) 
             loadInitialData()
         }
     }
+
+    suspend fun getAttemptsForDate(year: Int, month: Int, dayOfMonth: Int): List<com.example.verbolandia.util.AttemptRecord> {
+        val cal = java.util.Calendar.getInstance().apply {
+            set(java.util.Calendar.YEAR, year)
+            set(java.util.Calendar.MONTH, month)
+            set(java.util.Calendar.DAY_OF_MONTH, dayOfMonth)
+            set(java.util.Calendar.HOUR_OF_DAY, 0)
+            set(java.util.Calendar.MINUTE, 0)
+            set(java.util.Calendar.SECOND, 0)
+            set(java.util.Calendar.MILLISECOND, 0)
+        }
+        val startMs = cal.timeInMillis
+        cal.set(java.util.Calendar.HOUR_OF_DAY, 23)
+        cal.set(java.util.Calendar.MINUTE, 59)
+        cal.set(java.util.Calendar.SECOND, 59)
+        cal.set(java.util.Calendar.MILLISECOND, 999)
+        val endMs = cal.timeInMillis
+        return repository.getAttemptsForDateRange(startMs, endMs)
+    }
+
+    suspend fun getVerb(base: String): Verb? {
+        return allMatchingVerbs.find { it.base.equals(base, ignoreCase = true) }
+            ?: repository.getVerbByBase(base)
+    }
 }

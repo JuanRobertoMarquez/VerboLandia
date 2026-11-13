@@ -21,6 +21,9 @@ import com.example.verbolandia.adapter.VerbAdapter
 import com.example.verbolandia.databinding.FragmentDictionaryBinding
 import com.example.verbolandia.databinding.LayoutDialogFiltersBinding
 import com.example.verbolandia.model.Verb
+import com.example.verbolandia.ui.AppBarHelper
+import com.example.verbolandia.ui.LeftSlot
+import com.example.verbolandia.ui.RightAction
 import com.example.verbolandia.ui.SharedViewModel
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -48,6 +51,14 @@ class DictionaryFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        AppBarHelper.configure(
+            binding = binding.appBar,
+            left = LeftSlot.Logo,
+            eyebrow = getString(R.string.app_name),
+            title = getString(R.string.nav_dictionary),
+            rightActions = listOf(RightAction.Avatar())
+        )
 
         setupRecyclerView()
         setupSearchAndFilterButton()
@@ -200,8 +211,8 @@ class DictionaryFragment : Fragment() {
                         binding.btnPrevPage.isEnabled = page > 1
                         binding.btnNextPage.isEnabled = page < totalPages
 
-                        binding.tvSectionResults.text = "Página $page de $totalPages"
-                        binding.tvPaginationSummary.text = "Página $page de $totalPages • $totalVerbs verbos en total"
+                        binding.tvSectionResults.text = getString(R.string.page_indicator, page, totalPages)
+                        binding.tvPaginationSummary.text = getString(R.string.pagination_summary, page, totalPages, totalVerbs)
 
                         renderPageNumbers(page, totalPages)
                     }
@@ -215,8 +226,8 @@ class DictionaryFragment : Fragment() {
                         binding.btnPrevPage.isEnabled = page > 1
                         binding.btnNextPage.isEnabled = page < totalPages
 
-                        binding.tvSectionResults.text = "Página $page de $totalPages"
-                        binding.tvPaginationSummary.text = "Página $page de $totalPages • $totalVerbs verbos en total"
+                        binding.tvSectionResults.text = getString(R.string.page_indicator, page, totalPages)
+                        binding.tvPaginationSummary.text = getString(R.string.pagination_summary, page, totalPages, totalVerbs)
 
                         renderPageNumbers(page, totalPages)
                     }
@@ -230,12 +241,12 @@ class DictionaryFragment : Fragment() {
 
                         if (isActive) {
                             val cat = when (viewModel.filterCategory.value) {
-                                "IRREGULAR" -> "Irregulares"
-                                "REGULAR" -> "Regulares"
-                                else -> "Todos"
+                                "IRREGULAR" -> getString(R.string.filter_irregular)
+                                "REGULAR" -> getString(R.string.filter_regular)
+                                else -> getString(R.string.filter_all)
                             }
                             val lvl = if (viewModel.filterLevel.value == "ALL") "" else " • Nivel ${viewModel.filterLevel.value}"
-                            binding.tvActiveFilterDescription.text = "Filtro activo: $cat$lvl"
+                            binding.tvActiveFilterDescription.text = getString(R.string.active_filter_desc, cat, lvl)
                         }
                     }
                 }
@@ -244,7 +255,7 @@ class DictionaryFragment : Fragment() {
                 launch {
                     viewModel.isSearching.collect { isSearching ->
                         if (isSearching) {
-                            binding.tvSectionHeader.text = "RESULTADOS DE BÚSQUEDA"
+                            binding.tvSectionHeader.text = getString(R.string.search_results_title)
                         } else {
                             binding.tvSectionHeader.text = getString(R.string.list_header_title)
                         }
@@ -255,10 +266,10 @@ class DictionaryFragment : Fragment() {
                 launch {
                     viewModel.currentDetailVerb.collect { verbOfToday ->
                         if (verbOfToday != null) {
-                            binding.tvVerbOfDayTitle.text = "${verbOfToday.base} • ${verbOfToday.spanishMeaning}"
-                            binding.tvVerbOfDayV1.text = "Base: ${verbOfToday.base}"
-                            binding.tvVerbOfDayV2.text = "Pasado: ${verbOfToday.past}"
-                            binding.tvVerbOfDayV3.text = "Part.: ${verbOfToday.pastParticiple}"
+                            binding.tvVerbOfDayTitle.text = getString(R.string.verbo_del_dia_title_dynamic, verbOfToday.base, verbOfToday.spanishMeaning)
+                            binding.tvVerbOfDayV1.text = getString(R.string.verbo_del_dia_v1_dynamic, verbOfToday.base)
+                            binding.tvVerbOfDayV2.text = getString(R.string.verbo_del_dia_v2_dynamic, verbOfToday.past)
+                            binding.tvVerbOfDayV3.text = getString(R.string.verbo_del_dia_v3_dynamic, verbOfToday.pastParticiple)
 
                             binding.cardVerbOfDay.setOnClickListener {
                                 viewModel.onVerbOpened(verbOfToday)

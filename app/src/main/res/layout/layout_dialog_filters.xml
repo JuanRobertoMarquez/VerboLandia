@@ -20,7 +20,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Filtros de Verbos"
+        android:text="@string/filters_dialog_title"
         android:textColor="?attr/colorOnSurface"
         android:textSize="@dimen/text_headline_md"
         android:textStyle="bold" />
@@ -29,7 +29,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="2dp"
-        android:text="Selecciona el tipo y nivel para enfocar tu estudio"
+        android:text="@string/filters_dialog_subtitle"
         android:textColor="?attr/colorOnSurfaceVariant"
         android:textSize="@dimen/text_body_sm" />
 
@@ -38,7 +38,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/spacing_lg"
-        android:text="TIPO DE VERBO"
+        android:text="@string/filter_type_header"
         android:textColor="?attr/colorPrimary"
         android:textSize="@dimen/text_label_sm"
         android:textStyle="bold" />
@@ -57,21 +57,21 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:checked="true"
-            android:text="Todos" />
+            android:text="@string/filter_all" />
 
         <com.google.android.material.chip.Chip
             android:id="@+id/chipCatIrregular"
             style="@style/Widget.Material3.Chip.Filter"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Irregulares" />
+            android:text="@string/filter_irregular" />
 
         <com.google.android.material.chip.Chip
             android:id="@+id/chipCatRegular"
             style="@style/Widget.Material3.Chip.Filter"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Regulares" />
+            android:text="@string/filter_regular" />
     </com.google.android.material.chip.ChipGroup>
 
     <!-- Section: Nivel MCER -->
@@ -79,7 +79,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/spacing_md"
-        android:text="NIVEL DE DIFICULTAD (MCER)"
+        android:text="@string/filter_level_header"
         android:textColor="?attr/colorPrimary"
         android:textSize="@dimen/text_label_sm"
         android:textStyle="bold" />
@@ -98,35 +98,35 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:checked="true"
-            android:text="Todos los niveles" />
+            android:text="@string/filter_all_levels" />
 
         <com.google.android.material.chip.Chip
             android:id="@+id/chipLvlA1"
             style="@style/Widget.Material3.Chip.Filter"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="A1 • Principiante" />
+            android:text="@string/filter_a1" />
 
         <com.google.android.material.chip.Chip
             android:id="@+id/chipLvlA2"
             style="@style/Widget.Material3.Chip.Filter"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="A2 • Básico" />
+            android:text="@string/filter_a2" />
 
         <com.google.android.material.chip.Chip
             android:id="@+id/chipLvlB1"
             style="@style/Widget.Material3.Chip.Filter"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="B1 • Intermedio" />
+            android:text="@string/filter_b1" />
 
         <com.google.android.material.chip.Chip
             android:id="@+id/chipLvlB2"
             style="@style/Widget.Material3.Chip.Filter"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="B2 • Avanzado" />
+            android:text="@string/filter_b2" />
     </com.google.android.material.chip.ChipGroup>
 
     <!-- Bottom Buttons: Reset & Apply -->
@@ -143,7 +143,7 @@
             android:layout_height="@dimen/button_height"
             android:layout_marginEnd="@dimen/spacing_sm"
             android:layout_weight="1"
-            android:text="Restablecer" />
+            android:text="@string/btn_reset" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnApplyFilters"
@@ -151,7 +151,7 @@
             android:layout_width="0dp"
             android:layout_height="@dimen/button_height"
             android:layout_weight="1"
-            android:text="Aplicar" />
+            android:text="@string/btn_apply" />
     </LinearLayout>
 
 </LinearLayout>

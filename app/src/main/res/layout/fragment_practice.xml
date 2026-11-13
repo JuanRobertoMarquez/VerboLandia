@@ -7,60 +7,15 @@
     android:layout_height="match_parent"
     android:background="?android:attr/colorBackground">
 
-    <!-- Top Bar -->
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/topBar"
+    <!-- Top Bar unificado (include_app_bar: variante raíz — logo + título + avatar) -->
+    <include
+        android:id="@+id/appBar"
+        layout="@layout/include_app_bar"
         android:layout_width="match_parent"
         android:layout_height="56dp"
-        android:paddingHorizontal="@dimen/margin"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-
-        <ImageView
-            android:id="@+id/ivLogo"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:contentDescription="@string/cd_logo"
-            android:src="@drawable/ic_dictionary"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:tint="?attr/colorPrimary" />
-
-        <TextView
-            android:id="@+id/tvHeaderTitle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/spacing_xs"
-            android:text="@string/app_name"
-            android:textColor="?attr/colorOnSurface"
-            android:textSize="@dimen/text_headline_sm"
-            android:textStyle="bold"
-            app:layout_constraintStart_toEndOf="@id/ivLogo"
-            app:layout_constraintTop_toTopOf="@id/ivLogo" />
-
-        <TextView
-            android:id="@+id/tvHeaderSubtitle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/practice_top_title"
-            android:textColor="?attr/colorPrimary"
-            android:textSize="@dimen/text_label_sm"
-            android:textStyle="bold"
-            app:layout_constraintStart_toStartOf="@id/tvHeaderTitle"
-            app:layout_constraintTop_toBottomOf="@id/tvHeaderTitle" />
-
-        <ImageView
-            android:id="@+id/ivAvatar"
-            android:layout_width="32dp"
-            android:layout_height="32dp"
-            android:contentDescription="@string/cd_avatar"
-            android:src="@drawable/ic_avatar_placeholder"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-    </androidx.constraintlayout.widget.ConstraintLayout>
+        app:layout_constraintTop_toTopOf="parent" />
 
     <!-- Scrollable Content -->
     <androidx.core.widget.NestedScrollView
@@ -69,74 +24,36 @@
         android:layout_height="0dp"
         android:fillViewport="true"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/topBar">
+        app:layout_constraintTop_toBottomOf="@id/appBar">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingHorizontal="@dimen/margin"
+            android:paddingHorizontal="@dimen/screen_horizontal_padding"
             android:paddingBottom="@dimen/spacing_xl">
 
-            <!-- Focus Mode Badge & Title -->
-            <TextView
-                android:id="@+id/badgeFocusMode"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/spacing_sm"
-                android:background="@drawable/bg_focus_pill"
-                android:paddingHorizontal="@dimen/spacing_md"
-                android:paddingVertical="@dimen/spacing_xs"
-                android:text="@string/focus_mode_label"
-                android:textColor="?attr/colorPrimary"
-                android:textSize="@dimen/text_label_md"
-                android:textStyle="bold"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <TextView
-                android:id="@+id/tvPracticeTitle"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/spacing_sm"
-                android:text="@string/practice_title"
-                android:textColor="?attr/colorOnSurface"
-                android:textSize="@dimen/text_headline_lg"
-                android:textStyle="bold"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/badgeFocusMode" />
-
-            <TextView
-                android:id="@+id/tvPracticeSubtitle"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/spacing_xs"
-                android:text="@string/practice_subtitle"
-                android:textColor="?attr/colorOnSurfaceVariant"
-                android:textSize="@dimen/text_body_md"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/tvPracticeTitle" />
-
-            <!-- "META DE HOY" Card -->
+            <!-- "META DE HOY" Card (Interactive) -->
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/cardGoal"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/spacing_lg"
+                android:layout_marginTop="@dimen/section_spacing_vertical"
+                android:clickable="true"
+                android:focusable="true"
+                android:foreground="?attr/selectableItemBackground"
                 app:cardBackgroundColor="?attr/colorSurfaceContainerLowest"
-                app:cardCornerRadius="@dimen/rounded_xl"
+                app:cardCornerRadius="@dimen/card_corner_radius"
                 app:cardElevation="1dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/tvPracticeSubtitle"
+                app:layout_constraintTop_toTopOf="parent"
                 app:strokeColor="?attr/colorOutlineVariant"
                 app:strokeWidth="1dp">
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:padding="@dimen/spacing_md">
+                    android:padding="@dimen/card_internal_padding">
 
                     <TextView
                         android:id="@+id/tvGoalTitle"
@@ -149,14 +66,33 @@
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
 
-                    <ImageView
-                        android:layout_width="20dp"
-                        android:layout_height="20dp"
-                        android:contentDescription="@null"
-                        android:src="@drawable/ic_flag"
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal"
                         app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:tint="?attr/colorPrimary" />
+                        app:layout_constraintTop_toTopOf="parent">
+
+                        <ImageView
+                            android:id="@+id/btnEditGoal"
+                            android:layout_width="28dp"
+                            android:layout_height="28dp"
+                            android:layout_marginEnd="6dp"
+                            android:background="?attr/selectableItemBackgroundBorderless"
+                            android:contentDescription="@string/cd_edit_goal"
+                            android:padding="4dp"
+                            android:scaleType="fitCenter"
+                            android:src="@drawable/ic_edit"
+                            app:tint="?attr/colorPrimary" />
+
+                        <ImageView
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:contentDescription="@null"
+                            android:src="@drawable/ic_flag"
+                            app:tint="?attr/colorPrimary" />
+                    </LinearLayout>
 
                     <TextView
                         android:id="@+id/tvGoalStatus"
@@ -210,9 +146,9 @@
                 android:id="@+id/cardReminder"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/spacing_md"
+                android:layout_marginTop="@dimen/section_spacing_vertical"
                 app:cardBackgroundColor="?attr/colorSurfaceContainerLow"
-                app:cardCornerRadius="@dimen/rounded_xl"
+                app:cardCornerRadius="@dimen/card_corner_radius"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/cardGoal"
@@ -223,22 +159,26 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:padding="@dimen/spacing_md">
+                    android:padding="@dimen/card_internal_padding">
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="📅 RECORDATORIO DE ESTUDIO (DATE &amp; TIME PICKER)"
+                        android:text="@string/study_reminder_header"
                         android:textColor="?attr/colorPrimary"
                         android:textSize="@dimen/text_label_sm"
-                        android:textStyle="bold" />
+                        android:textStyle="bold"
+                        android:gravity="center_vertical"
+                        android:drawablePadding="6dp"
+                        app:drawableStartCompat="@drawable/ic_calendar"
+                        app:drawableTint="?attr/colorPrimary" />
 
                     <TextView
                         android:id="@+id/tvReminderResult"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="2dp"
-                        android:text="Sin recordatorio programado"
+                        android:layout_marginTop="4dp"
+                        android:text="@string/study_reminder_none"
                         android:textColor="?attr/colorOnSurface"
                         android:textSize="@dimen/text_body_sm" />
 
@@ -248,8 +188,12 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/spacing_xs"
-                        android:text="Programar Fecha y Hora de Estudio"
-                        android:textSize="@dimen/text_label_sm" />
+                        android:text="@string/btn_schedule_reminder"
+                        android:textSize="@dimen/text_label_sm"
+                        app:cornerRadius="@dimen/button_pill_radius"
+                        app:icon="@drawable/ic_calendar"
+                        app:iconGravity="textStart"
+                        app:iconTint="?attr/colorPrimary" />
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
@@ -258,7 +202,7 @@
                 android:id="@+id/tvLevelLabel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/spacing_lg"
+                android:layout_marginTop="@dimen/section_spacing_vertical"
                 android:text="@string/pedagogical_level_label"
                 android:textColor="?attr/colorOnSurfaceVariant"
                 android:textSize="@dimen/text_label_md"
@@ -266,79 +210,82 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/cardReminder" />
 
-            <HorizontalScrollView
-                android:id="@+id/scrollLevels"
+            <LinearLayout
+                android:id="@+id/layoutLevelSelectors"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/spacing_sm"
-                android:clipToPadding="false"
-                android:scrollbars="none"
+                android:orientation="horizontal"
+                android:weightSum="3"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/tvLevelLabel">
 
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnLevelBasic"
+                    style="@style/Widget.Material3.Button.OutlinedButton"
+                    android:layout_width="0dp"
+                    android:layout_height="44dp"
+                    android:layout_marginEnd="4dp"
+                    android:layout_weight="1"
+                    android:insetTop="0dp"
+                    android:insetBottom="0dp"
+                    android:paddingHorizontal="2dp"
+                    android:text="@string/level_basic"
+                    android:textSize="11sp"
+                    android:textStyle="bold"
+                    app:cornerRadius="@dimen/button_pill_radius" />
 
-                    <TextView
-                        android:id="@+id/btnLevelBasic"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginEnd="@dimen/spacing_sm"
-                        android:background="@drawable/bg_chip_level"
-                        android:paddingHorizontal="@dimen/spacing_md"
-                        android:paddingVertical="@dimen/spacing_sm"
-                        android:text="@string/level_basic"
-                        android:textColor="?attr/colorSurface"
-                        android:textSize="@dimen/text_label_md"
-                        android:textStyle="bold" />
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnLevelInter"
+                    style="@style/Widget.Material3.Button.OutlinedButton"
+                    android:layout_width="0dp"
+                    android:layout_height="44dp"
+                    android:layout_marginHorizontal="2dp"
+                    android:layout_weight="1"
+                    android:insetTop="0dp"
+                    android:insetBottom="0dp"
+                    android:paddingHorizontal="2dp"
+                    android:text="@string/level_intermediate"
+                    android:textSize="11sp"
+                    android:textStyle="bold"
+                    app:cornerRadius="@dimen/button_pill_radius" />
 
-                    <TextView
-                        android:id="@+id/btnLevelInter"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginEnd="@dimen/spacing_sm"
-                        android:background="@drawable/bg_chip_level"
-                        android:paddingHorizontal="@dimen/spacing_md"
-                        android:paddingVertical="@dimen/spacing_sm"
-                        android:text="@string/level_intermediate"
-                        android:textColor="?attr/colorOnSurfaceVariant"
-                        android:textSize="@dimen/text_label_md" />
-
-                    <TextView
-                        android:id="@+id/btnLevelAdv"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:background="@drawable/bg_chip_level"
-                        android:paddingHorizontal="@dimen/spacing_md"
-                        android:paddingVertical="@dimen/spacing_sm"
-                        android:text="@string/level_advanced"
-                        android:textColor="?attr/colorOnSurfaceVariant"
-                        android:textSize="@dimen/text_label_md" />
-                </LinearLayout>
-            </HorizontalScrollView>
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnLevelAdv"
+                    style="@style/Widget.Material3.Button.OutlinedButton"
+                    android:layout_width="0dp"
+                    android:layout_height="44dp"
+                    android:layout_marginStart="4dp"
+                    android:layout_weight="1"
+                    android:insetTop="0dp"
+                    android:insetBottom="0dp"
+                    android:paddingHorizontal="2dp"
+                    android:text="@string/level_advanced"
+                    android:textSize="11sp"
+                    android:textStyle="bold"
+                    app:cornerRadius="@dimen/button_pill_radius" />
+            </LinearLayout>
 
             <!-- "BATERÍA DE REFUERZO" Card -->
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/cardReinforcement"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/spacing_lg"
+                android:layout_marginTop="@dimen/section_spacing_vertical"
                 app:cardBackgroundColor="?attr/colorSurfaceContainerLow"
-                app:cardCornerRadius="@dimen/rounded_xl"
+                app:cardCornerRadius="@dimen/card_corner_radius"
                 app:cardElevation="0dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/scrollLevels"
+                app:layout_constraintTop_toBottomOf="@id/layoutLevelSelectors"
                 app:strokeColor="?attr/colorOutlineVariant"
                 app:strokeWidth="1dp">
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:padding="@dimen/spacing_md">
+                    android:padding="@dimen/card_internal_padding">
 
                     <ImageView
                         android:id="@+id/ivTarget"
@@ -414,7 +361,7 @@
                         android:textSize="@dimen/text_label_md"
                         android:textStyle="bold"
                         app:backgroundTint="?attr/colorPrimary"
-                        app:cornerRadius="@dimen/rounded_lg"
+                        app:cornerRadius="@dimen/button_pill_radius"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintTop_toBottomOf="@id/tvReinforcementDesc" />
                 </androidx.constraintlayout.widget.ConstraintLayout>
@@ -425,7 +372,7 @@
                 android:id="@+id/tvModalitiesTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/spacing_xl"
+                android:layout_marginTop="@dimen/section_spacing_vertical"
                 android:text="@string/modalities_title"
                 android:textColor="?attr/colorOnSurface"
                 android:textSize="@dimen/text_headline_sm"
@@ -433,28 +380,14 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/cardReinforcement" />
 
-            <TextView
-                android:id="@+id/badgeNoPunishment"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@drawable/bg_focus_pill"
-                android:paddingHorizontal="@dimen/spacing_sm"
-                android:paddingVertical="2dp"
-                android:text="@string/no_punishment_badge"
-                android:textColor="?attr/colorPrimary"
-                android:textSize="@dimen/text_label_sm"
-                android:textStyle="bold"
-                app:layout_constraintBaseline_toBaselineOf="@id/tvModalitiesTitle"
-                app:layout_constraintEnd_toEndOf="parent" />
-
             <!-- Modality 1: Tríada Rápida -->
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/cardModality1"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/spacing_md"
+                android:layout_marginTop="@dimen/card_grid_spacing"
                 app:cardBackgroundColor="?attr/colorSurfaceContainerLowest"
-                app:cardCornerRadius="@dimen/rounded_lg"
+                app:cardCornerRadius="@dimen/card_corner_radius"
                 app:cardElevation="1dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -465,7 +398,7 @@
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:padding="@dimen/spacing_md">
+                    android:padding="@dimen/card_internal_padding">
 
                     <ImageView
                         android:id="@+id/ivMod1Icon"
@@ -548,9 +481,9 @@
                 android:id="@+id/cardModality2"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/spacing_md"
+                android:layout_marginTop="@dimen/card_grid_spacing"
                 app:cardBackgroundColor="?attr/colorSurfaceContainerLowest"
-                app:cardCornerRadius="@dimen/rounded_lg"
+                app:cardCornerRadius="@dimen/card_corner_radius"
                 app:cardElevation="1dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -561,7 +494,7 @@
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:padding="@dimen/spacing_md">
+                    android:padding="@dimen/card_internal_padding">
 
                     <ImageView
                         android:id="@+id/ivMod2Icon"
@@ -653,9 +586,9 @@
                 android:id="@+id/cardModality3"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/spacing_md"
+                android:layout_marginTop="@dimen/card_grid_spacing"
                 app:cardBackgroundColor="?attr/colorSurfaceContainerLowest"
-                app:cardCornerRadius="@dimen/rounded_lg"
+                app:cardCornerRadius="@dimen/card_corner_radius"
                 app:cardElevation="1dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -666,7 +599,7 @@
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:padding="@dimen/spacing_md">
+                    android:padding="@dimen/card_internal_padding">
 
                     <ImageView
                         android:id="@+id/ivMod3Icon"
@@ -777,9 +710,9 @@
                 android:id="@+id/cardModality4"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/spacing_md"
+                android:layout_marginTop="@dimen/card_grid_spacing"
                 app:cardBackgroundColor="?attr/colorSurfaceContainerLowest"
-                app:cardCornerRadius="@dimen/rounded_lg"
+                app:cardCornerRadius="@dimen/card_corner_radius"
                 app:cardElevation="1dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -790,7 +723,7 @@
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:padding="@dimen/spacing_md">
+                    android:padding="@dimen/card_internal_padding">
 
                     <ImageView
                         android:id="@+id/ivMod4Icon"
@@ -883,9 +816,9 @@
                 android:id="@+id/cardTipBanner"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/spacing_xl"
+                android:layout_marginTop="@dimen/section_spacing_vertical"
                 app:cardBackgroundColor="?attr/colorSurfaceContainerLow"
-                app:cardCornerRadius="@dimen/rounded_lg"
+                app:cardCornerRadius="@dimen/card_corner_radius"
                 app:cardElevation="0dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -898,7 +831,7 @@
                     android:layout_height="wrap_content"
                     android:gravity="center_vertical"
                     android:orientation="horizontal"
-                    android:padding="@dimen/spacing_md">
+                    android:padding="@dimen/card_internal_padding">
 
                     <ImageView
                         android:layout_width="24dp"

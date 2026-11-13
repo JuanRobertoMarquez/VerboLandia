@@ -8,59 +8,16 @@
     android:background="#09301B"
     android:fitsSystemWindows="true">
 
-    <!-- Header Bar -->
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/topBar"
+    <!-- Header Bar unificado (include_app_bar: variante minijuegos — X cerrar + barra progreso + gamificación) -->
+    <include
+        android:id="@+id/appBar"
+        layout="@layout/include_app_bar"
         android:layout_width="match_parent"
         android:layout_height="56dp"
         android:background="#062213"
-        android:paddingHorizontal="@dimen/margin"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-
-        <ImageButton
-            android:id="@+id/btnBack"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:contentDescription="@string/cd_back"
-            android:padding="8dp"
-            android:scaleType="fitCenter"
-            android:src="@drawable/ic_arrow_back"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:tint="@color/white" />
-
-        <TextView
-            android:id="@+id/tvTitle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/spacing_sm"
-            android:text="🎱 Billar de Verbos"
-            android:textColor="@color/white"
-            android:textSize="@dimen/text_headline_sm"
-            android:textStyle="bold"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toEndOf="@id/btnBack"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <TextView
-            android:id="@+id/tvScore"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@drawable/bg_badge_small"
-            android:paddingHorizontal="@dimen/spacing_md"
-            android:paddingVertical="4dp"
-            android:text="Aciertos: 0 | 🔥 0"
-            android:textColor="?attr/colorPrimary"
-            android:textSize="@dimen/text_label_md"
-            android:textStyle="bold"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-    </androidx.constraintlayout.widget.ConstraintLayout>
+        app:layout_constraintTop_toTopOf="parent" />
 
     <!-- Pool Table Container -->
     <com.google.android.material.card.MaterialCardView
@@ -75,7 +32,7 @@
         app:layout_constraintBottom_toTopOf="@id/bottomBar"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/topBar"
+        app:layout_constraintTop_toBottomOf="@id/appBar"
         app:strokeColor="#5C3A21"
         app:strokeWidth="12dp">
 
@@ -107,10 +64,14 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="🕳️ Tronera 1"
+                        android:text="@string/billiards_pocket_1"
                         android:textColor="#9CA3AF"
                         android:textSize="10sp"
-                        android:textStyle="bold" />
+                        android:textStyle="bold"
+                        android:gravity="center_vertical"
+                        android:drawablePadding="4dp"
+                        app:drawableStartCompat="@drawable/ic_hole"
+                        app:drawableTint="#9CA3AF" />
 
                     <TextView
                         android:id="@+id/tvPocketTopLeftText"
@@ -147,10 +108,14 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="🕳️ Tronera 2"
+                        android:text="@string/billiards_pocket_2"
                         android:textColor="#9CA3AF"
                         android:textSize="10sp"
-                        android:textStyle="bold" />
+                        android:textStyle="bold"
+                        android:gravity="center_vertical"
+                        android:drawablePadding="4dp"
+                        app:drawableStartCompat="@drawable/ic_hole"
+                        app:drawableTint="#9CA3AF" />
 
                     <TextView
                         android:id="@+id/tvPocketTopRightText"
@@ -187,10 +152,14 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="🕳️ Tronera 3"
+                        android:text="@string/billiards_pocket_3"
                         android:textColor="#9CA3AF"
                         android:textSize="10sp"
-                        android:textStyle="bold" />
+                        android:textStyle="bold"
+                        android:gravity="center_vertical"
+                        android:drawablePadding="4dp"
+                        app:drawableStartCompat="@drawable/ic_hole"
+                        app:drawableTint="#9CA3AF" />
 
                     <TextView
                         android:id="@+id/tvPocketBottomLeftText"
@@ -227,10 +196,14 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="🕳️ Tronera 4"
+                        android:text="@string/billiards_pocket_4"
                         android:textColor="#9CA3AF"
                         android:textSize="10sp"
-                        android:textStyle="bold" />
+                        android:textStyle="bold"
+                        android:gravity="center_vertical"
+                        android:drawablePadding="4dp"
+                        app:drawableStartCompat="@drawable/ic_hole"
+                        app:drawableTint="#9CA3AF" />
 
                     <TextView
                         android:id="@+id/tvPocketBottomRightText"
@@ -269,10 +242,14 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="🎱 TIRA A LA TRONERA"
+                        android:text="@string/billiards_shoot_header"
                         android:textColor="#0284C7"
                         android:textSize="11sp"
-                        android:textStyle="bold" />
+                        android:textStyle="bold"
+                        android:gravity="center_vertical"
+                        android:drawablePadding="4dp"
+                        app:drawableStartCompat="@drawable/ic_sports_billiards"
+                        app:drawableTint="#0284C7" />
 
                     <TextView
                         android:id="@+id/tvTargetVerbBase"
@@ -290,7 +267,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="4dp"
                         android:gravity="center"
-                        android:text="¿Cuál es el Pasado Simple?"
+                        android:text="@string/billiards_question"
                         android:textColor="#64748B"
                         android:textSize="11sp" />
                 </LinearLayout>
@@ -317,7 +294,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Elige la tronera correcta con el pasado del verbo."
+            android:text="@string/billiards_instructions"
             android:textColor="@color/white"
             android:textSize="@dimen/text_body_sm" />
 
@@ -326,11 +303,15 @@
             android:layout_width="wrap_content"
             android:layout_height="@dimen/button_height"
             android:layout_marginStart="@dimen/spacing_sm"
-            android:text="Siguiente ➔"
+            android:text="@string/billiards_next_button"
             android:textColor="?attr/colorOnPrimary"
             android:textSize="@dimen/text_label_md"
             android:textStyle="bold"
+            app:icon="@drawable/ic_chevron_right"
+            app:iconGravity="textEnd"
+            app:iconTint="?attr/colorOnPrimary"
             app:backgroundTint="?attr/colorPrimary"
+            app:cornerRadius="@dimen/rounded_lg" />
             app:cornerRadius="@dimen/rounded_lg" />
     </LinearLayout>
 

@@ -308,6 +308,10 @@ class VerbRepository(
         userDbHelper.resetProgress()
     }
 
+    suspend fun getAttemptsForDateRange(startMs: Long, endMs: Long) = withContext(Dispatchers.IO) {
+        userDbHelper.getAttemptsForDateRange(startMs, endMs)
+    }
+
     suspend fun getRandomVerbs(count: Int = 10): List<Verb> = withContext(Dispatchers.IO) {
         val verbs = dbHelper.getAllVerbs(500).shuffled().take(count)
         enrichVerbs(verbs)
