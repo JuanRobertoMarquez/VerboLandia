@@ -255,7 +255,18 @@ class VerbRepository(
 
     suspend fun getVerbByBase(base: String): Verb? = withContext(Dispatchers.IO) {
         val verb = dbHelper.getVerbByBase(base) ?: return@withContext null
-        enrichVerb(verb)
+        val enriched = enrichVerb(verb)
+        val tenses = dbHelper.getTensesForVerb(verb.id)
+        val phrasals = dbHelper.getPhrasalVerbs(verb.id)
+        enriched.copy(tenses = tenses, phrasalVerbs = phrasals)
+    }
+
+    suspend fun getTensesForVerb(verbId: Int): List<com.example.verbolandia.model.VerbTense> = withContext(Dispatchers.IO) {
+        dbHelper.getTensesForVerb(verbId)
+    }
+
+    suspend fun getPhrasalVerbs(verbId: Int): List<com.example.verbolandia.model.PhrasalVerb> = withContext(Dispatchers.IO) {
+        dbHelper.getPhrasalVerbs(verbId)
     }
 
     suspend fun getLastOpenedOrFirstDailyVerb(): Verb? = withContext(Dispatchers.IO) {
@@ -325,9 +336,12 @@ class VerbRepository(
         val stats = userDbHelper.getVerbStats(verb.base)
         val customTrans = userDbHelper.getTranslation(verb.base)
             ?: LOCAL_SPANISH_DICTIONARY[verb.base.lowercase()]
+            ?: (if (verb.spanishMeaning.isNotBlank()) verb.spanishMeaning else null)
+
+        val finalMeaning = customTrans ?: (if (verb.spanishMeaning.isNotBlank()) verb.spanishMeaning else "Toca para traducir")
 
         return verb.copy(
-            spanishMeaning = customTrans ?: "Toca para traducir",
+            spanishMeaning = finalMeaning,
             isFavorite = stats.isFavorite,
             mastery = stats.mastery
         )

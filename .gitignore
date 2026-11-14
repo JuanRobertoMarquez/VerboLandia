@@ -24,6 +24,9 @@ local.properties
 # Log/OS Files
 *.log
 *.zip
+*.bak
+__pycache__/
+*.pyc
 
 # Android Studio generated files and folders
 captures/

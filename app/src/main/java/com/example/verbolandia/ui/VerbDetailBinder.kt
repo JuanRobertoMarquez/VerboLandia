@@ -34,7 +34,8 @@ object VerbDetailBinder {
         } else {
             context.getString(R.string.eyebrow_verb_regular)
         }
-        val verbTitle = if (verb.phonetic.isNotBlank()) "${verb.base} · ${verb.phonetic}" else verb.base
+        val displayPhonetic = if (verb.ipaBase.isNotBlank()) verb.ipaBase else verb.phonetic
+        val verbTitle = if (displayPhonetic.isNotBlank()) "${verb.base} · $displayPhonetic" else verb.base
         AppBarHelper.configure(
             binding = binding.appBar,
             left = LeftSlot.Back {
@@ -79,9 +80,13 @@ object VerbDetailBinder {
         binding.cardEx2.visibility = View.VISIBLE
         binding.cardEx3.visibility = View.VISIBLE
 
+        val presSimple = verb.tenses.find { it.tenseCode == "PRESENT_SIMPLE" }
+        val pastSimple = verb.tenses.find { it.tenseCode == "PAST_SIMPLE" }
+        val presPerf = verb.tenses.find { it.tenseCode == "PRESENT_PERFECT" }
+
         // Example 1: V1 Present Simple
-        val ex1En = context.getString(R.string.ex_v1_en_format, verb.base)
-        val ex1Es = if (verb.spanishMeaning.isNotBlank()) {
+        val ex1En = presSimple?.affirmativeEn ?: context.getString(R.string.ex_v1_en_format, verb.base)
+        val ex1Es = presSimple?.exampleEs ?: if (verb.spanishMeaning.isNotBlank()) {
             context.getString(R.string.ex_v1_es_format, verb.spanishMeaning.lowercase())
         } else {
             context.getString(R.string.ex_v1_es_format, verb.base)
@@ -94,8 +99,8 @@ object VerbDetailBinder {
         }
 
         // Example 2: V2 Past Simple
-        val ex2En = context.getString(R.string.ex_v2_en_format, verb.past)
-        val ex2Es = if (verb.spanishMeaning.isNotBlank()) {
+        val ex2En = pastSimple?.affirmativeEn ?: context.getString(R.string.ex_v2_en_format, verb.past)
+        val ex2Es = pastSimple?.exampleEs ?: if (verb.spanishMeaning.isNotBlank()) {
             context.getString(R.string.ex_v2_es_format, verb.spanishMeaning.lowercase())
         } else {
             context.getString(R.string.ex_v2_es_format, verb.past)
@@ -108,8 +113,8 @@ object VerbDetailBinder {
         }
 
         // Example 3: V3 Present Perfect
-        val ex3En = context.getString(R.string.ex_v3_en_format, verb.pastParticiple)
-        val ex3Es = if (verb.spanishMeaning.isNotBlank()) {
+        val ex3En = presPerf?.affirmativeEn ?: context.getString(R.string.ex_v3_en_format, verb.pastParticiple)
+        val ex3Es = presPerf?.exampleEs ?: if (verb.spanishMeaning.isNotBlank()) {
             context.getString(R.string.ex_v3_es_format, verb.spanishMeaning.lowercase())
         } else {
             context.getString(R.string.ex_v3_es_format, verb.pastParticiple)
@@ -121,22 +126,26 @@ object VerbDetailBinder {
             com.example.verbolandia.util.AudioSpeaker.speak(context, ex3En)
         }
 
-        // Matrix V1, V2, V3
+        // Matrix V1, V2, V3 with real IPA phonetics
         binding.tvMatrixV1Val.text = verb.base
-        binding.tvMatrixV1Phonetic.text = "/${verb.base}/"
+        binding.tvMatrixV1Phonetic.text = if (verb.ipaBase.isNotBlank()) verb.ipaBase else "/${verb.base}/"
 
         binding.tvMatrixV2Val.text = verb.past
-        binding.tvMatrixV2Phonetic.text = "/${verb.past}/"
+        binding.tvMatrixV2Phonetic.text = if (verb.ipaPast.isNotBlank()) verb.ipaPast else "/${verb.past}/"
 
         binding.tvMatrixV3Val.text = verb.pastParticiple
-        binding.tvMatrixV3Phonetic.text = "/${verb.pastParticiple}/"
+        binding.tvMatrixV3Phonetic.text = if (verb.ipaParticiple.isNotBlank()) verb.ipaParticiple else "/${verb.pastParticiple}/"
 
         // Derived Forms
         binding.tvDerivedThirdPerson.text = context.getString(R.string.derived_third_person_format, verb.thirdPerson)
         binding.tvDerivedGerund.text = context.getString(R.string.derived_gerund_format, verb.gerund)
 
         // Error Común
-        val commonErr = VerbClassifier.generateCommonError(context, verb)
+        val commonErr = if (verb.commonErrorTip.isNotBlank()) {
+            verb.commonErrorTip
+        } else {
+            VerbClassifier.generateCommonError(context, verb)
+        }
         if (commonErr != null) {
             binding.cardErrorWarning.visibility = View.VISIBLE
             binding.tvErrorWarningDesc.text = commonErr

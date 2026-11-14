@@ -3,7 +3,9 @@ package com.example.verbolandia.db
 import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
+import com.example.verbolandia.model.PhrasalVerb
 import com.example.verbolandia.model.Verb
+import com.example.verbolandia.model.VerbTense
 import java.io.File
 import java.io.FileOutputStream
 import java.io.OutputStream
@@ -13,8 +15,10 @@ class DatabaseHelper private constructor(private val context: Context) :
 
     companion object {
         private const val DATABASE_NAME = "verbs.db"
-        private const val DATABASE_VERSION = 1
+        private const val DATABASE_VERSION = 2
         private const val TABLE_VERBS = "verbs"
+        private const val TABLE_TENSES = "verb_tenses"
+        private const val TABLE_PHRASAL = "phrasal_verbs"
 
         @Volatile
         private var INSTANCE: DatabaseHelper? = null
@@ -44,7 +48,7 @@ class DatabaseHelper private constructor(private val context: Context) :
     }
 
     private fun getAssetUserVersion(): Int {
-        var version = 1
+        var version = 2
         try {
             val tmpAssetFile = File.createTempFile("asset_ver_check", ".db", context.cacheDir)
             context.assets.open(DATABASE_NAME).use { input ->
@@ -99,7 +103,7 @@ class DatabaseHelper private constructor(private val context: Context) :
     fun getAllVerbs(limit: Int = 2000): List<Verb> {
         val list = mutableListOf<Verb>()
         readableDatabase.rawQuery(
-            "SELECT id, base, third_person, past, past_participle, gerund, irregular, common FROM $TABLE_VERBS ORDER BY base ASC LIMIT $limit",
+            "SELECT * FROM $TABLE_VERBS ORDER BY base ASC LIMIT $limit",
             null
         ).use { cursor ->
             if (cursor.moveToFirst()) {
@@ -114,7 +118,7 @@ class DatabaseHelper private constructor(private val context: Context) :
     fun getCommonVerbs(limit: Int = 500): List<Verb> {
         val list = mutableListOf<Verb>()
         readableDatabase.rawQuery(
-            "SELECT id, base, third_person, past, past_participle, gerund, irregular, common FROM $TABLE_VERBS WHERE common = 1 ORDER BY base ASC LIMIT $limit",
+            "SELECT * FROM $TABLE_VERBS WHERE common = 1 ORDER BY base ASC LIMIT $limit",
             null
         ).use { cursor ->
             if (cursor.moveToFirst()) {
@@ -165,16 +169,18 @@ class DatabaseHelper private constructor(private val context: Context) :
 
         val list = mutableListOf<Verb>()
         val sql = """
-            SELECT id, base, third_person, past, past_participle, gerund, irregular, common 
+            SELECT * 
             FROM $TABLE_VERBS 
-            WHERE base LIKE ? OR past LIKE ? OR past_participle LIKE ? OR gerund LIKE ?
+            WHERE base LIKE ? OR past LIKE ? OR past_participle LIKE ? OR gerund LIKE ? OR spanish_meaning LIKE ?
             ORDER BY 
               CASE 
                 WHEN LOWER(base) = ? THEN 1 
                 WHEN LOWER(base) LIKE ? THEN 2 
-                WHEN LOWER(base) LIKE ? THEN 3 
-                WHEN LOWER(past) = ? OR LOWER(past_participle) = ? THEN 4
-                ELSE 5 
+                WHEN LOWER(spanish_meaning) = ? THEN 3
+                WHEN LOWER(spanish_meaning) LIKE ? THEN 4
+                WHEN LOWER(base) LIKE ? THEN 5 
+                WHEN LOWER(past) = ? OR LOWER(past_participle) = ? THEN 6
+                ELSE 7 
               END, base ASC 
             LIMIT ?
         """.trimIndent()
@@ -185,8 +191,8 @@ class DatabaseHelper private constructor(private val context: Context) :
         readableDatabase.rawQuery(
             sql,
             arrayOf(
-                pattern, pattern, pattern, pattern,
-                cleanQuery, prefixPattern, pattern, cleanQuery, cleanQuery,
+                pattern, pattern, pattern, pattern, pattern,
+                cleanQuery, prefixPattern, cleanQuery, prefixPattern, pattern, cleanQuery, cleanQuery,
                 limit.toString()
             )
         ).use { cursor ->
@@ -216,7 +222,7 @@ class DatabaseHelper private constructor(private val context: Context) :
 
     fun getVerbByBase(base: String): Verb? {
         readableDatabase.rawQuery(
-            "SELECT id, base, third_person, past, past_participle, gerund, irregular, common FROM $TABLE_VERBS WHERE LOWER(base) = ? LIMIT 1",
+            "SELECT * FROM $TABLE_VERBS WHERE LOWER(base) = ? LIMIT 1",
             arrayOf(base.trim().lowercase())
         ).use { cursor ->
             if (cursor.moveToFirst()) {
@@ -231,7 +237,7 @@ class DatabaseHelper private constructor(private val context: Context) :
         val list = mutableListOf<Verb>()
         val placeholders = bases.joinToString(",") { "?" }
         readableDatabase.rawQuery(
-            "SELECT id, base, third_person, past, past_participle, gerund, irregular, common FROM $TABLE_VERBS WHERE base IN ($placeholders)",
+            "SELECT * FROM $TABLE_VERBS WHERE base IN ($placeholders)",
             bases.toTypedArray()
         ).use { cursor ->
             if (cursor.moveToFirst()) {
@@ -245,18 +251,96 @@ class DatabaseHelper private constructor(private val context: Context) :
         return bases.mapNotNull { map[it] }
     }
 
-    private fun cursorToVerb(cursor: android.database.Cursor): Verb {
-        val id = cursor.getInt(0)
-        val base = cursor.getString(1)
-        val thirdPerson = cursor.getString(2)
-        val past = cursor.getString(3)
-        val pastParticiple = cursor.getString(4)
-        val gerund = cursor.getString(5)
-        val irregular = cursor.getInt(6) == 1
-        val common = cursor.getInt(7) == 1
+    fun getTensesForVerb(verbId: Int): List<VerbTense> {
+        val list = mutableListOf<VerbTense>()
+        readableDatabase.rawQuery(
+            "SELECT id, verb_id, tense_code, tense_name_en, tense_name_es, affirmative_en, negative_en, interrogative_en, example_es FROM $TABLE_TENSES WHERE verb_id = ? ORDER BY id ASC",
+            arrayOf(verbId.toString())
+        ).use { cursor ->
+            if (cursor.moveToFirst()) {
+                do {
+                    list.add(
+                        VerbTense(
+                            id = cursor.getInt(0),
+                            verbId = cursor.getInt(1),
+                            tenseCode = cursor.getString(2),
+                            tenseNameEn = cursor.getString(3),
+                            tenseNameEs = cursor.getString(4),
+                            affirmativeEn = cursor.getString(5),
+                            negativeEn = cursor.getString(6),
+                            interrogativeEn = cursor.getString(7),
+                            exampleEs = cursor.getString(8)
+                        )
+                    )
+                } while (cursor.moveToNext())
+            }
+        }
+        return list
+    }
 
-        val phonetic = "/${base.lowercase()}/"
-        val level = com.example.verbolandia.util.VerbClassifier.getLevel(base, irregular)
+    fun getPhrasalVerbs(verbId: Int): List<PhrasalVerb> {
+        val list = mutableListOf<PhrasalVerb>()
+        readableDatabase.rawQuery(
+            "SELECT id, verb_id, phrasal_en, meaning_es, example_en, example_es FROM $TABLE_PHRASAL WHERE verb_id = ? ORDER BY id ASC",
+            arrayOf(verbId.toString())
+        ).use { cursor ->
+            if (cursor.moveToFirst()) {
+                do {
+                    list.add(
+                        PhrasalVerb(
+                            id = cursor.getInt(0),
+                            verbId = cursor.getInt(1),
+                            phrasalEn = cursor.getString(2),
+                            meaningEs = cursor.getString(3),
+                            exampleEn = cursor.getString(4),
+                            exampleEs = cursor.getString(5)
+                        )
+                    )
+                } while (cursor.moveToNext())
+            }
+        }
+        return list
+    }
+
+    private fun cursorToVerb(cursor: android.database.Cursor): Verb {
+        val id = cursor.getInt(cursor.getColumnIndexOrThrow("id"))
+        val base = cursor.getString(cursor.getColumnIndexOrThrow("base"))
+        val thirdPerson = cursor.getString(cursor.getColumnIndexOrThrow("third_person"))
+        val past = cursor.getString(cursor.getColumnIndexOrThrow("past"))
+        val pastParticiple = cursor.getString(cursor.getColumnIndexOrThrow("past_participle"))
+        val gerund = cursor.getString(cursor.getColumnIndexOrThrow("gerund"))
+        val irregularIdx = cursor.getColumnIndex("irregular")
+        val irregular = if (irregularIdx >= 0 && !cursor.isNull(irregularIdx)) cursor.getInt(irregularIdx) == 1 else false
+
+        val commonIdx = cursor.getColumnIndex("common")
+        val common = if (commonIdx >= 0 && !cursor.isNull(commonIdx)) cursor.getInt(commonIdx) == 1 else true
+
+        val spanishIdx = cursor.getColumnIndex("spanish_meaning")
+        val spanishMeaning = if (spanishIdx >= 0 && !cursor.isNull(spanishIdx)) cursor.getString(spanishIdx) else ""
+
+        val ipaBaseIdx = cursor.getColumnIndex("ipa_base")
+        val ipaBase = if (ipaBaseIdx >= 0 && !cursor.isNull(ipaBaseIdx)) cursor.getString(ipaBaseIdx) else ""
+
+        val ipaPastIdx = cursor.getColumnIndex("ipa_past")
+        val ipaPast = if (ipaPastIdx >= 0 && !cursor.isNull(ipaPastIdx)) cursor.getString(ipaPastIdx) else ""
+
+        val ipaPpIdx = cursor.getColumnIndex("ipa_participle")
+        val ipaPp = if (ipaPpIdx >= 0 && !cursor.isNull(ipaPpIdx)) cursor.getString(ipaPpIdx) else ""
+
+        val levelIdx = cursor.getColumnIndex("cefr_level")
+        val level = if (levelIdx >= 0 && !cursor.isNull(levelIdx)) cursor.getString(levelIdx)
+            else com.example.verbolandia.util.VerbClassifier.getLevel(base, irregular)
+
+        val morphIdx = cursor.getColumnIndex("morph_group")
+        val morphGroup = if (morphIdx >= 0 && !cursor.isNull(morphIdx)) cursor.getString(morphIdx) else "regular_ed"
+
+        val phonGroupIdx = cursor.getColumnIndex("phonetic_group_id")
+        val phoneticGroupId = if (phonGroupIdx >= 0 && !cursor.isNull(phonGroupIdx)) cursor.getInt(phonGroupIdx) else 1
+
+        val errorTipIdx = cursor.getColumnIndex("common_error_tip")
+        val commonErrorTip = if (errorTipIdx >= 0 && !cursor.isNull(errorTipIdx)) cursor.getString(errorTipIdx) else ""
+
+        val phonetic = if (ipaBase.isNotBlank()) ipaBase else "/${base.lowercase()}/"
 
         return Verb(
             id = id,
@@ -267,9 +351,15 @@ class DatabaseHelper private constructor(private val context: Context) :
             gerund = gerund,
             isIrregular = irregular,
             isCommon = common,
-            spanishMeaning = "", // populated by repository
+            spanishMeaning = spanishMeaning,
             phonetic = phonetic,
-            level = level
+            level = level,
+            ipaBase = ipaBase,
+            ipaPast = ipaPast,
+            ipaParticiple = ipaPp,
+            morphGroup = morphGroup,
+            phoneticGroupId = phoneticGroupId,
+            commonErrorTip = commonErrorTip
         )
     }
 }
