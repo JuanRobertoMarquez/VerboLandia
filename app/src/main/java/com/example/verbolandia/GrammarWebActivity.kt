@@ -45,12 +45,18 @@ class GrammarWebActivity : AppCompatActivity() {
         )
 
         val verbBase = intent.getStringExtra(EXTRA_VERB_BASE) ?: "break"
+        val encodedVerb = try {
+            java.net.URLEncoder.encode(verbBase, "UTF-8")
+        } catch (e: Exception) {
+            verbBase
+        }
         val customUrl = intent.getStringExtra(EXTRA_URL)
-            ?: "https://translate.google.com/?sl=en&tl=es&text=$verbBase"
+            ?: "https://translate.google.com/?sl=en&tl=es&text=$encodedVerb&op=translate"
 
-        val myBrowser: WebView = findViewById(R.id.myWeb)
+        val myBrowser: WebView = binding.myWeb
         myBrowser.webViewClient = WebViewClient()
         myBrowser.settings.javaScriptEnabled = true
+        myBrowser.settings.domStorageEnabled = true
         myBrowser.loadUrl(customUrl)
     }
 }
