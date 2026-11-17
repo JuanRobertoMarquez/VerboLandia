@@ -15,7 +15,7 @@ class DatabaseHelper private constructor(private val context: Context) :
 
     companion object {
         private const val DATABASE_NAME = "verbs.db"
-        private const val DATABASE_VERSION = 2
+        private const val DATABASE_VERSION = 3
         private const val TABLE_VERBS = "verbs"
         private const val TABLE_TENSES = "verb_tenses"
         private const val TABLE_PHRASAL = "phrasal_verbs"

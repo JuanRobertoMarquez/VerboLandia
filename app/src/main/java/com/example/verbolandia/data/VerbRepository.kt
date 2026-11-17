@@ -161,7 +161,12 @@ class VerbRepository(
             "watch" to "Ver, observar",
             "win" to "Ganar",
             "work" to "Trabajar",
-            "write" to "Escribir"
+            "write" to "Escribir",
+            "yawn" to "Bostezar",
+            "yell" to "Gritar, vociferar",
+            "yield" to "Ceder, rendir frutos",
+            "zip" to "Abrochar, cerrar la cremallera",
+            "zoom" to "Acercar, desplazarse velozmente"
         )
     }
 

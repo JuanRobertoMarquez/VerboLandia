@@ -205,11 +205,20 @@ VERBS_CATALOG = [
     ("survive", "survives", "survived", "survived", "surviving", "/sərˈvaɪv/", "/sərˈvaɪvd/", "/sərˈvaɪvd/", "sobrevivir, subsistir", 0, "B1", "regular_ed", "La '-ed' suena como /d/.", "harsh winter conditions gracefully", "condiciones invernales duras con elegancia"),
     ("challenge", "challenges", "challenged", "challenged", "challenging", "/ˈtʃæl.ɪndʒ/", "/ˈtʃæl.ɪndʒd/", "/ˈtʃæl.ɪndʒd/", "desafiar, retar", 0, "B2", "regular_ed", "La '-ed' suena como /d/.", "conventional wisdom with logic", "la sabiduría convencional con lógica"),
     ("confirm", "confirms", "confirmed", "confirmed", "confirming", "/kənˈfɜːrm/", "/kənˈfɜːrmd/", "/kənˈfɜːrmd/", "confirmar, ratificar", 0, "B1", "regular_ed", "La '-ed' suena como /d/.", "the travel reservations in advance", "las reservaciones de viaje con anticipación"),
-    ("maintain", "maintains", "maintained", "maintained", "maintaining", "/meɪnˈteɪn/", "/meɪnˈteɪnd/", "/meɪnˈteɪnd/", "mantener, conservar", 0, "B2", "regular_ed", "La '-ed' suena como /d/.", "high professional standards consistently", "altos estándares profesionales de forma constante")
+    ("maintain", "maintains", "maintained", "maintained", "maintaining", "/meɪnˈteɪn/", "/meɪnˈteɪnd/", "/meɪnˈteɪnd/", "mantener, conservar", 0, "B2", "regular_ed", "La '-ed' suena como /d/.", "high professional standards consistently", "altos estándares profesionales de forma constante"),
+    # --- VERBOS COMPLEMENTARIOS Y / Z (Cierre del Abecedario) ---
+    ("yawn", "yawns", "yawned", "yawned", "yawning", "/jɔːn/", "/jɔːnd/", "/jɔːnd/", "bostezar", 0, "A2", "regular_ed", "La '-ed' suena suave como /d/: /jɔːnd/.", "during the long lecture", "durante la conferencia larga"),
+    ("yell", "yells", "yelled", "yelled", "yelling", "/jɛl/", "/jɛld/", "/jɛld/", "gritar, vociferar", 0, "B1", "regular_ed", "Usa 'yell at' para regañar y 'yell to' para llamar a distancia.", "excitedly at the stadium", "con entusiasmo en el estadio"),
+    ("yield", "yields", "yielded", "yielded", "yielding", "/jiːld/", "/ˈjiːl.dɪd/", "/ˈjiːl.dɪd/", "ceder, rendir frutos", 0, "B2", "regular_ed", "Como termina en 'd', '-ed' se pronuncia con sílaba extra /-ɪd/.", "positive investment results", "resultados positivos de inversión"),
+    ("zip", "zips", "zipped", "zipped", "zipping", "/zɪp/", "/zɪpt/", "/zɪpt/", "abrochar, cerrar la cremallera", 0, "B1", "regular_ed", "Duplica la 'p' en zipped y zipping. La '-ed' suena /t/.", "up the warm winter jacket", "la cálida chaqueta de invierno"),
+    ("zoom", "zooms", "zoomed", "zoomed", "zooming", "/zuːm/", "/zuːmd/", "/zuːmd/", "acercar, desplazarse velozmente", 0, "B1", "regular_ed", "La '-ed' suena como /d/: /zuːmd/.", "in on the fascinating details", "en los detalles fascinantes")
 ]
 
 # 2. Catálogo curado de Phrasal Verbs clave
 PHRASAL_VERBS_CATALOG = [
+    ("yield", "yield to", "ceder ante la presión o tentación", "He refused to yield to unfair demands.", "Se negó a ceder ante demandas injustas."),
+    ("zip", "zip up", "subir la cremallera por completo", "Zip up your jacket before going outside.", "Sube la cremallera de tu chaqueta antes de salir."),
+    ("zoom", "zoom in", "acercar la cámara o imagen", "Zoom in to see the details clearly.", "Acerca la imagen para ver los detalles claramente."),
     ("break", "break down", "descomponerse, averiarse", "The elevator broke down this morning.", "El elevador se descompuso esta mañana."),
     ("break", "break up", "terminar una relación", "They broke up after five years together.", "Terminaron su relación tras cinco años juntos."),
     ("break", "break out", "estallar, desatarse (un conflicto/epidemia)", "A fire broke out in the old warehouse.", "Un incendio se desató en el viejo almacén."),
@@ -452,7 +461,7 @@ def build_database():
     cursor = conn.cursor()
 
     # Optimizaciones de SQLite
-    cursor.execute("PRAGMA user_version = 2;")
+    cursor.execute("PRAGMA user_version = 3;")
     cursor.execute("PRAGMA encoding = 'UTF-8';")
     cursor.execute("PRAGMA foreign_keys = ON;")
 
