@@ -240,7 +240,16 @@ class PracticeFragment : Fragment() {
         }
 
         binding.cardModality1.setOnClickListener {
-            startQuizModal(getString(R.string.mod_1_title))
+            val intent = Intent(requireContext(), QuickTriadActivity::class.java).apply {
+                val levelParam = when (selectedLevelMode) {
+                    "BASIC" -> "A1"
+                    "INTERMEDIATE" -> "B1"
+                    "ADVANCED" -> "B2"
+                    else -> "ALL"
+                }
+                putExtra(QuickTriadActivity.EXTRA_LEVEL, levelParam)
+            }
+            startActivity(intent)
         }
 
         binding.cardModality2.setOnClickListener {

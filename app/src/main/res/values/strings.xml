@@ -174,6 +174,25 @@
     <string name="mod_1_desc">Te damos el infinitivo base, selecciona en segundos sus formas de pasado simple y participio correctas.</string>
     <string name="mod_1_sample">FORBID • FORBADE • FORBIDDEN   +10 pts</string>
 
+    <!-- Quick Triad Activity Strings -->
+    <string name="triad_activity_title">Tríada Rápida</string>
+    <string name="triad_progress_format">Verbo %1$d de %2$d</string>
+    <string name="triad_streak_format">x%1$d</string>
+    <string name="triad_v1_label">V1 BASE</string>
+    <string name="triad_v2_label">V2 PASADO</string>
+    <string name="triad_v3_label">V3 PART.</string>
+    <string name="triad_select_v2">Selecciona el Pasado Simple (V2)</string>
+    <string name="triad_select_v3">Selecciona el Participio (V3)</string>
+    <string name="triad_correct_title">¡Exacto! +10 EXP</string>
+    <string name="triad_combo_format">COMBO x%1$d</string>
+    <string name="triad_next_button">Siguiente Verbo</string>
+    <string name="triad_complete_button">Ver Resultados</string>
+    <string name="triad_finished_title">¡Sesión de Tríada Completada!</string>
+    <string name="triad_score_format">Puntuación: %1$d EXP</string>
+    <string name="triad_accuracy_format">Aciertos: %1$d de %2$d (%3$d%%)</string>
+    <string name="triad_finish_btn">Volver a Práctica</string>
+    <string name="triad_retry_btn">Practicar Otra Ronda</string>
+
     <string name="mod_2_title">Completar en Contexto</string>
     <string name="mod_2_subtitle">Fill the Gap</string>
     <string name="mod_2_badge">Conocimiento Real</string>
