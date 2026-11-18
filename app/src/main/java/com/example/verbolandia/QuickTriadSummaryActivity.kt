@@ -67,37 +67,37 @@ class QuickTriadSummaryActivity : AppCompatActivity() {
         val results = intent.getSerializableExtra(EXTRA_RESULTS) as? ArrayList<TriadVerbResult> ?: arrayListOf()
 
         // 1. Trophy & EXP
-        binding.tvRoundBadge.text = "⚡ Ronda $total/$total"
-        binding.tvSummaryExpGained.text = "+$exp EXP"
-        binding.tvSummaryComboBonus.text = "↗ +$comboBonus por combo"
+        binding.tvRoundBadge.text = getString(R.string.triad_round_badge_format, total, total)
+        binding.tvSummaryExpGained.text = getString(R.string.triad_exp_gained_format, exp)
+        binding.tvSummaryComboBonus.text = getString(R.string.triad_combo_bonus_format, comboBonus)
 
         if (correct >= 8) {
-            binding.tvSummaryHeadline.text = "¡Tríada Impecable!"
-            binding.tvSummarySubheader.text = "¡Excelente dominio! Tienes una velocidad de conjugación asombrosa."
+            binding.tvSummaryHeadline.text = getString(R.string.triad_headline_flawless)
+            binding.tvSummarySubheader.text = getString(R.string.triad_sub_flawless)
         } else if (correct >= 5) {
-            binding.tvSummaryHeadline.text = "¡Buen Esfuerzo!"
-            binding.tvSummarySubheader.text = "Cada repetición consolida los patrones irregulares en tu memoria verbal."
+            binding.tvSummaryHeadline.text = getString(R.string.triad_headline_good)
+            binding.tvSummarySubheader.text = getString(R.string.triad_sub_good)
         } else {
-            binding.tvSummaryHeadline.text = "¡Sesión Completada!"
-            binding.tvSummarySubheader.text = "La práctica constante es la clave. Sigue repasando estos verbos."
+            binding.tvSummaryHeadline.text = getString(R.string.triad_headline_keep_going)
+            binding.tvSummarySubheader.text = getString(R.string.triad_sub_keep_going)
         }
 
         // 2. Metrics
         val accuracyPct = if (total > 0) (correct * 100) / total else 0
         binding.tvSummaryAccuracyPct.text = "$accuracyPct%"
-        binding.tvSummaryAccuracyCount.text = "$correct de $total aciertos"
+        binding.tvSummaryAccuracyCount.text = getString(R.string.triad_accuracy_format, correct, total, accuracyPct)
 
-        binding.tvSummaryMaxStreak.text = "🔥 x$maxStreak"
-        binding.tvSummaryStreakLabel.text = if (maxStreak >= 5) "¡Imparable!" else if (maxStreak >= 2) "Buen ritmo" else "En calentamiento..."
+        binding.tvSummaryMaxStreak.text = getString(R.string.triad_streak_format, maxStreak)
+        binding.tvSummaryStreakLabel.text = if (maxStreak >= 4) getString(R.string.triad_streak_hot) else getString(R.string.triad_streak_warming)
 
         val mins = timeSec / 60
         val secs = timeSec % 60
-        binding.tvSummaryTime.text = String.format("⏱ %02d:%02d", mins, secs)
+        binding.tvSummaryTime.text = String.format("%02d:%02d", mins, secs)
         val avgSecPerVerb = if (total > 0) timeSec / total else 0
-        binding.tvSummarySpeedPace.text = "~${avgSecPerVerb}s por verbo"
+        binding.tvSummarySpeedPace.text = getString(R.string.triad_pace_format, avgSecPerVerb)
 
         // 3. Verb Radiography List
-        binding.tvAnalyzedCountBadge.text = "${results.size} Analizados"
+        binding.tvAnalyzedCountBadge.text = getString(R.string.triad_analyzed_badge_format, results.size)
         binding.rvSummaryVerbs.layoutManager = LinearLayoutManager(this)
         binding.rvSummaryVerbs.adapter = TriadSummaryAdapter(results)
     }
@@ -127,15 +127,9 @@ class QuickTriadSummaryActivity : AppCompatActivity() {
         val correct = intent.getIntExtra(EXTRA_CORRECT, 0)
         val total = intent.getIntExtra(EXTRA_TOTAL, 10)
         val maxStreak = intent.getIntExtra(EXTRA_MAX_STREAK, 0)
+        val accuracyPct = if (total > 0) (correct * 100) / total else 0
 
-        val shareText = """
-            ⚡ ¡Completé mi sesión de Tríada Rápida en VerboLandia!
-            🎯 Aciertos: $correct de $total (${if (total > 0) (correct * 100) / total else 0}%)
-            🔥 Racha máxima: x$maxStreak
-            ⭐ EXP Ganada: +$exp EXP
-            
-            ¡Aprende y domina los verbos en inglés con VerboLandia! 🚀
-        """.trimIndent()
+        val shareText = getString(R.string.triad_share_text_format, correct, total, accuracyPct, maxStreak, exp)
 
         val sendIntent = Intent().apply {
             action = Intent.ACTION_SEND
@@ -156,12 +150,12 @@ class QuickTriadSummaryActivity : AppCompatActivity() {
             val currentLevelExp = (masteredVerbs % 10) * 80 + 120
             val maxLevelExp = 1000
 
-            binding.tvMasteryBadge.text = "Nivel $userLevel de Maestría"
-            binding.tvMasteryExpFraction.text = "$currentLevelExp / $maxLevelExp EXP"
+            binding.tvMasteryBadge.text = getString(R.string.triad_mastery_level_format, userLevel)
+            binding.tvMasteryExpFraction.text = getString(R.string.triad_mastery_fraction_format, currentLevelExp, maxLevelExp)
             binding.progressMastery.progress = ((currentLevelExp.toFloat() / maxLevelExp) * 100).toInt()
 
             val remaining = (maxLevelExp - currentLevelExp).coerceAtLeast(0)
-            binding.tvMasteryNextLevelTip.text = "Aprendiz Constante · Faltan $remaining EXP para Nivel ${userLevel + 1}"
+            binding.tvMasteryNextLevelTip.text = getString(R.string.triad_mastery_next_level_format, remaining, userLevel + 1)
         }
     }
 }

@@ -33,22 +33,22 @@ class TriadSummaryAdapter(
         if (item.isCorrect) {
             holder.binding.ivStatusIcon.setImageResource(R.drawable.ic_check)
             holder.binding.ivStatusIcon.imageTintList = ColorStateList.valueOf(ContextCompat.getColor(context, R.color.success))
-            holder.binding.tvStatusBadge.text = "Dominado"
+            holder.binding.tvStatusBadge.text = context.getString(R.string.triad_status_mastered)
             holder.binding.tvStatusBadge.setTextColor(ContextCompat.getColor(context, R.color.success))
             holder.binding.layoutErrorDetail.visibility = View.GONE
         } else {
             holder.binding.ivStatusIcon.setImageResource(R.drawable.ic_warning)
             holder.binding.ivStatusIcon.imageTintList = ColorStateList.valueOf(ContextCompat.getColor(context, R.color.error))
-            holder.binding.tvStatusBadge.text = "Repasar"
+            holder.binding.tvStatusBadge.text = context.getString(R.string.triad_status_review)
             holder.binding.tvStatusBadge.setTextColor(ContextCompat.getColor(context, R.color.error))
 
             holder.binding.layoutErrorDetail.visibility = View.VISIBLE
             val note = if (item.wrongSelection.isNotBlank() && item.correctExpected.isNotBlank()) {
-                "Confusión común: se marcó '${item.wrongSelection}' en lugar de '${item.correctExpected}'"
+                context.getString(R.string.triad_confusion_note_format, item.wrongSelection, item.correctExpected)
             } else if (verb.commonErrorTip.isNotBlank()) {
                 verb.commonErrorTip
             } else {
-                "Forma correcta: Pasado '${verb.past}', Participio '${verb.pastParticiple}'"
+                context.getString(R.string.triad_correct_forms_tip_format, verb.base.uppercase(), verb.past, verb.pastParticiple)
             }
             holder.binding.tvErrorNote.text = note
         }

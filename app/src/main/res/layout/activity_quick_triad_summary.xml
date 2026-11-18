@@ -40,7 +40,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="TRÍADA RÁPIDA"
+                android:text="@string/triad_summary_nav_title"
                 android:textColor="?attr/colorPrimary"
                 android:textSize="@dimen/text_label_sm"
                 android:textStyle="bold" />
@@ -48,7 +48,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Resumen de Sesión"
+                android:text="@string/triad_summary_nav_subtitle"
                 android:textColor="?attr/colorOnSurface"
                 android:textSize="@dimen/text_label_lg"
                 android:textStyle="bold" />
@@ -123,10 +123,10 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="4dp"
-                            android:text="⚡ Ronda 10/10"
                             android:textColor="@color/accent_gold"
                             android:textSize="@dimen/text_label_sm"
-                            android:textStyle="bold" />
+                            android:textStyle="bold"
+                            tools:text="Ronda 10/10" />
                     </LinearLayout>
 
                     <TextView
@@ -176,7 +176,7 @@
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="EXP GANADA"
+                                android:text="@string/triad_summary_exp_label"
                                 android:textColor="?attr/colorOnSurfaceVariant"
                                 android:textSize="@dimen/text_label_sm"
                                 android:textStyle="bold" />
@@ -235,7 +235,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Precisión"
+                            android:text="@string/triad_summary_accuracy_label"
                             android:textColor="?attr/colorOnSurfaceVariant"
                             android:textSize="@dimen/text_label_sm" />
 
@@ -280,27 +280,41 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Racha máx."
+                            android:text="@string/triad_summary_streak_label"
                             android:textColor="?attr/colorOnSurfaceVariant"
                             android:textSize="@dimen/text_label_sm" />
 
-                        <TextView
-                            android:id="@+id/tvSummaryMaxStreak"
+                        <LinearLayout
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="2dp"
-                            android:text="🔥 x5"
-                            android:textColor="@color/accent_gold"
-                            android:textSize="@dimen/text_headline_sm"
-                            android:textStyle="bold" />
+                            android:gravity="center_vertical"
+                            android:orientation="horizontal">
+
+                            <ImageView
+                                android:layout_width="16dp"
+                                android:layout_height="16dp"
+                                android:contentDescription="@null"
+                                android:src="@drawable/ic_fire" />
+
+                            <TextView
+                                android:id="@+id/tvSummaryMaxStreak"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="2dp"
+                                android:textColor="@color/accent_gold"
+                                android:textSize="@dimen/text_headline_sm"
+                                android:textStyle="bold"
+                                tools:text="x5" />
+                        </LinearLayout>
 
                         <TextView
                             android:id="@+id/tvSummaryStreakLabel"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="¡Imparable!"
                             android:textColor="?attr/colorOnSurfaceVariant"
-                            android:textSize="@dimen/text_label_sm" />
+                            android:textSize="@dimen/text_label_sm"
+                            tools:text="¡Imparable!" />
                     </LinearLayout>
                 </com.google.android.material.card.MaterialCardView>
 
@@ -325,19 +339,34 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Tiempo"
+                            android:text="@string/triad_summary_time_label"
                             android:textColor="?attr/colorOnSurfaceVariant"
                             android:textSize="@dimen/text_label_sm" />
 
-                        <TextView
-                            android:id="@+id/tvSummaryTime"
+                        <LinearLayout
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="2dp"
-                            android:text="⏱ 01:45"
-                            android:textColor="?attr/colorOnSurface"
-                            android:textSize="@dimen/text_headline_sm"
-                            android:textStyle="bold" />
+                            android:gravity="center_vertical"
+                            android:orientation="horizontal">
+
+                            <ImageView
+                                android:layout_width="16dp"
+                                android:layout_height="16dp"
+                                android:contentDescription="@null"
+                                android:src="@drawable/ic_timer"
+                                app:tint="?attr/colorOnSurface" />
+
+                            <TextView
+                                android:id="@+id/tvSummaryTime"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="3dp"
+                                android:textColor="?attr/colorOnSurface"
+                                android:textSize="@dimen/text_headline_sm"
+                                android:textStyle="bold"
+                                tools:text="01:45" />
+                        </LinearLayout>
 
                         <TextView
                             android:id="@+id/tvSummarySpeedPace"
@@ -430,7 +459,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="Radiografía de Verbos"
+                    android:text="@string/triad_summary_errors_title"
                     android:textColor="?attr/colorOnSurface"
                     android:textSize="@dimen/text_label_md"
                     android:textStyle="bold" />
@@ -448,31 +477,6 @@
             </LinearLayout>
 
             <!-- Spaced Repetition Info Box -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:background="@drawable/bg_matrix_card"
-                android:gravity="center_vertical"
-                android:orientation="horizontal"
-                android:padding="10dp">
-
-                <ImageView
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
-                    android:contentDescription="@null"
-                    android:src="@drawable/ic_shuffle"
-                    app:tint="?attr/colorPrimary" />
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
-                    android:layout_weight="1"
-                    android:text="El algoritmo de repetición espaciada priorizará los verbos que fallaste para asegurar fijación neuro-lingüística."
-                    android:textColor="?attr/colorOnSurfaceVariant"
-                    android:textSize="@dimen/text_label_sm" />
-            </LinearLayout>
 
             <!-- Recycler View of Analyzed Verbs -->
             <androidx.recyclerview.widget.RecyclerView
@@ -506,7 +510,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="10dp"
                     android:layout_weight="1"
-                    android:text="Curva del Olvido Superada: Hacer 1 ronda más en los próximos 10 minutos duplica la retención a largo plazo."
+                    android:text="@string/triad_summary_retention_tip"
                     android:textColor="?attr/colorOnSurface"
                     android:textSize="@dimen/text_label_sm" />
             </LinearLayout>
@@ -530,12 +534,15 @@
             android:id="@+id/btnRetrySession"
             android:layout_width="match_parent"
             android:layout_height="@dimen/button_height"
-            android:text="Practicar Otra Ronda ⚡"
+            android:text="@string/triad_retry_btn"
             android:textColor="?attr/colorOnPrimary"
             android:textSize="@dimen/text_headline_sm"
             android:textStyle="bold"
             app:backgroundTint="?attr/colorPrimary"
-            app:cornerRadius="@dimen/rounded_lg" />
+            app:cornerRadius="@dimen/rounded_lg"
+            app:icon="@drawable/ic_flash"
+            app:iconGravity="textStart"
+            app:iconTint="?attr/colorOnPrimary" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnMainMenu"
@@ -543,7 +550,7 @@
             android:layout_width="match_parent"
             android:layout_height="40dp"
             android:layout_marginTop="2dp"
-            android:text="Volver al Menú Principal"
+            android:text="@string/triad_summary_main_menu"
             android:textColor="?attr/colorOnSurfaceVariant"
             android:textSize="@dimen/text_label_md" />
     </LinearLayout>

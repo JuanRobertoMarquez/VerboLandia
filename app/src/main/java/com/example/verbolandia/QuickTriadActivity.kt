@@ -2,6 +2,7 @@ package com.example.verbolandia
 
 import android.annotation.SuppressLint
 import android.content.Intent
+import android.content.res.ColorStateList
 import android.os.Bundle
 import android.speech.tts.TextToSpeech
 import android.view.View
@@ -31,6 +32,7 @@ class QuickTriadActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
     companion object {
         const val EXTRA_LEVEL = "extra_level"
         private const val SESSION_SIZE = 10
+        private const val STREAK_DIFFICULTY_THRESHOLD = 3
     }
 
     private lateinit var binding: ActivityQuickTriadBinding
@@ -39,7 +41,16 @@ class QuickTriadActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
     private var tts: TextToSpeech? = null
     private var isTtsReady = false
 
-    private var sessionVerbs = mutableListOf<Verb>()
+    // Verbs pools for adaptive difficulty
+    private val allVerbsList = mutableListOf<Verb>()
+    private val basePool = mutableListOf<Verb>()
+    private val hardPool = mutableListOf<Verb>()
+    private val globalPastFormsPool = mutableListOf<String>()
+    private val globalPpFormsPool = mutableListOf<String>()
+
+    private val sessionVerbs = mutableListOf<Verb>()
+    private val usedVerbBases = mutableSetOf<String>()
+
     private var currentIndex = 0
     private var currentStep = 1 // 1 for V2 (Past), 2 for V3 (Participle)
 
@@ -52,17 +63,12 @@ class QuickTriadActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
     private var sessionStartTimeMs = 0L
     private var timerJob: Job? = null
 
-    // Options for current verb
+    // Options for current step
     private var currentOptions = mutableListOf<String>()
-    private var hasMistakeOnCurrentVerb = false
-    private var lastWrongSelection = ""
+    private var isStepLocked = false
 
     // Session Results for the Summary Screen
     private val sessionResults = mutableListOf<TriadVerbResult>()
-
-    // Global pool of real verb forms for dynamic non-repeating distractors
-    private val globalPastFormsPool = mutableListOf<String>()
-    private val globalPpFormsPool = mutableListOf<String>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -107,7 +113,8 @@ class QuickTriadActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
 
         optionCards.forEach { (card, textView) ->
             card.setOnClickListener {
-                val selectedText = textView.text.toString()
+                if (isStepLocked) return@setOnClickListener
+                val selectedText = textView.text.toString().trim()
                 onOptionSelected(selectedText, card)
             }
         }
@@ -125,7 +132,7 @@ class QuickTriadActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
                 val elapsedSec = ((System.currentTimeMillis() - sessionStartTimeMs) / 1000).toInt()
                 val mins = elapsedSec / 60
                 val secs = elapsedSec % 60
-                binding.tvTimerCounter.text = String.format("⏱️ %02d:%02d", mins, secs)
+                binding.tvTimerCounter.text = String.format(Locale.getDefault(), "%02d:%02d", mins, secs)
                 delay(1000)
             }
         }
@@ -133,46 +140,43 @@ class QuickTriadActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
 
     private fun loadSessionVerbs() {
         lifecycleScope.launch {
-            val loaded = withContext(Dispatchers.IO) {
-                // Progressive Difficulty:
-                // 1-3: A1, 4-6: A2, 7-8: B1, 9-10: B2/C1
-                val allVerbs = repository.getCatalogVerbs(category = "ALL", level = "ALL")
+            withContext(Dispatchers.IO) {
+                val catalog = repository.getCatalogVerbs(category = "ALL", level = "ALL")
+                val all = catalog.map { v ->
+                    repository.getVerbByBase(v.base) ?: v
+                }
 
-                // Cache all forms for smart distractors
+                allVerbsList.clear()
+                allVerbsList.addAll(all)
+
                 globalPastFormsPool.clear()
                 globalPpFormsPool.clear()
-                for (v in allVerbs) {
-                    if (v.past.isNotBlank()) globalPastFormsPool.add(v.past)
-                    if (v.pastParticiple.isNotBlank()) globalPpFormsPool.add(v.pastParticiple)
+                for (v in all) {
+                    if (v.past.isNotBlank()) globalPastFormsPool.add(v.past.trim())
+                    if (v.pastParticiple.isNotBlank()) globalPpFormsPool.add(v.pastParticiple.trim())
                 }
 
-                val a1Verbs = allVerbs.filter { it.level.equals("A1", ignoreCase = true) }.shuffled()
-                val a2Verbs = allVerbs.filter { it.level.equals("A2", ignoreCase = true) }.shuffled()
-                val b1Verbs = allVerbs.filter { it.level.equals("B1", ignoreCase = true) }.shuffled()
-                val b2Verbs = allVerbs.filter { it.level.equals("B2", ignoreCase = true) || it.level.equals("C1", ignoreCase = true) }.shuffled()
+                // Base Pool: Random A1 & A2 verbs
+                basePool.clear()
+                basePool.addAll(
+                    all.filter { it.level.equals("A1", ignoreCase = true) || it.level.equals("A2", ignoreCase = true) }.shuffled()
+                )
 
-                val progressiveList = mutableListOf<Verb>()
-                progressiveList.addAll(a1Verbs.take(3))
-                progressiveList.addAll(a2Verbs.take(3))
-                progressiveList.addAll(b1Verbs.take(2))
-                progressiveList.addAll(b2Verbs.take(2))
-
-                // Fallback if any tier didn't have enough
-                if (progressiveList.size < SESSION_SIZE) {
-                    val remaining = allVerbs.filter { it !in progressiveList }.shuffled().take(SESSION_SIZE - progressiveList.size)
-                    progressiveList.addAll(remaining)
-                }
-
-                progressiveList
+                // Hard Pool: B1 & B2 / C1 verbs (especially irregulars)
+                hardPool.clear()
+                hardPool.addAll(
+                    all.filter {
+                        it.level.equals("B1", ignoreCase = true) ||
+                                it.level.equals("B2", ignoreCase = true) ||
+                                it.level.equals("C1", ignoreCase = true)
+                    }.shuffled()
+                )
             }
 
-            if (loaded.isNotEmpty()) {
+            if (allVerbsList.isNotEmpty()) {
                 sessionVerbs.clear()
+                usedVerbBases.clear()
                 sessionResults.clear()
-                for (v in loaded) {
-                    val fullVerb = repository.getVerbByBase(v.base) ?: v
-                    sessionVerbs.add(fullVerb)
-                }
                 currentIndex = 0
                 streak = 0
                 maxStreak = 0
@@ -188,8 +192,32 @@ class QuickTriadActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
         }
     }
 
+    private fun selectNextVerb(): Verb? {
+        // Adaptive difficulty curve driven strictly by live streak:
+        // When streak >= 3, scale up to more challenging B1/B2/C1 verbs.
+        // If streak < 3, keep verbs random in the accessible A1/A2 pool.
+        val candidate: Verb? = if (streak >= STREAK_DIFFICULTY_THRESHOLD) {
+            hardPool.firstOrNull { it.base !in usedVerbBases }
+                ?: basePool.firstOrNull { it.base !in usedVerbBases }
+        } else {
+            basePool.firstOrNull { it.base !in usedVerbBases }
+                ?: hardPool.firstOrNull { it.base !in usedVerbBases }
+        }
+
+        val selected = candidate ?: allVerbsList.firstOrNull { it.base !in usedVerbBases }
+        if (selected != null) {
+            usedVerbBases.add(selected.base)
+            sessionVerbs.add(selected)
+            return selected
+        }
+        return null
+    }
+
     private fun getCurrentVerb(): Verb? {
-        return sessionVerbs.getOrNull(currentIndex)
+        if (currentIndex < sessionVerbs.size) {
+            return sessionVerbs[currentIndex]
+        }
+        return selectNextVerb()
     }
 
     @SuppressLint("SetTextI18n")
@@ -197,82 +225,95 @@ class QuickTriadActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
         val verb = getCurrentVerb() ?: return
 
         currentStep = 1
-        hasMistakeOnCurrentVerb = false
-        lastWrongSelection = ""
+        isStepLocked = false
 
         // Progress Header
         binding.progressBar.progress = currentIndex + 1
-        binding.tvProgressCounter.text = getString(R.string.triad_progress_format, currentIndex + 1, sessionVerbs.size)
+        binding.tvProgressCounter.text = getString(R.string.triad_progress_format, currentIndex + 1, SESSION_SIZE)
         binding.tvStreakCount.text = getString(R.string.triad_streak_format, streak)
 
-        // Subtitle Difficulty Tag
-        binding.tvModeSubtitle.text = "• MODO RÁPIDO • NIVEL ${verb.level.uppercase()} (${currentIndex + 1}/10)"
+        // Adaptive Subtitle Difficulty Tag
+        if (streak >= STREAK_DIFFICULTY_THRESHOLD) {
+            binding.tvModeSubtitle.text = getString(R.string.triad_mode_subtitle_streak, verb.level.uppercase())
+        } else {
+            binding.tvModeSubtitle.text = getString(R.string.triad_mode_subtitle_normal)
+        }
 
         // Hero Card Data
-        val catLabel = if (verb.isIrregular) "IRREGULAR" else "REGULAR"
-        binding.badgeLevel.text = "${verb.level.uppercase()} • $catLabel"
+        val catLabel = if (verb.isIrregular) getString(R.string.triad_badge_irregular) else getString(R.string.triad_badge_regular)
+        binding.badgeLevel.text = getString(R.string.triad_badge_category_format, verb.level.uppercase(), catLabel)
         binding.tvBaseVerb.text = verb.base.uppercase()
-        binding.tvBasePhonetic.text = "${verb.phonetic} • V1 Infinitivo"
-        binding.tvSpanishMeaning.text = verb.spanishMeaning.ifBlank { "Toca para practicar" }
+        binding.tvBasePhonetic.text = getString(R.string.triad_v1_infinitive_format, verb.phonetic.ifBlank { "/${verb.base}/" })
+        binding.tvSpanishMeaning.text = verb.spanishMeaning.ifBlank { verb.base }
 
-        // Slot 1 (V1)
+        // Slot 1 (V1 Base - Always Completed)
         binding.tvSlotV1Val.text = verb.base
-        binding.tvSlotV1Ipa.text = verb.ipaBase.ifBlank { verb.phonetic }
+        binding.tvSlotV1Ipa.text = verb.ipaBase.ifBlank { verb.phonetic.ifBlank { "/${verb.base}/" } }
 
-        // Slot 2 (V2) - Active target
+        // Slot 2 (V2 Pasado - Active Target in Step 1)
         binding.slotV2.setBackgroundResource(R.drawable.bg_triad_slot_active)
         binding.tvSlotV2Val.text = "?"
         binding.tvSlotV2Ipa.text = "--"
 
-        // Slot 3 (V3) - Locked
+        // Slot 3 (V3 Participio - Locked until Step 1 Completed)
         binding.slotV3.setBackgroundResource(R.drawable.bg_triad_slot_normal)
         binding.tvSlotV3Val.text = "?"
-        binding.tvSlotV3Ipa.text = "Bloqueado"
+        binding.tvSlotV3Ipa.text = getString(R.string.triad_locked_label)
 
-        // Instruction
+        // Current Instruction
         binding.tvCurrentInstruction.text = getString(R.string.triad_select_v2)
         binding.cardFeedback.visibility = View.GONE
 
-        // Generate 4 dynamic options
-        generateOptions(verb)
+        // Generate 4 dynamic options for V2
+        generateOptions(verb, targetStep = 1)
         renderOptions()
     }
 
-    private fun generateOptions(verb: Verb) {
-        val options = mutableSetOf<String>()
+    private fun generateOptions(verb: Verb, targetStep: Int) {
+        val options = LinkedHashSet<String>()
 
-        // 1. Correct Past (V2)
-        options.add(verb.past)
+        val targetCorrect = if (targetStep == 1) verb.past.trim() else verb.pastParticiple.trim()
+        val alternateForm = if (targetStep == 1) verb.pastParticiple.trim() else verb.past.trim()
 
-        // 2. Correct Participle (V3)
-        options.add(verb.pastParticiple)
+        // 1. Correct form
+        if (targetCorrect.isNotBlank()) {
+            options.add(targetCorrect)
+        }
 
-        // 3. Regularization Trap (-ed mistake for irregulars, or irregular variation for regulars)
+        // 2. Alternate triad form (natural distractor if different)
+        if (alternateForm.isNotBlank() && alternateForm != targetCorrect) {
+            options.add(alternateForm)
+        }
+
+        // 3. Morphological distractor trap
         if (verb.isIrregular) {
-            val fakeEd = if (verb.base.endsWith("e")) "${verb.base}d" else "${verb.base}ed"
-            if (fakeEd != verb.past && fakeEd != verb.pastParticiple) {
+            val fakeEd = if (verb.base.endsWith("e", ignoreCase = true)) "${verb.base}d" else "${verb.base}ed"
+            if (fakeEd != targetCorrect && fakeEd != alternateForm) {
                 options.add(fakeEd)
             }
         } else {
-            // For regulars, add a trap ending in -en or vowel change if possible
-            options.add("${verb.base}en")
-        }
-
-        // 4. Sample clever non-repeating distractor from global pool
-        val candidatePool = (globalPastFormsPool + globalPpFormsPool).shuffled()
-        for (candidate in candidatePool) {
-            if (options.size >= 4) break
-            if (candidate !in options && !candidate.equals(verb.base, ignoreCase = true)) {
-                options.add(candidate)
+            val fakeEn = "${verb.base}en"
+            if (fakeEn != targetCorrect) {
+                options.add(fakeEn)
             }
         }
 
-        // Fallback
-        if (options.size < 4 && verb.gerund.isNotBlank() && verb.gerund !in options) {
-            options.add(verb.gerund)
+        // 4. Gerund as an additional distractor
+        if (verb.gerund.isNotBlank() && verb.gerund !in options && verb.gerund != verb.base) {
+            options.add(verb.gerund.trim())
         }
 
-        currentOptions = options.shuffled().toMutableList()
+        // 5. Fill remaining slots from global pool of real forms to ensure 4 unique choices
+        val formsPool = (globalPastFormsPool + globalPpFormsPool).shuffled()
+        for (candidate in formsPool) {
+            if (options.size >= 4) break
+            val clean = candidate.trim()
+            if (clean !in options && !clean.equals(verb.base, ignoreCase = true)) {
+                options.add(clean)
+            }
+        }
+
+        currentOptions = options.shuffled().take(4).toMutableList()
     }
 
     private fun renderOptions() {
@@ -305,69 +346,70 @@ class QuickTriadActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
         val verb = getCurrentVerb() ?: return
 
         if (currentStep == 1) {
-            // Target: V2 (Past Simple)
-            if (selectedText.equals(verb.past, ignoreCase = true)) {
-                // Correct V2!
-                card.setCardBackgroundColor(ContextCompat.getColor(this, R.color.surface_container_high))
-                card.strokeColor = ContextCompat.getColor(this, R.color.success)
-
+            // STEP 1: Verifying V2 (Past Simple)
+            if (selectedText.equals(verb.past.trim(), ignoreCase = true)) {
+                // Correct V2! Fill slot V2 and unlock slot V3
                 binding.slotV2.setBackgroundResource(R.drawable.bg_triad_slot_completed)
                 binding.tvSlotV2Val.text = verb.past
                 binding.tvSlotV2Ipa.text = verb.ipaPast.ifBlank { "/${verb.past}/" }
 
                 // Unlock Slot 3
                 binding.slotV3.setBackgroundResource(R.drawable.bg_triad_slot_active)
+                binding.tvSlotV3Val.text = "?"
                 binding.tvSlotV3Ipa.text = "--"
                 binding.tvCurrentInstruction.text = getString(R.string.triad_select_v3)
 
+                // Advance to Step 2 with fresh options
                 currentStep = 2
+                generateOptions(verb, targetStep = 2)
+                renderOptions()
             } else {
-                lastWrongSelection = selectedText
-                handleMistake(card, verb.base)
+                // SINGLE ATTEMPT RULE: Immediate failure on V2!
+                handleSingleAttemptFailure(
+                    verb = verb,
+                    failedStep = 1,
+                    selectedCard = card,
+                    selectedText = selectedText,
+                    expectedAnswer = verb.past
+                )
             }
         } else if (currentStep == 2) {
-            // Target: V3 (Past Participle)
-            if (selectedText.equals(verb.pastParticiple, ignoreCase = true)) {
-                // Correct V3!
-                card.setCardBackgroundColor(ContextCompat.getColor(this, R.color.surface_container_high))
-                card.strokeColor = ContextCompat.getColor(this, R.color.success)
-
-                binding.slotV3.setBackgroundResource(R.drawable.bg_triad_slot_completed)
-                binding.tvSlotV3Val.text = verb.pastParticiple
-                binding.tvSlotV3Ipa.text = verb.ipaParticiple.ifBlank { "/${verb.pastParticiple}/" }
-
-                onTriadCompleted(verb)
+            // STEP 2: Verifying V3 (Past Participle)
+            if (selectedText.equals(verb.pastParticiple.trim(), ignoreCase = true)) {
+                // Correct V3! Success on entire triad
+                handleTriadSuccess(verb, card)
             } else {
-                lastWrongSelection = selectedText
-                handleMistake(card, verb.base)
+                // SINGLE ATTEMPT RULE: Immediate failure on V3!
+                handleSingleAttemptFailure(
+                    verb = verb,
+                    failedStep = 2,
+                    selectedCard = card,
+                    selectedText = selectedText,
+                    expectedAnswer = verb.pastParticiple
+                )
             }
         }
     }
 
-    private fun handleMistake(card: MaterialCardView, verbBase: String) {
-        hasMistakeOnCurrentVerb = true
-        streak = 0
-        binding.tvStreakCount.text = getString(R.string.triad_streak_format, streak)
+    private fun handleTriadSuccess(verb: Verb, winningCard: MaterialCardView) {
+        isStepLocked = true
+        disableAllOptionCards()
 
-        card.strokeColor = ContextCompat.getColor(this, R.color.error)
-        val shake = AnimationUtils.loadAnimation(this, android.R.anim.fade_in)
-        card.startAnimation(shake)
+        // Highlight winning card in success color
+        winningCard.strokeColor = ContextCompat.getColor(this, R.color.success)
+        winningCard.setCardBackgroundColor(ContextCompat.getColor(this, R.color.surface_container_high))
 
-        lifecycleScope.launch {
-            repository.recordPracticeAttempt(verbBase, isCorrect = false, mode = "Tríada Rápida")
+        // Complete slot V3
+        binding.slotV3.setBackgroundResource(R.drawable.bg_triad_slot_completed)
+        binding.tvSlotV3Val.text = verb.pastParticiple
+        binding.tvSlotV3Ipa.text = verb.ipaParticiple.ifBlank { "/${verb.pastParticiple}/" }
+
+        // Increase streak and score
+        streak++
+        if (streak > maxStreak) {
+            maxStreak = streak
         }
-    }
-
-    @SuppressLint("SetTextI18n")
-    private fun onTriadCompleted(verb: Verb) {
-        val isFirstTryClean = !hasMistakeOnCurrentVerb
-        if (isFirstTryClean) {
-            streak++
-            correctCount++
-            if (streak > maxStreak) {
-                maxStreak = streak
-            }
-        }
+        correctCount++
 
         val comboBonus = streak * 3
         val gainedExp = 10 + comboBonus
@@ -375,40 +417,46 @@ class QuickTriadActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
 
         binding.tvStreakCount.text = getString(R.string.triad_streak_format, streak)
 
-        // Record verb result for the Summary Radiography Screen
+        // Record successful result for the Summary Screen
         sessionResults.add(
             TriadVerbResult(
                 verb = verb,
-                isCorrect = isFirstTryClean,
-                wrongSelection = lastWrongSelection,
-                correctExpected = if (currentStep == 1) verb.past else verb.pastParticiple
+                isCorrect = true,
+                wrongSelection = "",
+                correctExpected = ""
             )
         )
 
-        // TTS Pronunciation
+        // Pronounce correct full triad with TTS
         speakText("${verb.base}, ${verb.past}, ${verb.pastParticiple}")
 
-        // Save practice attempt to database
+        // Save progress to database
         lifecycleScope.launch {
-            repository.recordPracticeAttempt(verb.base, isCorrect = isFirstTryClean, mode = "Tríada Rápida")
+            repository.recordPracticeAttempt(verb.base, isCorrect = true, mode = "Tríada Rápida")
         }
 
-        // Feedback Card
-        binding.tvFeedbackTitle.text = "+$gainedExp EXP"
-        binding.tvFeedbackComboBadge.text = getString(R.string.triad_combo_format, if (streak > 0) streak else 1)
+        // Configure Success Feedback Card
+        binding.ivFeedbackIcon.setImageResource(R.drawable.ic_check)
+        binding.ivFeedbackIcon.imageTintList = ColorStateList.valueOf(ContextCompat.getColor(this, R.color.success))
+        binding.tvFeedbackTitle.text = getString(R.string.triad_correct_streak_title, gainedExp)
+        binding.tvFeedbackTitle.setTextColor(ContextCompat.getColor(this, R.color.success))
+
+        binding.tvFeedbackComboBadge.visibility = View.VISIBLE
+        binding.tvFeedbackComboBadge.text = getString(R.string.triad_combo_format, streak)
+        binding.tvFeedbackSubtitle.visibility = View.GONE
 
         val tipText = if (verb.commonErrorTip.isNotBlank()) {
             verb.commonErrorTip
         } else {
-            "Formas de ${verb.base.uppercase()}: Pasado (${verb.past}) y Participio (${verb.pastParticiple})."
+            getString(R.string.triad_correct_forms_tip_format, verb.base.uppercase(), verb.past, verb.pastParticiple)
         }
         binding.tvFeedbackTip.text = tipText
 
         val exampleSentence = verb.tenses.firstOrNull { it.affirmativeEn.isNotBlank() }?.affirmativeEn
-            ?: "Ejemplo: They ${verb.past} yesterday."
-        binding.tvFeedbackExample.text = "💡 $exampleSentence"
+            ?: "They ${verb.past} yesterday."
+        binding.tvFeedbackExample.text = getString(R.string.triad_example_format, exampleSentence)
 
-        if (currentIndex == sessionVerbs.size - 1) {
+        if (currentIndex == SESSION_SIZE - 1) {
             binding.btnNextVerb.text = getString(R.string.triad_complete_button)
         } else {
             binding.btnNextVerb.text = getString(R.string.triad_next_button)
@@ -417,8 +465,115 @@ class QuickTriadActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
         binding.cardFeedback.visibility = View.VISIBLE
     }
 
+    private fun handleSingleAttemptFailure(
+        verb: Verb,
+        failedStep: Int,
+        selectedCard: MaterialCardView,
+        selectedText: String,
+        expectedAnswer: String
+    ) {
+        isStepLocked = true
+        disableAllOptionCards()
+
+        // Highlight selected wrong card with red error
+        selectedCard.strokeColor = ContextCompat.getColor(this, R.color.error)
+        selectedCard.setCardBackgroundColor(ContextCompat.getColor(this, R.color.error_container))
+        val shake = AnimationUtils.loadAnimation(this, android.R.anim.fade_in)
+        selectedCard.startAnimation(shake)
+
+        // Reveal the correct option card in green if present among options
+        highlightCorrectCard(expectedAnswer)
+
+        // Reveal BOTH missing slots V2 and V3 so the user learns the full correct triad
+        binding.slotV2.setBackgroundResource(R.drawable.bg_triad_slot_completed)
+        binding.tvSlotV2Val.text = verb.past
+        binding.tvSlotV2Ipa.text = verb.ipaPast.ifBlank { "/${verb.past}/" }
+
+        binding.slotV3.setBackgroundResource(R.drawable.bg_triad_slot_completed)
+        binding.tvSlotV3Val.text = verb.pastParticiple
+        binding.tvSlotV3Ipa.text = verb.ipaParticiple.ifBlank { "/${verb.pastParticiple}/" }
+
+        // Reset streak to 0
+        streak = 0
+        binding.tvStreakCount.text = getString(R.string.triad_streak_format, streak)
+
+        // Record failed result for the Radiography Summary
+        sessionResults.add(
+            TriadVerbResult(
+                verb = verb,
+                isCorrect = false,
+                wrongSelection = selectedText,
+                correctExpected = expectedAnswer
+            )
+        )
+
+        // Pronounce full correct triad with TTS so user hears proper pronunciation
+        speakText("${verb.base}, ${verb.past}, ${verb.pastParticiple}")
+
+        // Save attempt to database
+        lifecycleScope.launch {
+            repository.recordPracticeAttempt(verb.base, isCorrect = false, mode = "Tríada Rápida")
+        }
+
+        // Configure Error Feedback Card
+        binding.ivFeedbackIcon.setImageResource(R.drawable.ic_warning)
+        binding.ivFeedbackIcon.imageTintList = ColorStateList.valueOf(ContextCompat.getColor(this, R.color.error))
+        binding.tvFeedbackTitle.text = getString(R.string.triad_incorrect_title)
+        binding.tvFeedbackTitle.setTextColor(ContextCompat.getColor(this, R.color.error))
+
+        binding.tvFeedbackComboBadge.visibility = View.GONE
+        binding.tvFeedbackSubtitle.visibility = View.VISIBLE
+        binding.tvFeedbackSubtitle.text = getString(R.string.triad_incorrect_subtitle, expectedAnswer)
+
+        val tipText = if (verb.commonErrorTip.isNotBlank()) {
+            verb.commonErrorTip
+        } else {
+            getString(R.string.triad_correct_forms_tip_format, verb.base.uppercase(), verb.past, verb.pastParticiple)
+        }
+        binding.tvFeedbackTip.text = tipText
+
+        val exampleSentence = verb.tenses.firstOrNull { it.affirmativeEn.isNotBlank() }?.affirmativeEn
+            ?: "They ${verb.past} yesterday."
+        binding.tvFeedbackExample.text = getString(R.string.triad_example_format, exampleSentence)
+
+        if (currentIndex == SESSION_SIZE - 1) {
+            binding.btnNextVerb.text = getString(R.string.triad_complete_button)
+        } else {
+            binding.btnNextVerb.text = getString(R.string.triad_next_button)
+        }
+
+        binding.cardFeedback.visibility = View.VISIBLE
+    }
+
+    private fun highlightCorrectCard(correctAnswer: String) {
+        val optionCards = listOf(
+            binding.cardOpt1 to binding.tvOpt1,
+            binding.cardOpt2 to binding.tvOpt2,
+            binding.cardOpt3 to binding.tvOpt3,
+            binding.cardOpt4 to binding.tvOpt4
+        )
+
+        for ((card, textView) in optionCards) {
+            if (textView.text.toString().trim().equals(correctAnswer.trim(), ignoreCase = true)) {
+                card.strokeColor = ContextCompat.getColor(this, R.color.success)
+                card.setCardBackgroundColor(ContextCompat.getColor(this, R.color.surface_container_high))
+                break
+            }
+        }
+    }
+
+    private fun disableAllOptionCards() {
+        val optionCards = listOf(
+            binding.cardOpt1,
+            binding.cardOpt2,
+            binding.cardOpt3,
+            binding.cardOpt4
+        )
+        optionCards.forEach { it.isEnabled = false }
+    }
+
     private fun advanceToNextVerb() {
-        if (currentIndex < sessionVerbs.size - 1) {
+        if (currentIndex < SESSION_SIZE - 1) {
             currentIndex++
             renderCurrentVerb()
         } else {
