@@ -1,7 +1,7 @@
 package com.example.verbolandia
 
 import android.annotation.SuppressLint
-import android.content.res.ColorStateList
+import android.content.Intent
 import android.os.Bundle
 import android.speech.tts.TextToSpeech
 import android.view.View
@@ -15,10 +15,13 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.lifecycleScope
 import com.example.verbolandia.data.VerbRepository
 import com.example.verbolandia.databinding.ActivityQuickTriadBinding
+import com.example.verbolandia.model.TriadVerbResult
 import com.example.verbolandia.model.Verb
 import com.google.android.material.card.MaterialCardView
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.util.Locale
@@ -45,9 +48,21 @@ class QuickTriadActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
     private var totalExp = 0
     private var correctCount = 0
 
+    // Timing
+    private var sessionStartTimeMs = 0L
+    private var timerJob: Job? = null
+
     // Options for current verb
     private var currentOptions = mutableListOf<String>()
     private var hasMistakeOnCurrentVerb = false
+    private var lastWrongSelection = ""
+
+    // Session Results for the Summary Screen
+    private val sessionResults = mutableListOf<TriadVerbResult>()
+
+    // Global pool of real verb forms for dynamic non-repeating distractors
+    private val globalPastFormsPool = mutableListOf<String>()
+    private val globalPpFormsPool = mutableListOf<String>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -90,7 +105,7 @@ class QuickTriadActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
             binding.cardOpt4 to binding.tvOpt4
         )
 
-        optionCards.forEachIndexed { index, (card, textView) ->
+        optionCards.forEach { (card, textView) ->
             card.setOnClickListener {
                 val selectedText = textView.text.toString()
                 onOptionSelected(selectedText, card)
@@ -102,25 +117,69 @@ class QuickTriadActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
         }
     }
 
-    private fun loadSessionVerbs() {
-        val level = intent.getStringExtra(EXTRA_LEVEL) ?: "ALL"
+    private fun startSessionTimer() {
+        sessionStartTimeMs = System.currentTimeMillis()
+        timerJob?.cancel()
+        timerJob = lifecycleScope.launch {
+            while (isActive) {
+                val elapsedSec = ((System.currentTimeMillis() - sessionStartTimeMs) / 1000).toInt()
+                val mins = elapsedSec / 60
+                val secs = elapsedSec % 60
+                binding.tvTimerCounter.text = String.format("⏱️ %02d:%02d", mins, secs)
+                delay(1000)
+            }
+        }
+    }
 
+    private fun loadSessionVerbs() {
         lifecycleScope.launch {
             val loaded = withContext(Dispatchers.IO) {
-                // Fetch catalog verbs and prioritize irregular or common ones
-                val all = repository.getCatalogVerbs(category = "IRREGULAR", level = level)
-                val pool = if (all.size >= SESSION_SIZE) all else repository.getCatalogVerbs(category = "ALL", level = level)
-                pool.shuffled().take(SESSION_SIZE)
+                // Progressive Difficulty:
+                // 1-3: A1, 4-6: A2, 7-8: B1, 9-10: B2/C1
+                val allVerbs = repository.getCatalogVerbs(category = "ALL", level = "ALL")
+
+                // Cache all forms for smart distractors
+                globalPastFormsPool.clear()
+                globalPpFormsPool.clear()
+                for (v in allVerbs) {
+                    if (v.past.isNotBlank()) globalPastFormsPool.add(v.past)
+                    if (v.pastParticiple.isNotBlank()) globalPpFormsPool.add(v.pastParticiple)
+                }
+
+                val a1Verbs = allVerbs.filter { it.level.equals("A1", ignoreCase = true) }.shuffled()
+                val a2Verbs = allVerbs.filter { it.level.equals("A2", ignoreCase = true) }.shuffled()
+                val b1Verbs = allVerbs.filter { it.level.equals("B1", ignoreCase = true) }.shuffled()
+                val b2Verbs = allVerbs.filter { it.level.equals("B2", ignoreCase = true) || it.level.equals("C1", ignoreCase = true) }.shuffled()
+
+                val progressiveList = mutableListOf<Verb>()
+                progressiveList.addAll(a1Verbs.take(3))
+                progressiveList.addAll(a2Verbs.take(3))
+                progressiveList.addAll(b1Verbs.take(2))
+                progressiveList.addAll(b2Verbs.take(2))
+
+                // Fallback if any tier didn't have enough
+                if (progressiveList.size < SESSION_SIZE) {
+                    val remaining = allVerbs.filter { it !in progressiveList }.shuffled().take(SESSION_SIZE - progressiveList.size)
+                    progressiveList.addAll(remaining)
+                }
+
+                progressiveList
             }
 
             if (loaded.isNotEmpty()) {
                 sessionVerbs.clear()
-                // Enrich verbs with their tenses from DB
+                sessionResults.clear()
                 for (v in loaded) {
                     val fullVerb = repository.getVerbByBase(v.base) ?: v
                     sessionVerbs.add(fullVerb)
                 }
                 currentIndex = 0
+                streak = 0
+                maxStreak = 0
+                totalExp = 0
+                correctCount = 0
+
+                startSessionTimer()
                 renderCurrentVerb()
             } else {
                 Toast.makeText(this@QuickTriadActivity, "No se encontraron verbos para la sesión", Toast.LENGTH_SHORT).show()
@@ -139,11 +198,15 @@ class QuickTriadActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
 
         currentStep = 1
         hasMistakeOnCurrentVerb = false
+        lastWrongSelection = ""
 
-        // Update Progress & Streak Header
+        // Progress Header
         binding.progressBar.progress = currentIndex + 1
         binding.tvProgressCounter.text = getString(R.string.triad_progress_format, currentIndex + 1, sessionVerbs.size)
         binding.tvStreakCount.text = getString(R.string.triad_streak_format, streak)
+
+        // Subtitle Difficulty Tag
+        binding.tvModeSubtitle.text = "• MODO RÁPIDO • NIVEL ${verb.level.uppercase()} (${currentIndex + 1}/10)"
 
         // Hero Card Data
         val catLabel = if (verb.isIrregular) "IRREGULAR" else "REGULAR"
@@ -166,7 +229,7 @@ class QuickTriadActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
         binding.tvSlotV3Val.text = "?"
         binding.tvSlotV3Ipa.text = "Bloqueado"
 
-        // Reset Instruction
+        // Instruction
         binding.tvCurrentInstruction.text = getString(R.string.triad_select_v2)
         binding.cardFeedback.visibility = View.GONE
 
@@ -184,25 +247,29 @@ class QuickTriadActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
         // 2. Correct Participle (V3)
         options.add(verb.pastParticiple)
 
-        // 3. Fake Regular Form (-ed mistake)
-        val fakeEd = if (verb.base.endsWith("e")) "${verb.base}d" else "${verb.base}ed"
-        if (fakeEd != verb.past && fakeEd != verb.pastParticiple) {
-            options.add(fakeEd)
-        }
-
-        // 4. Common mistake or Gerund or typo
-        if (verb.gerund.isNotBlank() && verb.gerund != verb.past && verb.gerund != verb.pastParticiple) {
-            options.add(verb.gerund)
-        }
-
-        // Fill with random other verbs' past if we still don't have 4 unique options
-        var attempts = 0
-        while (options.size < 4 && attempts < sessionVerbs.size) {
-            val randomPast = sessionVerbs[attempts].past
-            if (randomPast != verb.past && randomPast != verb.pastParticiple) {
-                options.add(randomPast)
+        // 3. Regularization Trap (-ed mistake for irregulars, or irregular variation for regulars)
+        if (verb.isIrregular) {
+            val fakeEd = if (verb.base.endsWith("e")) "${verb.base}d" else "${verb.base}ed"
+            if (fakeEd != verb.past && fakeEd != verb.pastParticiple) {
+                options.add(fakeEd)
             }
-            attempts++
+        } else {
+            // For regulars, add a trap ending in -en or vowel change if possible
+            options.add("${verb.base}en")
+        }
+
+        // 4. Sample clever non-repeating distractor from global pool
+        val candidatePool = (globalPastFormsPool + globalPpFormsPool).shuffled()
+        for (candidate in candidatePool) {
+            if (options.size >= 4) break
+            if (candidate !in options && !candidate.equals(verb.base, ignoreCase = true)) {
+                options.add(candidate)
+            }
+        }
+
+        // Fallback
+        if (options.size < 4 && verb.gerund.isNotBlank() && verb.gerund !in options) {
+            options.add(verb.gerund)
         }
 
         currentOptions = options.shuffled().toMutableList()
@@ -238,7 +305,7 @@ class QuickTriadActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
         val verb = getCurrentVerb() ?: return
 
         if (currentStep == 1) {
-            // Looking for V2 (Past Simple)
+            // Target: V2 (Past Simple)
             if (selectedText.equals(verb.past, ignoreCase = true)) {
                 // Correct V2!
                 card.setCardBackgroundColor(ContextCompat.getColor(this, R.color.surface_container_high))
@@ -255,12 +322,13 @@ class QuickTriadActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
 
                 currentStep = 2
             } else {
+                lastWrongSelection = selectedText
                 handleMistake(card, verb.base)
             }
         } else if (currentStep == 2) {
-            // Looking for V3 (Past Participle)
+            // Target: V3 (Past Participle)
             if (selectedText.equals(verb.pastParticiple, ignoreCase = true)) {
-                // Correct V3! Triad Complete!
+                // Correct V3!
                 card.setCardBackgroundColor(ContextCompat.getColor(this, R.color.surface_container_high))
                 card.strokeColor = ContextCompat.getColor(this, R.color.success)
 
@@ -270,6 +338,7 @@ class QuickTriadActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
 
                 onTriadCompleted(verb)
             } else {
+                lastWrongSelection = selectedText
                 handleMistake(card, verb.base)
             }
         }
@@ -291,7 +360,8 @@ class QuickTriadActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
 
     @SuppressLint("SetTextI18n")
     private fun onTriadCompleted(verb: Verb) {
-        if (!hasMistakeOnCurrentVerb) {
+        val isFirstTryClean = !hasMistakeOnCurrentVerb
+        if (isFirstTryClean) {
             streak++
             correctCount++
             if (streak > maxStreak) {
@@ -299,20 +369,31 @@ class QuickTriadActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
             }
         }
 
-        val gainedExp = 10 + (streak * 2)
+        val comboBonus = streak * 3
+        val gainedExp = 10 + comboBonus
         totalExp += gainedExp
 
         binding.tvStreakCount.text = getString(R.string.triad_streak_format, streak)
 
-        // Pronounce full triad: "choose... chose... chosen"
+        // Record verb result for the Summary Radiography Screen
+        sessionResults.add(
+            TriadVerbResult(
+                verb = verb,
+                isCorrect = isFirstTryClean,
+                wrongSelection = lastWrongSelection,
+                correctExpected = if (currentStep == 1) verb.past else verb.pastParticiple
+            )
+        )
+
+        // TTS Pronunciation
         speakText("${verb.base}, ${verb.past}, ${verb.pastParticiple}")
 
-        // Save progress to database
+        // Save practice attempt to database
         lifecycleScope.launch {
-            repository.recordPracticeAttempt(verb.base, isCorrect = !hasMistakeOnCurrentVerb, mode = "Tríada Rápida")
+            repository.recordPracticeAttempt(verb.base, isCorrect = isFirstTryClean, mode = "Tríada Rápida")
         }
 
-        // Display pedagogical feedback
+        // Feedback Card
         binding.tvFeedbackTitle.text = "+$gainedExp EXP"
         binding.tvFeedbackComboBadge.text = getString(R.string.triad_combo_format, if (streak > 0) streak else 1)
 
@@ -323,12 +404,10 @@ class QuickTriadActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
         }
         binding.tvFeedbackTip.text = tipText
 
-        // Natural sentence example from tenses if available
         val exampleSentence = verb.tenses.firstOrNull { it.affirmativeEn.isNotBlank() }?.affirmativeEn
             ?: "Ejemplo: They ${verb.past} yesterday."
         binding.tvFeedbackExample.text = "💡 $exampleSentence"
 
-        // Next or Finish Button text
         if (currentIndex == sessionVerbs.size - 1) {
             binding.btnNextVerb.text = getString(R.string.triad_complete_button)
         } else {
@@ -343,31 +422,25 @@ class QuickTriadActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
             currentIndex++
             renderCurrentVerb()
         } else {
-            showSessionSummaryDialog()
+            showSessionSummaryScreen()
         }
     }
 
-    private fun showSessionSummaryDialog() {
-        val accuracy = if (sessionVerbs.isNotEmpty()) (correctCount * 100) / sessionVerbs.size else 0
-        val msg = """
-            ${getString(R.string.triad_score_format, totalExp)}
-            ${getString(R.string.triad_accuracy_format, correctCount, sessionVerbs.size, accuracy)}
-            Racha Máxima: 🔥 x$maxStreak
-        """.trimIndent()
+    private fun showSessionSummaryScreen() {
+        timerJob?.cancel()
+        val elapsedSec = ((System.currentTimeMillis() - sessionStartTimeMs) / 1000).toInt()
 
-        MaterialAlertDialogBuilder(this)
-            .setTitle(getString(R.string.triad_finished_title))
-            .setMessage(msg)
-            .setPositiveButton(getString(R.string.triad_finish_btn)) { d, _ ->
-                d.dismiss()
-                finish()
-            }
-            .setNegativeButton(getString(R.string.triad_retry_btn)) { d, _ ->
-                d.dismiss()
-                loadSessionVerbs()
-            }
-            .setCancelable(false)
-            .show()
+        val intent = Intent(this, QuickTriadSummaryActivity::class.java).apply {
+            putExtra(QuickTriadSummaryActivity.EXTRA_EXP, totalExp)
+            putExtra(QuickTriadSummaryActivity.EXTRA_CORRECT, correctCount)
+            putExtra(QuickTriadSummaryActivity.EXTRA_TOTAL, sessionVerbs.size)
+            putExtra(QuickTriadSummaryActivity.EXTRA_MAX_STREAK, maxStreak)
+            putExtra(QuickTriadSummaryActivity.EXTRA_TIME_SECONDS, elapsedSec)
+            putExtra(QuickTriadSummaryActivity.EXTRA_COMBO_BONUS, maxStreak * 5)
+            putExtra(QuickTriadSummaryActivity.EXTRA_RESULTS, ArrayList(sessionResults))
+        }
+        startActivity(intent)
+        finish()
     }
 
     override fun onInit(status: Int) {
@@ -386,6 +459,7 @@ class QuickTriadActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
     }
 
     override fun onDestroy() {
+        timerJob?.cancel()
         tts?.stop()
         tts?.shutdown()
         super.onDestroy()

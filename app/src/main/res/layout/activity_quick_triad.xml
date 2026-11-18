@@ -109,11 +109,42 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:orientation="vertical"
             android:paddingHorizontal="@dimen/margin"
             android:paddingTop="@dimen/spacing_sm"
             android:paddingBottom="@dimen/spacing_lg">
+
+            <!-- Subheader Gamification Bar -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:layout_marginBottom="@dimen/spacing_xs">
+
+                <TextView
+                    android:id="@+id/tvModeSubtitle"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="• MODO RÁPIDO • DIFICULTAD ADAPTATIVA"
+                    android:textColor="?attr/colorPrimary"
+                    android:textSize="@dimen/text_label_sm"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/tvTimerCounter"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/bg_pill_detail_badge"
+                    android:paddingHorizontal="10dp"
+                    android:paddingVertical="3dp"
+                    android:text="⏱️ 00:00"
+                    android:textColor="?attr/colorOnSurfaceVariant"
+                    android:textSize="@dimen/text_label_sm"
+                    android:textStyle="bold" />
+            </LinearLayout>
 
             <!-- Hero Verb Card -->
             <com.google.android.material.card.MaterialCardView
@@ -218,7 +249,7 @@
                 <LinearLayout
                     android:id="@+id/slotV1"
                     android:layout_width="0dp"
-                    android:layout_height="wrap_content"
+                    android:layout_height="72dp"
                     android:layout_marginEnd="4dp"
                     android:layout_weight="1"
                     android:background="@drawable/bg_triad_slot_completed"
@@ -258,7 +289,7 @@
                 <LinearLayout
                     android:id="@+id/slotV2"
                     android:layout_width="0dp"
-                    android:layout_height="wrap_content"
+                    android:layout_height="72dp"
                     android:layout_marginHorizontal="2dp"
                     android:layout_weight="1"
                     android:background="@drawable/bg_triad_slot_active"
@@ -298,7 +329,7 @@
                 <LinearLayout
                     android:id="@+id/slotV3"
                     android:layout_width="0dp"
-                    android:layout_height="wrap_content"
+                    android:layout_height="72dp"
                     android:layout_marginStart="4dp"
                     android:layout_weight="1"
                     android:background="@drawable/bg_triad_slot_normal"
@@ -379,8 +410,8 @@
                     <com.google.android.material.card.MaterialCardView
                         android:id="@+id/cardOpt1"
                         android:layout_width="0dp"
-                        android:layout_height="64dp"
-                        android:layout_marginEnd="4dp"
+                        android:layout_height="76dp"
+                        android:layout_marginEnd="6dp"
                         android:layout_weight="1"
                         app:cardBackgroundColor="?attr/colorSurfaceContainerLow"
                         app:cardCornerRadius="@dimen/rounded_md"
@@ -403,8 +434,8 @@
                     <com.google.android.material.card.MaterialCardView
                         android:id="@+id/cardOpt2"
                         android:layout_width="0dp"
-                        android:layout_height="64dp"
-                        android:layout_marginStart="4dp"
+                        android:layout_height="76dp"
+                        android:layout_marginStart="6dp"
                         android:layout_weight="1"
                         app:cardBackgroundColor="?attr/colorSurfaceContainerLow"
                         app:cardCornerRadius="@dimen/rounded_md"
@@ -427,15 +458,15 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/spacing_sm"
+                    android:layout_marginTop="10dp"
                     android:orientation="horizontal">
 
                     <!-- Option 3 -->
                     <com.google.android.material.card.MaterialCardView
                         android:id="@+id/cardOpt3"
                         android:layout_width="0dp"
-                        android:layout_height="64dp"
-                        android:layout_marginEnd="4dp"
+                        android:layout_height="76dp"
+                        android:layout_marginEnd="6dp"
                         android:layout_weight="1"
                         app:cardBackgroundColor="?attr/colorSurfaceContainerLow"
                         app:cardCornerRadius="@dimen/rounded_md"
@@ -458,8 +489,8 @@
                     <com.google.android.material.card.MaterialCardView
                         android:id="@+id/cardOpt4"
                         android:layout_width="0dp"
-                        android:layout_height="64dp"
-                        android:layout_marginStart="4dp"
+                        android:layout_height="76dp"
+                        android:layout_marginStart="6dp"
                         android:layout_weight="1"
                         app:cardBackgroundColor="?attr/colorSurfaceContainerLow"
                         app:cardCornerRadius="@dimen/rounded_md"

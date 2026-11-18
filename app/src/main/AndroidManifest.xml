@@ -36,6 +36,11 @@
             android:parentActivityName=".MainActivity" />
 
         <activity
+            android:name=".QuickTriadSummaryActivity"
+            android:exported="false"
+            android:parentActivityName=".MainActivity" />
+
+        <activity
             android:name=".VerbBilliardsActivity"
             android:exported="false"
             android:parentActivityName=".MainActivity" />
