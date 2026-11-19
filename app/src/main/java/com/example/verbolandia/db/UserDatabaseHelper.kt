@@ -365,6 +365,28 @@ class UserDatabaseHelper private constructor(private val context: Context) :
         return list
     }
 
+    fun getAttemptsForDateRange(startMs: Long, endMs: Long): List<AttemptRecord> {
+        val list = mutableListOf<AttemptRecord>()
+        readableDatabase.rawQuery(
+            "SELECT base, correct, mode, answered_at FROM practice_attempts WHERE answered_at >= ? AND answered_at <= ? ORDER BY answered_at ASC",
+            arrayOf(startMs.toString(), endMs.toString())
+        ).use { cursor ->
+            if (cursor.moveToFirst()) {
+                do {
+                    list.add(
+                        AttemptRecord(
+                            base = cursor.getString(0),
+                            correct = cursor.getInt(1) == 1,
+                            mode = cursor.getString(2),
+                            answeredAtMs = cursor.getLong(3)
+                        )
+                    )
+                } while (cursor.moveToNext())
+            }
+        }
+        return list
+    }
+
     fun resetProgress() {
         val db = writableDatabase
         db.beginTransaction()

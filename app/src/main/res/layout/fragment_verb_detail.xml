@@ -5,68 +5,17 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="?android:attr/colorBackground"
-    android:fitsSystemWindows="true">
+    android:background="?android:attr/colorBackground">
 
-    <!-- Top Bar -->
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/topBar"
+    <!-- Top Bar unificado (include_app_bar: variante detalle — flecha atrás + tag/título + bookmark + audio) -->
+    <include
+        android:id="@+id/appBar"
+        layout="@layout/include_app_bar"
         android:layout_width="match_parent"
         android:layout_height="56dp"
-        android:paddingHorizontal="@dimen/margin"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-
-        <ImageButton
-            android:id="@+id/btnBack"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:contentDescription="@string/cd_back"
-            android:padding="8dp"
-            android:scaleType="fitCenter"
-            android:src="@drawable/ic_arrow_back"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:tint="?attr/colorOnSurface" />
-
-        <ImageView
-            android:id="@+id/ivLogo"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:layout_marginStart="@dimen/spacing_xs"
-            android:contentDescription="@string/cd_logo"
-            android:src="@drawable/ic_dictionary"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toEndOf="@id/btnBack"
-            app:layout_constraintTop_toTopOf="parent"
-            app:tint="?attr/colorPrimary" />
-
-        <TextView
-            android:id="@+id/tvTitle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/spacing_xs"
-            android:text="@string/verb_detail_title"
-            android:textColor="?attr/colorOnSurface"
-            android:textSize="@dimen/text_headline_sm"
-            android:textStyle="bold"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toEndOf="@id/ivLogo"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <ImageView
-            android:id="@+id/ivAvatar"
-            android:layout_width="32dp"
-            android:layout_height="32dp"
-            android:contentDescription="@string/cd_avatar"
-            android:src="@drawable/ic_avatar_placeholder"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-    </androidx.constraintlayout.widget.ConstraintLayout>
+        app:layout_constraintTop_toTopOf="parent" />
 
     <!-- Scrollable Content -->
     <androidx.core.widget.NestedScrollView
@@ -75,7 +24,7 @@
         android:layout_height="0dp"
         android:fillViewport="true"
         app:layout_constraintBottom_toTopOf="@id/bottomBar"
-        app:layout_constraintTop_toBottomOf="@id/topBar">
+        app:layout_constraintTop_toBottomOf="@id/appBar">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -127,30 +76,19 @@
                 app:layout_constraintBaseline_toBaselineOf="@id/badgeIrregular"
                 app:layout_constraintStart_toEndOf="@id/badgeHighFreq" />
 
-            <ImageButton
-                android:id="@+id/btnBookmark"
-                android:layout_width="32dp"
-                android:layout_height="32dp"
-                android:background="?attr/selectableItemBackgroundBorderless"
-                android:contentDescription="@string/cd_bookmark"
-                android:padding="4dp"
-                android:scaleType="fitCenter"
-                android:src="@drawable/ic_bookmark"
-                app:layout_constraintBottom_toBottomOf="@id/badgeIrregular"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="@id/badgeIrregular"
-                app:tint="?attr/colorOnSurfaceVariant" />
-
-            <!-- Lexical Header: Verb, Phonetic, Audio Button & Meaning -->
+            <!-- Lexical Header: Verb, Phonetic & Meaning -->
             <TextView
                 android:id="@+id/tvVerbName"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/spacing_md"
+                android:ellipsize="end"
+                android:maxLines="1"
                 android:text="@string/detail_verb_name"
                 android:textColor="?attr/colorOnSurface"
                 android:textSize="@dimen/text_display_lg"
                 android:textStyle="bold"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/badgeIrregular" />
 
@@ -162,22 +100,9 @@
                 android:text="@string/detail_phonetic"
                 android:textColor="?attr/colorOnSurfaceVariant"
                 android:textSize="@dimen/text_body_lg"
+                android:visibility="gone"
                 app:layout_constraintBaseline_toBaselineOf="@id/tvVerbName"
                 app:layout_constraintStart_toEndOf="@id/tvVerbName" />
-
-            <ImageButton
-                android:id="@+id/btnPlayAudio"
-                android:layout_width="44dp"
-                android:layout_height="44dp"
-                android:background="@drawable/bg_tense_tag_dark"
-                android:contentDescription="@string/cd_play_audio"
-                android:padding="10dp"
-                android:scaleType="fitCenter"
-                android:src="@drawable/ic_volume"
-                app:layout_constraintBottom_toBottomOf="@id/tvVerbName"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="@id/tvVerbName"
-                app:tint="?attr/colorOnPrimary" />
 
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/cardMeaning"
@@ -210,7 +135,7 @@
 
                     <TextView
                         android:id="@+id/tvMeaningPrimary"
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="2dp"
                         android:text="@string/meaning_primary"
@@ -232,19 +157,6 @@
                 android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/cardMeaning" />
-
-            <TextView
-                android:id="@+id/badgeGrammaticalMatrix"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@drawable/bg_pill_detail_badge"
-                android:paddingHorizontal="@dimen/spacing_sm"
-                android:paddingVertical="2dp"
-                android:text="@string/grammatical_matrix_badge"
-                android:textColor="?attr/colorPrimary"
-                android:textSize="@dimen/text_label_sm"
-                app:layout_constraintBaseline_toBaselineOf="@id/tvGrammaticalFormsTitle"
-                app:layout_constraintEnd_toEndOf="parent" />
 
             <!-- 3 Column Matrix (V1, V2, V3) -->
             <LinearLayout
@@ -519,23 +431,13 @@
                 android:id="@+id/tvExamplesTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/spacing_lg"
+                android:layout_marginTop="@dimen/section_spacing_vertical"
                 android:text="@string/examples_title"
                 android:textColor="?attr/colorOnSurfaceVariant"
                 android:textSize="@dimen/text_label_md"
                 android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/cardMnemonic" />
-
-            <TextView
-                android:id="@+id/tvExamplesCount"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/examples_count"
-                android:textColor="?attr/colorOnSurfaceVariant"
-                android:textSize="@dimen/text_label_sm"
-                app:layout_constraintBaseline_toBaselineOf="@id/tvExamplesTitle"
-                app:layout_constraintEnd_toEndOf="parent" />
 
             <!-- Example Card 1 -->
             <com.google.android.material.card.MaterialCardView
@@ -544,7 +446,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/spacing_sm"
                 app:cardBackgroundColor="?attr/colorSurfaceContainerLowest"
-                app:cardCornerRadius="@dimen/rounded_md"
+                app:cardCornerRadius="@dimen/card_corner_radius"
                 app:cardElevation="1dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -555,13 +457,13 @@
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:padding="@dimen/spacing_md">
+                    android:padding="@dimen/card_internal_padding">
 
                     <TextView
                         android:id="@+id/tvEx1Title"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/ex_1_title"
+                        android:text="@string/ex_v1_title"
                         android:textColor="?attr/colorPrimary"
                         android:textSize="@dimen/text_label_sm"
                         android:textStyle="bold"
@@ -611,7 +513,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/spacing_sm"
                 app:cardBackgroundColor="?attr/colorSurfaceContainerLowest"
-                app:cardCornerRadius="@dimen/rounded_md"
+                app:cardCornerRadius="@dimen/card_corner_radius"
                 app:cardElevation="1dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -622,13 +524,13 @@
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:padding="@dimen/spacing_md">
+                    android:padding="@dimen/card_internal_padding">
 
                     <TextView
                         android:id="@+id/tvEx2Title"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/ex_2_title"
+                        android:text="@string/ex_v2_title"
                         android:textColor="?attr/colorPrimary"
                         android:textSize="@dimen/text_label_sm"
                         android:textStyle="bold"
@@ -671,14 +573,14 @@
                 </androidx.constraintlayout.widget.ConstraintLayout>
             </com.google.android.material.card.MaterialCardView>
 
-            <!-- Example Card 3: Phrasal Verb -->
+            <!-- Example Card 3 -->
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/cardEx3"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/spacing_sm"
                 app:cardBackgroundColor="?attr/colorSurfaceContainerLowest"
-                app:cardCornerRadius="@dimen/rounded_md"
+                app:cardCornerRadius="@dimen/card_corner_radius"
                 app:cardElevation="1dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -689,31 +591,31 @@
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:padding="@dimen/spacing_md">
+                    android:padding="@dimen/card_internal_padding">
 
                     <TextView
-                        android:id="@+id/tvEx3Badge"
+                        android:id="@+id/tvEx3Title"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:background="@drawable/bg_pill_detail_badge"
-                        android:paddingHorizontal="@dimen/spacing_sm"
-                        android:paddingVertical="2dp"
-                        android:text="@string/ex_3_title"
-                        android:textColor="?attr/colorOnSurface"
+                        android:text="@string/ex_v3_title"
+                        android:textColor="?attr/colorPrimary"
                         android:textSize="@dimen/text_label_sm"
                         android:textStyle="bold"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
 
-                    <TextView
-                        android:id="@+id/tvEx3BadgeRight"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/ex_3_badge"
-                        android:textColor="?attr/colorOnSurfaceVariant"
-                        android:textSize="@dimen/text_label_sm"
-                        app:layout_constraintBaseline_toBaselineOf="@id/tvEx3Badge"
-                        app:layout_constraintEnd_toEndOf="parent" />
+                    <ImageButton
+                        android:id="@+id/btnEx3Audio"
+                        android:layout_width="28dp"
+                        android:layout_height="28dp"
+                        android:background="?attr/selectableItemBackgroundBorderless"
+                        android:contentDescription="@string/cd_play_audio"
+                        android:padding="4dp"
+                        android:scaleType="fitCenter"
+                        android:src="@drawable/ic_volume"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:tint="?attr/colorPrimary" />
 
                     <TextView
                         android:id="@+id/tvEx3En"
@@ -721,10 +623,10 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/spacing_xs"
                         android:text="@string/ex_3_en"
-                        android:textColor="?attr/colorPrimary"
-                        android:textSize="@dimen/text_headline_sm"
+                        android:textColor="?attr/colorOnSurface"
+                        android:textSize="@dimen/text_body_md"
                         android:textStyle="bold"
-                        app:layout_constraintTop_toBottomOf="@id/tvEx3Badge" />
+                        app:layout_constraintTop_toBottomOf="@id/tvEx3Title" />
 
                     <TextView
                         android:id="@+id/tvEx3Es"
@@ -798,9 +700,9 @@
                 android:id="@+id/cardRetention"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/spacing_lg"
+                android:layout_marginTop="@dimen/section_spacing_vertical"
                 app:cardBackgroundColor="?attr/colorSurfaceContainerLow"
-                app:cardCornerRadius="@dimen/rounded_lg"
+                app:cardCornerRadius="@dimen/card_corner_radius"
                 app:cardElevation="0dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -811,7 +713,7 @@
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:padding="@dimen/spacing_md">
+                    android:padding="@dimen/card_internal_padding">
 
                     <TextView
                         android:id="@+id/tvRetentionTitle"
@@ -872,14 +774,14 @@
                 </androidx.constraintlayout.widget.ConstraintLayout>
             </com.google.android.material.card.MaterialCardView>
 
-            <!-- Block 6: Android Widgets Section (RatingBar, SeekBar, WebView, VideoView) -->
+            <!-- Block 6: Difficulty & Study Tools Section -->
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/cardWidgetsSection"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/spacing_lg"
+                android:layout_marginTop="@dimen/section_spacing_vertical"
                 app:cardBackgroundColor="?attr/colorSurfaceContainerLow"
-                app:cardCornerRadius="@dimen/rounded_lg"
+                app:cardCornerRadius="@dimen/card_corner_radius"
                 app:cardElevation="0dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -890,87 +792,132 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:padding="@dimen/spacing_md">
+                    android:orientation="vertical">
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="⭐ VALORA DIFICULTAD Y HERRAMIENTAS"
-                        android:textColor="?attr/colorPrimary"
-                        android:textSize="@dimen/text_label_md"
-                        android:textStyle="bold" />
-
-                    <!-- RatingBar Widget -->
+                    <!-- Block 1: Valoración de Dificultad -->
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/spacing_sm"
-                        android:gravity="center_vertical"
-                        android:orientation="horizontal">
-
-                        <RatingBar
-                            android:id="@+id/myRatingBar"
-                            style="?android:attr/ratingBarStyleSmall"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:numStars="5"
-                            android:stepSize="1.0" />
+                        android:orientation="vertical"
+                        android:padding="@dimen/card_internal_padding">
 
                         <TextView
-                            android:id="@+id/rateText"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginStart="@dimen/spacing_sm"
-                            android:text="3.0 / 5.0"
-                            android:textColor="?attr/colorOnSurface"
-                            android:textSize="@dimen/text_body_sm" />
+                            android:text="@string/personal_rating_header"
+                            android:textColor="?attr/colorPrimary"
+                            android:textSize="@dimen/text_label_md"
+                            android:textStyle="bold"
+                            android:gravity="center_vertical"
+                            android:drawablePadding="6dp"
+                            app:drawableStartCompat="@drawable/ic_star"
+                            app:drawableTint="?attr/colorPrimary" />
+
+                        <!-- RatingBar Widget -->
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/spacing_sm"
+                            android:gravity="center_vertical"
+                            android:orientation="horizontal">
+
+                            <RatingBar
+                                android:id="@+id/myRatingBar"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:minHeight="40dp"
+                                android:isIndicator="false"
+                                android:numStars="5"
+                                android:stepSize="1.0"
+                                android:progressTint="@color/accent_gold"
+                                android:secondaryProgressTint="@color/accent_gold" />
+
+                            <TextView
+                                android:id="@+id/rateText"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="@dimen/spacing_sm"
+                                android:text="@string/difficulty_default_text"
+                                android:textColor="?attr/colorOnSurface"
+                                android:textSize="@dimen/text_body_sm"
+                                android:textStyle="bold" />
+                        </LinearLayout>
                     </LinearLayout>
 
-                    <!-- SeekBar Widget -->
-                    <TextView
-                        android:id="@+id/seekBarResult"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/spacing_sm"
-                        android:text="Velocidad de pronunciación: 100%"
-                        android:textColor="?attr/colorOnSurfaceVariant"
-                        android:textSize="@dimen/text_body_sm" />
-
-                    <SeekBar
-                        android:id="@+id/mySeekBar"
+                    <!-- 1dp Subtle Divider -->
+                    <View
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="4dp"
-                        android:max="100"
-                        android:progress="50" />
+                        android:layout_height="1dp"
+                        android:background="?attr/colorOutlineVariant" />
 
-                    <!-- Action Buttons for WebView and VideoView -->
+                    <!-- Block 2: Herramientas de Estudio -->
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/spacing_md"
-                        android:orientation="horizontal">
+                        android:orientation="vertical"
+                        android:padding="@dimen/card_internal_padding">
 
-                        <com.google.android.material.button.MaterialButton
-                            android:id="@+id/btnOpenWebView"
-                            style="@style/Widget.Material3.Button.OutlinedButton"
-                            android:layout_width="0dp"
+                        <TextView
+                            android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginEnd="@dimen/spacing_xs"
-                            android:layout_weight="1"
-                            android:text="🌐 Consulta Web"
-                            android:textSize="@dimen/text_label_sm" />
+                            android:text="@string/study_tools_header"
+                            android:textColor="?attr/colorOnSurfaceVariant"
+                            android:textSize="@dimen/text_label_md"
+                            android:textStyle="bold" />
 
-                        <com.google.android.material.button.MaterialButton
-                            android:id="@+id/btnOpenVideoView"
-                            style="@style/Widget.Material3.Button.OutlinedButton"
-                            android:layout_width="0dp"
+                        <!-- Pronunciation Speed Label & SeekBar -->
+                        <TextView
+                            android:id="@+id/seekBarResult"
+                            android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginStart="@dimen/spacing_xs"
-                            android:layout_weight="1"
-                            android:text="🎬 Video Lección"
-                            android:textSize="@dimen/text_label_sm" />
+                            android:layout_marginTop="@dimen/spacing_sm"
+                            android:text="@string/speed_default_text"
+                            android:textColor="?attr/colorOnSurface"
+                            android:textSize="@dimen/text_body_sm" />
+
+                        <SeekBar
+                            android:id="@+id/mySeekBar"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="6dp"
+                            android:max="4"
+                            android:progress="2" />
+
+                        <!-- Action Buttons for WebView and VideoView -->
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/spacing_md"
+                            android:orientation="horizontal">
+
+                            <com.google.android.material.button.MaterialButton
+                                android:id="@+id/btnOpenWebView"
+                                style="@style/Widget.Material3.Button.OutlinedButton"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_marginEnd="@dimen/spacing_xs"
+                                android:layout_weight="1"
+                                android:text="@string/btn_web_query"
+                                android:textSize="@dimen/text_label_sm"
+                                app:cornerRadius="@dimen/button_pill_radius"
+                                app:icon="@drawable/ic_language"
+                                app:iconGravity="textStart"
+                                app:iconTint="?attr/colorPrimary" />
+
+                            <com.google.android.material.button.MaterialButton
+                                android:id="@+id/btnOpenVideoView"
+                                style="@style/Widget.Material3.Button.OutlinedButton"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="@dimen/spacing_xs"
+                                android:layout_weight="1"
+                                android:text="@string/btn_video_lesson"
+                                android:textSize="@dimen/text_label_sm"
+                                app:cornerRadius="@dimen/button_pill_radius"
+                                app:icon="@drawable/ic_movie"
+                                app:iconGravity="textStart"
+                                app:iconTint="?attr/colorPrimary" />
+                        </LinearLayout>
                     </LinearLayout>
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
@@ -997,9 +944,10 @@
             android:layout_height="@dimen/button_height"
             android:background="@drawable/bg_matrix_card"
             android:contentDescription="@string/cd_share"
+            android:foreground="?attr/selectableItemBackground"
             android:padding="12dp"
             android:scaleType="fitCenter"
-            android:src="@drawable/ic_flag"
+            android:src="@drawable/ic_share"
             app:tint="?attr/colorOnSurfaceVariant" />
 
         <com.google.android.material.button.MaterialButton

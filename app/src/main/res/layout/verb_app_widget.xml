@@ -23,7 +23,7 @@
         android:layout_alignTop="@id/ivWidgetIcon"
         android:layout_marginStart="6dp"
         android:layout_toEndOf="@id/ivWidgetIcon"
-        android:text="VERBOLANDIA • VERBO DEL DÍA"
+        android:text="@string/widget_header"
         android:textColor="#38BDF8"
         android:textSize="10sp"
         android:textStyle="bold" />
@@ -35,7 +35,7 @@
         android:layout_alignParentEnd="true"
         android:layout_alignParentTop="true"
         android:background="?android:attr/selectableItemBackground"
-        android:contentDescription="Actualizar"
+        android:contentDescription="@string/widget_refresh_desc"
         android:padding="2dp"
         android:scaleType="fitCenter"
         android:src="@drawable/ic_shuffle" />
@@ -47,7 +47,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/tvWidgetHeader"
         android:layout_marginTop="4dp"
-        android:text="FREEZE"
+        android:text="@string/widget_default_base"
         android:textColor="#FFFFFF"
         android:textSize="18sp"
         android:textStyle="bold" />
@@ -59,7 +59,7 @@
         android:layout_alignBaseline="@id/tvWidgetVerbBase"
         android:layout_marginStart="8dp"
         android:layout_toEndOf="@id/tvWidgetVerbBase"
-        android:text="Congelar"
+        android:text="@string/widget_default_meaning"
         android:textColor="#CBD5E1"
         android:textSize="12sp" />
 
@@ -79,7 +79,7 @@
             android:background="@drawable/bg_badge_small"
             android:gravity="center"
             android:paddingVertical="3dp"
-            android:text="V1: freeze"
+            android:text="@string/widget_default_v1"
             android:textColor="#0284C7"
             android:textSize="10sp"
             android:textStyle="bold" />
@@ -93,7 +93,7 @@
             android:background="@drawable/bg_badge_small"
             android:gravity="center"
             android:paddingVertical="3dp"
-            android:text="V2: froze"
+            android:text="@string/widget_default_v2"
             android:textColor="#0284C7"
             android:textSize="10sp"
             android:textStyle="bold" />
@@ -107,7 +107,7 @@
             android:background="@drawable/bg_badge_small"
             android:gravity="center"
             android:paddingVertical="3dp"
-            android:text="V3: frozen"
+            android:text="@string/widget_default_v3"
             android:textColor="#0284C7"
             android:textSize="10sp"
             android:textStyle="bold" />

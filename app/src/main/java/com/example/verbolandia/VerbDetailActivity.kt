@@ -59,16 +59,29 @@ class VerbDetailActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
         val verbFromExtra = intent.getSerializableExtra(EXTRA_VERB) as? Verb
         if (verbFromExtra != null) {
             currentVerb = verbFromExtra
+            renderVerb(verbFromExtra)
             viewModel.onVerbOpened(verbFromExtra)
         }
 
-        binding.btnBack.setOnClickListener {
-            finish()
-        }
+        val initialTitle = currentVerb?.let { if (it.phonetic.isNotBlank()) "${it.base} · ${it.phonetic}" else it.base }
+            ?: getString(R.string.verb_detail_title)
+        val initialCategory = if (currentVerb?.isIrregular == true) "VERBO IRREGULAR" else "VERBO REGULAR"
 
-        binding.btnPlayAudio.setOnClickListener {
-            currentVerb?.let { speakText(it.base) }
-        }
+        com.example.verbolandia.ui.AppBarHelper.configure(
+            binding = binding.appBar,
+            left = com.example.verbolandia.ui.LeftSlot.Back { finish() },
+            eyebrow = initialCategory,
+            title = initialTitle,
+            rightActions = listOf(
+                com.example.verbolandia.ui.RightAction.Bookmark(
+                    isBookmarked = currentVerb?.isFavorite == true,
+                    onClick = { currentVerb?.let { viewModel.toggleFavorite(it) } }
+                ),
+                com.example.verbolandia.ui.RightAction.Audio {
+                    currentVerb?.let { speakText(it.base) }
+                }
+            )
+        )
 
         observeViewModel()
     }
@@ -90,39 +103,47 @@ class VerbDetailActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
         }
     }
 
+    private fun renderVerb(verb: Verb) {
+        currentVerb = verb
+        val stats = viewModel.progressSummary.value.topWeakVerbs.find { it.base == verb.base }
+            ?: com.example.verbolandia.util.VerbStatsRecord(verb.base, isFavorite = verb.isFavorite, mastery = verb.mastery)
+
+        VerbDetailBinder.bindVerb(
+            binding = binding,
+            verb = verb,
+            stats = stats,
+            onBookmarkClick = {
+                viewModel.toggleFavorite(verb)
+                val msg = if (verb.isFavorite) {
+                    getString(R.string.snackbar_favorite_removed)
+                } else {
+                    getString(R.string.snackbar_favorite_added)
+                }
+                Snackbar.make(binding.root, msg, Snackbar.LENGTH_LONG)
+                    .setAction(getString(R.string.snackbar_action_undo)) {
+                        viewModel.toggleFavorite(verb)
+                    }
+                    .show()
+            },
+            onShareClick = {
+                shareVerb(verb)
+            },
+            onPracticeClick = {
+                com.example.verbolandia.ui.VerbPracticeBottomSheetFragment.newInstance(verb)
+                    .show(supportFragmentManager, "VerbPracticeBottomSheet")
+            },
+            onTranslateClick = {
+                requestTranslationDownload(verb)
+            }
+        )
+    }
+
     private fun observeViewModel() {
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.currentDetailVerb.collect { verb ->
                     if (verb != null) {
-                        currentVerb = verb
-                        val stats = viewModel.progressSummary.value.topWeakVerbs.find { it.base == verb.base }
-                            ?: com.example.verbolandia.util.VerbStatsRecord(verb.base, isFavorite = verb.isFavorite, mastery = verb.mastery)
-
-                        VerbDetailBinder.bindVerb(
-                            binding = binding,
-                            verb = verb,
-                            stats = stats,
-                            onBookmarkClick = {
-                                viewModel.toggleFavorite(verb)
-                                val msg = if (verb.isFavorite) "Eliminado de favoritos" else "Añadido a favoritos"
-                                Snackbar.make(binding.root, msg, Snackbar.LENGTH_LONG)
-                                    .setAction("DESHACER") {
-                                        viewModel.toggleFavorite(verb)
-                                    }
-                                    .show()
-                            },
-                            onShareClick = {
-                                shareVerb(verb)
-                            },
-                            onPracticeClick = {
-                                speakText(verb.base)
-                                finish()
-                            },
-                            onTranslateClick = {
-                                requestTranslationDownload(verb)
-                            }
-                        )
+                        renderVerb(verb)
                     }
                 }
             }
@@ -131,9 +152,9 @@ class VerbDetailActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
 
     private fun requestTranslationDownload(verb: Verb) {
         MaterialAlertDialogBuilder(this)
-            .setTitle("Descargar Modelo On-Device (~30 MB)")
-            .setMessage("¿Deseas descargar el modelo de traducción inglés ➔ español de Google ML Kit para traducir '${verb.base}'?")
-            .setPositiveButton("Descargar y Traducir") { dialog, _ ->
+            .setTitle(getString(R.string.dialog_download_model_title))
+            .setMessage(getString(R.string.dialog_download_model_msg, verb.base))
+            .setPositiveButton(getString(R.string.dialog_download_model_positive)) { dialog, _ ->
                 dialog.dismiss()
                 performTranslation(verb)
             }
@@ -142,17 +163,26 @@ class VerbDetailActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
     }
 
     private fun performTranslation(verb: Verb) {
-        Snackbar.make(binding.root, "Descargando / Traduciendo...", Snackbar.LENGTH_INDEFINITE).show()
+        Snackbar.make(binding.root, getString(R.string.snackbar_translating), Snackbar.LENGTH_INDEFINITE).show()
         lifecycleScope.launch {
             translationManager.translateAndSave(
                 verbBase = verb.base,
                 onSuccess = { translatedText ->
-                    Snackbar.make(binding.root, "Traducción completada: $translatedText", Snackbar.LENGTH_SHORT).show()
+                    Snackbar.make(
+                        binding.root,
+                        getString(R.string.snackbar_translated_format, translatedText),
+                        Snackbar.LENGTH_SHORT
+                    ).show()
                     viewModel.onVerbOpened(verb)
                 },
                 onError = { error ->
-                    Snackbar.make(binding.root, "Error al traducir: ${error.localizedMessage}", Snackbar.LENGTH_LONG)
-                        .setAction("Reintentar") {
+                    val errorMsg = error.localizedMessage ?: ""
+                    Snackbar.make(
+                        binding.root,
+                        getString(R.string.snackbar_translate_error_format, errorMsg),
+                        Snackbar.LENGTH_LONG
+                    )
+                        .setAction(getString(R.string.snackbar_action_retry)) {
                             performTranslation(verb)
                         }
                         .show()
@@ -162,18 +192,7 @@ class VerbDetailActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
     }
 
     private fun shareVerb(verb: Verb) {
-        val shareText = "Verbo en Verbolandia: ${verb.base.uppercase()} (${verb.spanishMeaning})\n" +
-                "Pasado: ${verb.past}\n" +
-                "Participio: ${verb.pastParticiple}\n" +
-                "Gerundio: ${verb.gerund}"
-
-        val sendIntent = Intent().apply {
-            action = Intent.ACTION_SEND
-            putExtra(Intent.EXTRA_TEXT, shareText)
-            type = "text/plain"
-        }
-        val shareIntent = Intent.createChooser(sendIntent, "Compartir Verbo")
-        startActivity(shareIntent)
+        VerbDetailBinder.shareVerb(this, verb)
     }
 
     override fun onDestroy() {

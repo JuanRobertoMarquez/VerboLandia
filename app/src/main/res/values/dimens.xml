@@ -1,5 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- Standard Layout & Visual Tokens (Fase 1) -->
+    <dimen name="screen_horizontal_padding">16dp</dimen>
+    <dimen name="section_spacing_vertical">16dp</dimen>
+    <dimen name="card_grid_spacing">12dp</dimen>
+    <dimen name="card_internal_padding">16dp</dimen>
+    <dimen name="card_corner_radius">16dp</dimen>
+    <dimen name="button_pill_radius">24dp</dimen>
+
     <!-- Spacing & Margins Tokens -->
     <dimen name="spacing_xs">4dp</dimen>
     <dimen name="spacing_sm">8dp</dimen>

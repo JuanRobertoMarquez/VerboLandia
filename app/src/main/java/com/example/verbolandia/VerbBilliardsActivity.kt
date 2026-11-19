@@ -45,9 +45,7 @@ class VerbBilliardsActivity : AppCompatActivity() {
         repository = VerbRepository.getInstance(this)
         AudioSpeaker.init(this)
 
-        binding.btnBack.setOnClickListener {
-            finish()
-        }
+        updateBilliardsHeader()
 
         binding.btnNextVerb.setOnClickListener {
             loadNextBilliardsRound()
@@ -59,7 +57,7 @@ class VerbBilliardsActivity : AppCompatActivity() {
     private fun loadNextBilliardsRound() {
         isAnswered = false
         try {
-            binding.tvBilliardsFeedback.text = "Tira a la tronera con el pasado del verbo."
+            binding.tvBilliardsFeedback.text = getString(R.string.billiards_instructions)
             binding.tvBilliardsFeedback.setTextColor(ContextCompat.getColor(this, R.color.white))
 
             val darkBg = ContextCompat.getColor(this, R.color.inverse_surface)
@@ -83,7 +81,7 @@ class VerbBilliardsActivity : AppCompatActivity() {
                 currentVerb = targetVerb
 
                 binding.tvTargetVerbBase.text = targetVerb.base.uppercase()
-                binding.tvTargetVerbPrompt.text = "Significado: ${targetVerb.spanishMeaning}"
+                binding.tvTargetVerbPrompt.text = getString(R.string.meaning_prompt_format, targetVerb.spanishMeaning)
 
                 val correctAnswer = targetVerb.past
                 val option1 = correctAnswer
@@ -139,25 +137,40 @@ class VerbBilliardsActivity : AppCompatActivity() {
             if (isCorrect) {
                 scoreCount++
                 streakCount++
-                binding.tvScore.text = "Aciertos: $scoreCount | 🔥 $streakCount"
+                updateBilliardsHeader()
                 selectedCard.setCardBackgroundColor(ContextCompat.getColor(this, R.color.primary))
-                binding.tvBilliardsFeedback.text = "¡TIRO PERFECTO! ${targetVerb.base} ➔ $correctAnswer"
+                binding.tvBilliardsFeedback.text = getString(R.string.billiards_perfect_shot, targetVerb.base, correctAnswer)
 
                 NotificationHelper.showVerbOfDayNotification(this, targetVerb)
 
-                Snackbar.make(binding.root, "¡Encestaste en la tronera correcta! +10 pts", Snackbar.LENGTH_LONG)
-                    .setAction("NOTIFICACIÓN") {
+                Snackbar.make(binding.root, getString(R.string.billiards_snackbar_success), Snackbar.LENGTH_LONG)
+                    .setAction(getString(R.string.billiards_notification_action)) {
                         NotificationHelper.showVerbOfDayNotification(this, targetVerb)
                     }
                     .show()
             } else {
                 streakCount = 0
-                binding.tvScore.text = "Aciertos: $scoreCount | 🔥 0"
+                updateBilliardsHeader()
                 selectedCard.setCardBackgroundColor(ContextCompat.getColor(this, R.color.error))
-                binding.tvBilliardsFeedback.text = "¡Fallaste la tronera! El pasado de ${targetVerb.base} es $correctAnswer"
+                binding.tvBilliardsFeedback.text = getString(R.string.billiards_missed_shot, targetVerb.base, correctAnswer)
             }
         } catch (e: Exception) {
             e.printStackTrace()
         }
+    }
+
+    private fun updateBilliardsHeader() {
+        val pointsStr = getString(R.string.billiards_points_format, scoreCount)
+        com.example.verbolandia.ui.AppBarHelper.configure(
+            binding = binding.appBar,
+            left = com.example.verbolandia.ui.LeftSlot.Close { finish() },
+            eyebrow = getString(R.string.mod_3_title),
+            title = getString(R.string.mod_3_title),
+            rightActions = listOf(
+                com.example.verbolandia.ui.RightAction.PointsBadge(pointsStr)
+            ),
+            progress = (scoreCount * 10).coerceAtMost(100),
+            isDarkTheme = true
+        )
     }
 }

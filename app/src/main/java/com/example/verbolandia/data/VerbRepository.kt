@@ -161,7 +161,12 @@ class VerbRepository(
             "watch" to "Ver, observar",
             "win" to "Ganar",
             "work" to "Trabajar",
-            "write" to "Escribir"
+            "write" to "Escribir",
+            "yawn" to "Bostezar",
+            "yell" to "Gritar, vociferar",
+            "yield" to "Ceder, rendir frutos",
+            "zip" to "Abrochar, cerrar la cremallera",
+            "zoom" to "Acercar, desplazarse velozmente"
         )
     }
 
@@ -196,11 +201,38 @@ class VerbRepository(
         filterByCategory(enriched, category)
     }
 
-    suspend fun searchVerbs(query: String, category: String = "ALL"): List<Verb> = withContext(Dispatchers.IO) {
+    suspend fun getCatalogVerbs(category: String = "ALL", level: String = "ALL"): List<Verb> = withContext(Dispatchers.IO) {
+        val candidates = dbHelper.getCommonVerbs(500)
+        val enriched = enrichVerbs(candidates)
+        filterVerbs(enriched, category, level)
+    }
+
+    suspend fun searchVerbs(query: String, category: String = "ALL", level: String = "ALL"): List<Verb> = withContext(Dispatchers.IO) {
         val translationsMap = userDbHelper.getAllTranslations() + LOCAL_SPANISH_DICTIONARY
-        val results = dbHelper.searchVerbs(query, translationsMap, limit = 20)
+        val results = dbHelper.searchVerbs(query, translationsMap, limit = 50)
         val enriched = enrichVerbs(results)
-        filterByCategory(enriched, category)
+        filterVerbs(enriched, category, level)
+    }
+
+    suspend fun searchVerbs(query: String, category: String = "ALL"): List<Verb> = searchVerbs(query, category, "ALL")
+
+    private fun filterVerbs(verbs: List<Verb>, category: String, level: String): List<Verb> {
+        return verbs.filter { verb ->
+            val matchesCategory = when (category.uppercase()) {
+                "IRREGULAR" -> verb.isIrregular
+                "REGULAR" -> !verb.isIrregular
+                else -> true
+            }
+            val matchesLevel = when (level.uppercase()) {
+                "ALL", "" -> true
+                else -> verb.level.equals(level, ignoreCase = true)
+            }
+            matchesCategory && matchesLevel
+        }
+    }
+
+    private fun filterByCategory(verbs: List<Verb>, category: String): List<Verb> {
+        return filterVerbs(verbs, category, "ALL")
     }
 
     suspend fun getVerbOfDay(): Verb = withContext(Dispatchers.IO) {
@@ -228,7 +260,18 @@ class VerbRepository(
 
     suspend fun getVerbByBase(base: String): Verb? = withContext(Dispatchers.IO) {
         val verb = dbHelper.getVerbByBase(base) ?: return@withContext null
-        enrichVerb(verb)
+        val enriched = enrichVerb(verb)
+        val tenses = dbHelper.getTensesForVerb(verb.id)
+        val phrasals = dbHelper.getPhrasalVerbs(verb.id)
+        enriched.copy(tenses = tenses, phrasalVerbs = phrasals)
+    }
+
+    suspend fun getTensesForVerb(verbId: Int): List<com.example.verbolandia.model.VerbTense> = withContext(Dispatchers.IO) {
+        dbHelper.getTensesForVerb(verbId)
+    }
+
+    suspend fun getPhrasalVerbs(verbId: Int): List<com.example.verbolandia.model.PhrasalVerb> = withContext(Dispatchers.IO) {
+        dbHelper.getPhrasalVerbs(verbId)
     }
 
     suspend fun getLastOpenedOrFirstDailyVerb(): Verb? = withContext(Dispatchers.IO) {
@@ -281,6 +324,10 @@ class VerbRepository(
         userDbHelper.resetProgress()
     }
 
+    suspend fun getAttemptsForDateRange(startMs: Long, endMs: Long) = withContext(Dispatchers.IO) {
+        userDbHelper.getAttemptsForDateRange(startMs, endMs)
+    }
+
     suspend fun getRandomVerbs(count: Int = 10): List<Verb> = withContext(Dispatchers.IO) {
         val verbs = dbHelper.getAllVerbs(500).shuffled().take(count)
         enrichVerbs(verbs)
@@ -294,19 +341,14 @@ class VerbRepository(
         val stats = userDbHelper.getVerbStats(verb.base)
         val customTrans = userDbHelper.getTranslation(verb.base)
             ?: LOCAL_SPANISH_DICTIONARY[verb.base.lowercase()]
+            ?: (if (verb.spanishMeaning.isNotBlank()) verb.spanishMeaning else null)
+
+        val finalMeaning = customTrans ?: (if (verb.spanishMeaning.isNotBlank()) verb.spanishMeaning else "Toca para traducir")
 
         return verb.copy(
-            spanishMeaning = customTrans ?: "Toca para traducir",
+            spanishMeaning = finalMeaning,
             isFavorite = stats.isFavorite,
             mastery = stats.mastery
         )
-    }
-
-    private fun filterByCategory(verbs: List<Verb>, category: String): List<Verb> {
-        return when (category.uppercase()) {
-            "IRREGULAR" -> verbs.filter { it.isIrregular }
-            "REGULAR" -> verbs.filter { !it.isIrregular }
-            else -> verbs
-        }
     }
 }

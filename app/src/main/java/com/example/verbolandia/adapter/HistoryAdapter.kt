@@ -5,6 +5,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.example.verbolandia.R
 import com.example.verbolandia.databinding.ItemVerbCardBinding
 import com.example.verbolandia.model.Verb
 
@@ -27,17 +28,22 @@ class HistoryAdapter(
     override fun onBindViewHolder(holder: HistoryViewHolder, position: Int) {
         val verb = getItem(position)
         with(holder.binding) {
+            val context = root.context
             tvInfinitive.text = verb.base
             tvPhonetic.text = verb.phonetic
             tvSpanishMeaning.text = verb.spanishMeaning
-            tvTypeBadge.text = if (verb.isIrregular) "Irregular" else "Regular"
-            tvLevelBadge.text = "Reciente"
+            tvTypeBadge.text = if (verb.isIrregular) {
+                context.getString(R.string.verb_type_irregular)
+            } else {
+                context.getString(R.string.verb_type_regular)
+            }
+            tvLevelBadge.text = context.getString(R.string.badge_recent)
 
             tvV1.text = verb.base
             tvV2.text = verb.past
             tvV3.text = verb.pastParticiple
 
-            tvMastery.text = "${verb.mastery}% Dominado"
+            tvMastery.text = context.getString(R.string.mastery_pct_format, verb.mastery)
             progressMastery.progress = verb.mastery
 
             root.setOnClickListener {

@@ -37,17 +37,26 @@ class GrammarWebActivity : AppCompatActivity() {
             insets
         }
 
-        binding.btnBack.setOnClickListener {
-            finish()
-        }
+        com.example.verbolandia.ui.AppBarHelper.configure(
+            binding = binding.appBar,
+            left = com.example.verbolandia.ui.LeftSlot.Back { finish() },
+            eyebrow = getString(R.string.web_grammar_eyebrow),
+            title = getString(R.string.web_grammar_title)
+        )
 
         val verbBase = intent.getStringExtra(EXTRA_VERB_BASE) ?: "break"
+        val encodedVerb = try {
+            java.net.URLEncoder.encode(verbBase, "UTF-8")
+        } catch (e: Exception) {
+            verbBase
+        }
         val customUrl = intent.getStringExtra(EXTRA_URL)
-            ?: "https://translate.google.com/?sl=en&tl=es&text=$verbBase"
+            ?: "https://translate.google.com/?sl=en&tl=es&text=$encodedVerb&op=translate"
 
-        val myBrowser: WebView = findViewById(R.id.myWeb)
+        val myBrowser: WebView = binding.myWeb
         myBrowser.webViewClient = WebViewClient()
         myBrowser.settings.javaScriptEnabled = true
+        myBrowser.settings.domStorageEnabled = true
         myBrowser.loadUrl(customUrl)
     }
 }

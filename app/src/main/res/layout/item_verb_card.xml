@@ -5,18 +5,18 @@
     android:id="@+id/cardVerb"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginHorizontal="@dimen/margin"
+    android:layout_marginHorizontal="@dimen/screen_horizontal_padding"
     android:layout_marginVertical="@dimen/spacing_sm"
     app:cardBackgroundColor="?attr/colorSurfaceContainerLowest"
-    app:cardCornerRadius="@dimen/rounded_lg"
-    app:cardElevation="@dimen/spacing_xs"
+    app:cardCornerRadius="@dimen/card_corner_radius"
+    app:cardElevation="0dp"
     app:strokeColor="?attr/colorOutlineVariant"
     app:strokeWidth="1dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="@dimen/spacing_md">
+        android:padding="@dimen/card_internal_padding">
 
         <!-- Header Row: Infinitive, Phonetic, Audio Button, Level & Classification Badges -->
         <TextView

@@ -3,6 +3,7 @@
     <!-- Brand & Primary Colors -->
     <color name="primary">#006194</color>
     <color name="primary_accent">#0284C7</color>
+    <color name="accent_gold">#F59E0B</color>
     <color name="on_primary">#FFFFFF</color>
     <color name="primary_container">#007BB9</color>
     <color name="on_primary_container">#FDFCFF</color>
@@ -48,6 +49,8 @@
     <color name="on_error">#FFFFFF</color>
     <color name="error_container">#FFDAD6</color>
     <color name="on_error_container">#93000A</color>
+    <color name="success">#16A34A</color>
+    <color name="on_success">#FFFFFF</color>
 
     <!-- Fixed Tokens -->
     <color name="primary_fixed">#CCE5FF</color>
