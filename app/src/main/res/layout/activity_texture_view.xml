@@ -8,43 +8,15 @@
     android:background="?android:attr/colorBackground"
     android:fitsSystemWindows="true">
 
-    <!-- Top Bar -->
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/topBar"
+    <!-- Top Bar unificado (include_app_bar) -->
+    <include
+        android:id="@+id/appBar"
+        layout="@layout/include_app_bar"
         android:layout_width="match_parent"
         android:layout_height="56dp"
-        android:paddingHorizontal="@dimen/margin"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-
-        <ImageButton
-            android:id="@+id/btnBack"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:contentDescription="@string/cd_back"
-            android:padding="8dp"
-            android:scaleType="fitCenter"
-            android:src="@drawable/ic_arrow_back"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:tint="?attr/colorOnSurface" />
-
-        <TextView
-            android:id="@+id/tvTitle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/spacing_sm"
-            android:text="TextureView Stream &amp; Cámara"
-            android:textColor="?attr/colorOnSurface"
-            android:textSize="@dimen/text_headline_sm"
-            android:textStyle="bold"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toEndOf="@id/btnBack"
-            app:layout_constraintTop_toTopOf="parent" />
-    </androidx.constraintlayout.widget.ConstraintLayout>
+        app:layout_constraintTop_toTopOf="parent" />
 
     <!-- TextureView Widget -->
     <TextureView
@@ -55,7 +27,7 @@
         android:layout_marginTop="@dimen/spacing_md"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/topBar" />
+        app:layout_constraintTop_toBottomOf="@id/appBar" />
 
     <!-- Description Card -->
     <com.google.android.material.card.MaterialCardView
@@ -81,17 +53,20 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="📷 Stream de Vistas con TextureView"
+                android:drawablePadding="@dimen/spacing_xs"
+                android:text="@string/texture_stream_header"
                 android:textColor="?attr/colorPrimary"
                 android:textSize="@dimen/text_headline_sm"
-                android:textStyle="bold" />
+                android:textStyle="bold"
+                app:drawableStartCompat="@drawable/ic_camera"
+                app:drawableTint="?attr/colorPrimary" />
 
             <TextView
                 android:id="@+id/tvTextureStatus"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/spacing_xs"
-                android:text="Inicializando SurfaceTexture..."
+                android:text="@string/texture_status_init"
                 android:textColor="?attr/colorOnSurface"
                 android:textSize="@dimen/text_body_md" />
         </LinearLayout>

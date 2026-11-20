@@ -5,76 +5,19 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#062213"
+    android:background="#09301B"
     android:fitsSystemWindows="true">
 
-    <!-- Top Header Bar -->
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/topBar"
+    <!-- Header Bar unificado (include_app_bar: variante minijuegos — X cerrar + barra progreso + gamificación) -->
+    <include
+        android:id="@+id/appBar"
+        layout="@layout/include_app_bar"
         android:layout_width="match_parent"
         android:layout_height="56dp"
-        android:background="#04180D"
-        android:paddingHorizontal="@dimen/margin"
+        android:background="#062213"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-
-        <ImageButton
-            android:id="@+id/btnBack"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:contentDescription="@string/cd_back"
-            android:padding="8dp"
-            android:scaleType="fitCenter"
-            android:src="@drawable/ic_arrow_back"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:tint="@color/white" />
-
-        <TextView
-            android:id="@+id/tvTitle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/spacing_sm"
-            android:text="Billar de Verbos"
-            android:textColor="@color/white"
-            android:textSize="@dimen/text_headline_sm"
-            android:textStyle="bold"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toEndOf="@id/btnBack"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <!-- Difficulty Round Badge & Score -->
-        <TextView
-            android:id="@+id/badgeDifficultyLevel"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@drawable/bg_badge_small"
-            android:paddingHorizontal="@dimen/spacing_md"
-            android:paddingVertical="4dp"
-            android:text="Nivel 1 • 4 Troneras"
-            android:textColor="?attr/colorPrimary"
-            android:textSize="@dimen/text_label_sm"
-            android:textStyle="bold"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
-    <!-- Subtitle Instruction -->
-    <TextView
-        android:id="@+id/tvBilliardsSubinstruction"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="6dp"
-        android:text="Arrastra y suelta la bola blanca para disparar a una tronera."
-        android:textColor="#94A3B8"
-        android:textSize="12sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/topBar" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <!-- Pool Table Container -->
     <com.google.android.material.card.MaterialCardView
@@ -82,57 +25,239 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginHorizontal="@dimen/margin"
-        android:layout_marginTop="8dp"
-        android:layout_marginBottom="@dimen/margin"
+        android:layout_marginVertical="@dimen/spacing_lg"
         app:cardBackgroundColor="#0D5C32"
         app:cardCornerRadius="@dimen/rounded_2xl"
         app:cardElevation="6dp"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/bottomBar"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tvBilliardsSubinstruction"
-        app:strokeColor="#3D2314"
+        app:layout_constraintTop_toBottomOf="@id/appBar"
+        app:strokeColor="#5C3A21"
         app:strokeWidth="12dp">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:padding="16dp">
 
-            <!-- Interactive Pool Table Physics View -->
-            <com.example.verbolandia.view.PoolTableView
-                android:id="@+id/poolTableView"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent" />
-
-            <!-- Target Verb Floating Banner (Top Center) -->
+            <!-- Pocket 1: Top-Left -->
             <com.google.android.material.card.MaterialCardView
-                android:id="@+id/cardTargetBanner"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                app:cardBackgroundColor="#1E293B"
-                app:cardCornerRadius="16dp"
+                android:id="@+id/cardPocketTopLeft"
+                android:layout_width="120dp"
+                android:layout_height="90dp"
+                app:cardBackgroundColor="#111827"
+                app:cardCornerRadius="@dimen/rounded_xl"
                 app:cardElevation="4dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:strokeColor="#374151"
+                app:strokeWidth="2dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:orientation="vertical"
+                    android:padding="8dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/billiards_pocket_1"
+                        android:textColor="#9CA3AF"
+                        android:textSize="10sp"
+                        android:textStyle="bold"
+                        android:gravity="center_vertical"
+                        android:drawablePadding="4dp"
+                        app:drawableStartCompat="@drawable/ic_hole"
+                        app:drawableTint="#9CA3AF" />
+
+                    <TextView
+                        android:id="@+id/tvPocketTopLeftText"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp"
+                        android:textColor="@color/white"
+                        android:textSize="@dimen/text_headline_sm"
+                        android:textStyle="bold"
+                        tools:text="froze" />
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- Pocket 2: Top-Right -->
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/cardPocketTopRight"
+                android:layout_width="120dp"
+                android:layout_height="90dp"
+                app:cardBackgroundColor="#111827"
+                app:cardCornerRadius="@dimen/rounded_xl"
+                app:cardElevation="4dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:strokeColor="#374151"
+                app:strokeWidth="2dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:orientation="vertical"
+                    android:padding="8dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/billiards_pocket_2"
+                        android:textColor="#9CA3AF"
+                        android:textSize="10sp"
+                        android:textStyle="bold"
+                        android:gravity="center_vertical"
+                        android:drawablePadding="4dp"
+                        app:drawableStartCompat="@drawable/ic_hole"
+                        app:drawableTint="#9CA3AF" />
+
+                    <TextView
+                        android:id="@+id/tvPocketTopRightText"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp"
+                        android:textColor="@color/white"
+                        android:textSize="@dimen/text_headline_sm"
+                        android:textStyle="bold"
+                        tools:text="freezed" />
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- Pocket 3: Bottom-Left -->
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/cardPocketBottomLeft"
+                android:layout_width="120dp"
+                android:layout_height="90dp"
+                app:cardBackgroundColor="#111827"
+                app:cardCornerRadius="@dimen/rounded_xl"
+                app:cardElevation="4dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:strokeColor="#374151"
+                app:strokeWidth="2dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:orientation="vertical"
+                    android:padding="8dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/billiards_pocket_3"
+                        android:textColor="#9CA3AF"
+                        android:textSize="10sp"
+                        android:textStyle="bold"
+                        android:gravity="center_vertical"
+                        android:drawablePadding="4dp"
+                        app:drawableStartCompat="@drawable/ic_hole"
+                        app:drawableTint="#9CA3AF" />
+
+                    <TextView
+                        android:id="@+id/tvPocketBottomLeftText"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp"
+                        android:textColor="@color/white"
+                        android:textSize="@dimen/text_headline_sm"
+                        android:textStyle="bold"
+                        tools:text="frozen" />
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- Pocket 4: Bottom-Right -->
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/cardPocketBottomRight"
+                android:layout_width="120dp"
+                android:layout_height="90dp"
+                app:cardBackgroundColor="#111827"
+                app:cardCornerRadius="@dimen/rounded_xl"
+                app:cardElevation="4dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:strokeColor="#374151"
+                app:strokeWidth="2dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:orientation="vertical"
+                    android:padding="8dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/billiards_pocket_4"
+                        android:textColor="#9CA3AF"
+                        android:textSize="10sp"
+                        android:textStyle="bold"
+                        android:gravity="center_vertical"
+                        android:drawablePadding="4dp"
+                        app:drawableStartCompat="@drawable/ic_hole"
+                        app:drawableTint="#9CA3AF" />
+
+                    <TextView
+                        android:id="@+id/tvPocketBottomRightText"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp"
+                        android:textColor="@color/white"
+                        android:textSize="@dimen/text_headline_sm"
+                        android:textStyle="bold"
+                        tools:text="freezing" />
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- Center Target Cue Ball -->
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/cardTargetBall"
+                android:layout_width="180dp"
+                android:layout_height="180dp"
+                app:cardBackgroundColor="#F8FAFC"
+                app:cardCornerRadius="90dp"
+                app:cardElevation="10dp"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:strokeColor="#38BDF8"
-                app:strokeWidth="2dp">
+                app:strokeWidth="6dp">
 
                 <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
                     android:gravity="center"
                     android:orientation="vertical"
-                    android:paddingHorizontal="16dp"
-                    android:paddingVertical="8dp">
+                    android:padding="16dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/billiards_shoot_header"
+                        android:textColor="#0284C7"
+                        android:textSize="11sp"
+                        android:textStyle="bold"
+                        android:gravity="center_vertical"
+                        android:drawablePadding="4dp"
+                        app:drawableStartCompat="@drawable/ic_sports_billiards"
+                        app:drawableTint="#0284C7" />
 
                     <TextView
                         android:id="@+id/tvTargetVerbBase"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textColor="@color/white"
-                        android:textSize="20sp"
+                        android:layout_marginTop="4dp"
+                        android:textColor="#0F172A"
+                        android:textSize="22sp"
                         android:textStyle="bold"
                         tools:text="FREEZE" />
 
@@ -140,333 +265,53 @@
                         android:id="@+id/tvTargetVerbPrompt"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:gravity="center"
-                        android:text="¿Cuál es el Pasado Simple?"
-                        android:textColor="#94A3B8"
-                        android:textSize="11sp" />
-                </LinearLayout>
-            </com.google.android.material.card.MaterialCardView>
-
-            <!-- Pocket 1: Top-Left Card -->
-            <com.google.android.material.card.MaterialCardView
-                android:id="@+id/cardPocketTopLeft"
-                android:layout_width="98dp"
-                android:layout_height="72dp"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="8dp"
-                app:cardBackgroundColor="#111827"
-                app:cardCornerRadius="@dimen/rounded_xl"
-                app:cardElevation="4dp"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:strokeColor="#374151"
-                app:strokeWidth="2dp">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:gravity="center"
-                    android:orientation="vertical"
-                    android:padding="4dp">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="🕳️ Tronera 1"
-                        android:textColor="#9CA3AF"
-                        android:textSize="9sp"
-                        android:textStyle="bold" />
-
-                    <TextView
-                        android:id="@+id/tvPocketTopLeftText"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="2dp"
-                        android:textColor="@color/white"
-                        android:textSize="@dimen/text_label_md"
-                        android:textStyle="bold"
-                        tools:text="froze" />
-                </LinearLayout>
-            </com.google.android.material.card.MaterialCardView>
-
-            <!-- Pocket 2: Top-Right Card -->
-            <com.google.android.material.card.MaterialCardView
-                android:id="@+id/cardPocketTopRight"
-                android:layout_width="98dp"
-                android:layout_height="72dp"
-                android:layout_marginTop="8dp"
-                android:layout_marginEnd="8dp"
-                app:cardBackgroundColor="#111827"
-                app:cardCornerRadius="@dimen/rounded_xl"
-                app:cardElevation="4dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:strokeColor="#374151"
-                app:strokeWidth="2dp">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:gravity="center"
-                    android:orientation="vertical"
-                    android:padding="4dp">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="🕳️ Tronera 2"
-                        android:textColor="#9CA3AF"
-                        android:textSize="9sp"
-                        android:textStyle="bold" />
-
-                    <TextView
-                        android:id="@+id/tvPocketTopRightText"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="2dp"
-                        android:textColor="@color/white"
-                        android:textSize="@dimen/text_label_md"
-                        android:textStyle="bold"
-                        tools:text="freezed" />
-                </LinearLayout>
-            </com.google.android.material.card.MaterialCardView>
-
-            <!-- Pocket 5: Middle-Left Card (Unlocked at Level 6) -->
-            <com.google.android.material.card.MaterialCardView
-                android:id="@+id/cardPocketMidLeft"
-                android:layout_width="98dp"
-                android:layout_height="72dp"
-                android:layout_marginStart="8dp"
-                android:visibility="gone"
-                app:cardBackgroundColor="#111827"
-                app:cardCornerRadius="@dimen/rounded_xl"
-                app:cardElevation="4dp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:strokeColor="#374151"
-                app:strokeWidth="2dp"
-                tools:visibility="visible">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:gravity="center"
-                    android:orientation="vertical"
-                    android:padding="4dp">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="🕳️ Tronera 5"
-                        android:textColor="#9CA3AF"
-                        android:textSize="9sp"
-                        android:textStyle="bold" />
-
-                    <TextView
-                        android:id="@+id/tvPocketMidLeftText"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="2dp"
-                        android:textColor="@color/white"
-                        android:textSize="@dimen/text_label_md"
-                        android:textStyle="bold"
-                        tools:text="freezing" />
-                </LinearLayout>
-            </com.google.android.material.card.MaterialCardView>
-
-            <!-- Pocket 6: Middle-Right Card (Unlocked at Level 6) -->
-            <com.google.android.material.card.MaterialCardView
-                android:id="@+id/cardPocketMidRight"
-                android:layout_width="98dp"
-                android:layout_height="72dp"
-                android:layout_marginEnd="8dp"
-                android:visibility="gone"
-                app:cardBackgroundColor="#111827"
-                app:cardCornerRadius="@dimen/rounded_xl"
-                app:cardElevation="4dp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:strokeColor="#374151"
-                app:strokeWidth="2dp"
-                tools:visibility="visible">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:gravity="center"
-                    android:orientation="vertical"
-                    android:padding="4dp">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="🕳️ Tronera 6"
-                        android:textColor="#9CA3AF"
-                        android:textSize="9sp"
-                        android:textStyle="bold" />
-
-                    <TextView
-                        android:id="@+id/tvPocketMidRightText"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="2dp"
-                        android:textColor="@color/white"
-                        android:textSize="@dimen/text_label_md"
-                        android:textStyle="bold"
-                        tools:text="freezes" />
-                </LinearLayout>
-            </com.google.android.material.card.MaterialCardView>
-
-            <!-- Pocket 3: Bottom-Left Card -->
-            <com.google.android.material.card.MaterialCardView
-                android:id="@+id/cardPocketBottomLeft"
-                android:layout_width="98dp"
-                android:layout_height="72dp"
-                android:layout_marginStart="8dp"
-                android:layout_marginBottom="8dp"
-                app:cardBackgroundColor="#111827"
-                app:cardCornerRadius="@dimen/rounded_xl"
-                app:cardElevation="4dp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:strokeColor="#374151"
-                app:strokeWidth="2dp">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:gravity="center"
-                    android:orientation="vertical"
-                    android:padding="4dp">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="🕳️ Tronera 3"
-                        android:textColor="#9CA3AF"
-                        android:textSize="9sp"
-                        android:textStyle="bold" />
-
-                    <TextView
-                        android:id="@+id/tvPocketBottomLeftText"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="2dp"
-                        android:textColor="@color/white"
-                        android:textSize="@dimen/text_label_md"
-                        android:textStyle="bold"
-                        tools:text="frozen" />
-                </LinearLayout>
-            </com.google.android.material.card.MaterialCardView>
-
-            <!-- Pocket 4: Bottom-Right Card -->
-            <com.google.android.material.card.MaterialCardView
-                android:id="@+id/cardPocketBottomRight"
-                android:layout_width="98dp"
-                android:layout_height="72dp"
-                android:layout_marginEnd="8dp"
-                android:layout_marginBottom="8dp"
-                app:cardBackgroundColor="#111827"
-                app:cardCornerRadius="@dimen/rounded_xl"
-                app:cardElevation="4dp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:strokeColor="#374151"
-                app:strokeWidth="2dp">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:gravity="center"
-                    android:orientation="vertical"
-                    android:padding="4dp">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="🕳️ Tronera 4"
-                        android:textColor="#9CA3AF"
-                        android:textSize="9sp"
-                        android:textStyle="bold" />
-
-                    <TextView
-                        android:id="@+id/tvPocketBottomRightText"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="2dp"
-                        android:textColor="@color/white"
-                        android:textSize="@dimen/text_label_md"
-                        android:textStyle="bold"
-                        tools:text="freezing" />
-                </LinearLayout>
-            </com.google.android.material.card.MaterialCardView>
-
-            <!-- Centered Animated Feedback Overlay -->
-            <com.google.android.material.card.MaterialCardView
-                android:id="@+id/cardFeedbackOverlay"
-                android:layout_width="260dp"
-                android:layout_height="wrap_content"
-                android:visibility="gone"
-                app:cardBackgroundColor="#0F172A"
-                app:cardCornerRadius="24dp"
-                app:cardElevation="12dp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:strokeColor="#38BDF8"
-                app:strokeWidth="3dp"
-                tools:visibility="visible">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:gravity="center"
-                    android:orientation="vertical"
-                    android:padding="20dp">
-
-                    <TextView
-                        android:id="@+id/tvFeedbackEmoji"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="🎯"
-                        android:textSize="40sp" />
-
-                    <TextView
-                        android:id="@+id/tvFeedbackTitle"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="6dp"
-                        android:text="¡TIRO PERFECTO!"
-                        android:textColor="#22C55E"
-                        android:textSize="18sp"
-                        android:textStyle="bold" />
-
-                    <TextView
-                        android:id="@+id/tvFeedbackBody"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
                         android:layout_marginTop="4dp"
                         android:gravity="center"
-                        android:text="freeze ➔ froze"
-                        android:textColor="@color/white"
-                        android:textSize="14sp"
-                        android:textStyle="bold" />
-
-                    <TextView
-                        android:id="@+id/tvFeedbackAutoNext"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
-                        android:text="Siguiente ejercicio en camino..."
-                        android:textColor="#94A3B8"
+                        android:text="@string/billiards_question"
+                        android:textColor="#64748B"
                         android:textSize="11sp" />
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </com.google.android.material.card.MaterialCardView>
+
+    <!-- Bottom Controls & Next Verb Button -->
+    <LinearLayout
+        android:id="@+id/bottomBar"
+        android:layout_width="match_parent"
+        android:layout_height="72dp"
+        android:background="#062213"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingHorizontal="@dimen/margin"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <TextView
+            android:id="@+id/tvBilliardsFeedback"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/billiards_instructions"
+            android:textColor="@color/white"
+            android:textSize="@dimen/text_body_sm" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnNextVerb"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/button_height"
+            android:layout_marginStart="@dimen/spacing_sm"
+            android:text="@string/billiards_next_button"
+            android:textColor="?attr/colorOnPrimary"
+            android:textSize="@dimen/text_label_md"
+            android:textStyle="bold"
+            app:icon="@drawable/ic_chevron_right"
+            app:iconGravity="textEnd"
+            app:iconTint="?attr/colorOnPrimary"
+            app:backgroundTint="?attr/colorPrimary"
+            app:cornerRadius="@dimen/rounded_lg" />
+    </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

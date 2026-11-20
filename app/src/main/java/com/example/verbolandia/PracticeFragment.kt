@@ -2,7 +2,9 @@ package com.example.verbolandia
 
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
+import android.content.Context
 import android.content.Intent
+import android.content.res.ColorStateList
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -13,11 +15,14 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
-import com.example.verbolandia.VerbBilliardsActivity
 import com.example.verbolandia.databinding.FragmentPracticeBinding
 import com.example.verbolandia.model.Verb
+import com.example.verbolandia.ui.AppBarHelper
+import com.example.verbolandia.ui.LeftSlot
+import com.example.verbolandia.ui.RightAction
 import com.example.verbolandia.ui.SharedViewModel
 import com.example.verbolandia.util.NotificationHelper
+import com.google.android.material.button.MaterialButton
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.launch
@@ -31,6 +36,7 @@ class PracticeFragment : Fragment() {
     private val viewModel: SharedViewModel by activityViewModels()
 
     private var selectedLevelMode: String = "BASIC" // "BASIC", "INTERMEDIATE", "ADVANCED"
+    private var dailyGoalTarget: Int = 10
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -44,6 +50,17 @@ class PracticeFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        dailyGoalTarget = loadDailyGoal()
+
+        AppBarHelper.configure(
+            binding = binding.appBar,
+            left = LeftSlot.Logo,
+            eyebrow = getString(R.string.app_name),
+            title = getString(R.string.practice_title),
+            rightActions = listOf(RightAction.Avatar())
+        )
+
+        setupDailyGoalInteraction()
         setupLevelSelectors()
         setupPracticeModalities()
         setupDateTimePicker()
@@ -53,6 +70,55 @@ class PracticeFragment : Fragment() {
     override fun onResume() {
         super.onResume()
         viewModel.loadInitialData()
+        updateDailyGoalUI()
+    }
+
+    private fun loadDailyGoal(): Int {
+        val prefs = requireContext().getSharedPreferences("practice_prefs", Context.MODE_PRIVATE)
+        return prefs.getInt("daily_goal_target", 10)
+    }
+
+    private fun saveDailyGoal(goal: Int) {
+        dailyGoalTarget = goal
+        val prefs = requireContext().getSharedPreferences("practice_prefs", Context.MODE_PRIVATE)
+        prefs.edit().putInt("daily_goal_target", goal).apply()
+        updateDailyGoalUI()
+        Snackbar.make(binding.root, getString(R.string.toast_goal_updated, goal), Snackbar.LENGTH_SHORT).show()
+    }
+
+    private fun setupDailyGoalInteraction() {
+        val listener = View.OnClickListener { showDailyGoalDialog() }
+        binding.cardGoal.setOnClickListener(listener)
+        binding.btnEditGoal.setOnClickListener(listener)
+    }
+
+    private fun showDailyGoalDialog() {
+        val options = intArrayOf(5, 10, 15, 20, 30)
+        val optionStrings = options.map { getString(R.string.goal_option_format, it) }.toTypedArray()
+        val currentIndex = options.indexOf(dailyGoalTarget).let { if (it >= 0) it else 1 }
+
+        MaterialAlertDialogBuilder(requireContext())
+            .setTitle(R.string.dialog_daily_goal_title)
+            .setSingleChoiceItems(optionStrings, currentIndex) { dialog, which ->
+                saveDailyGoal(options[which])
+                dialog.dismiss()
+            }
+            .setNegativeButton(R.string.dialog_cancel, null)
+            .show()
+    }
+
+    private fun updateDailyGoalUI() {
+        val summary = viewModel.progressSummary.value
+        val todayCount = summary.todayCompletedCount
+        binding.tvGoalStatus.text = getString(R.string.goal_status_format, todayCount, dailyGoalTarget)
+        val progressPct = ((todayCount.toDouble() / dailyGoalTarget) * 100).coerceAtMost(100.0).toInt()
+        binding.progressGoal.progress = progressPct
+        binding.tvGoalPct.text = getString(R.string.goal_pct_format, progressPct)
+        binding.tvGoalRemaining.text = if (todayCount >= dailyGoalTarget) {
+            getString(R.string.goal_completed)
+        } else {
+            getString(R.string.goal_remaining_format, dailyGoalTarget - todayCount)
+        }
     }
 
     private fun setupLevelSelectors() {
@@ -77,18 +143,39 @@ class PracticeFragment : Fragment() {
     private fun updateLevelPillsUI() {
         val primaryColor = ContextCompat.getColor(requireContext(), R.color.primary)
         val mutedColor = ContextCompat.getColor(requireContext(), R.color.on_surface_variant)
+        val whiteColor = ContextCompat.getColor(requireContext(), R.color.white)
+        val surfaceColor = ContextCompat.getColor(requireContext(), R.color.surface_container_low)
+        val outlineColor = ContextCompat.getColor(requireContext(), R.color.outline_variant)
 
         val isBasic = selectedLevelMode == "BASIC"
         val isInter = selectedLevelMode == "INTERMEDIATE"
         val isAdv = selectedLevelMode == "ADVANCED"
 
-        binding.btnLevelBasic.setTextColor(if (isBasic) ContextCompat.getColor(requireContext(), R.color.white) else mutedColor)
-        binding.btnLevelInter.setTextColor(if (isInter) ContextCompat.getColor(requireContext(), R.color.white) else mutedColor)
-        binding.btnLevelAdv.setTextColor(if (isAdv) ContextCompat.getColor(requireContext(), R.color.white) else mutedColor)
+        styleLevelButton(binding.btnLevelBasic, isBasic, primaryColor, surfaceColor, whiteColor, mutedColor, outlineColor)
+        styleLevelButton(binding.btnLevelInter, isInter, primaryColor, surfaceColor, whiteColor, mutedColor, outlineColor)
+        styleLevelButton(binding.btnLevelAdv, isAdv, primaryColor, surfaceColor, whiteColor, mutedColor, outlineColor)
+    }
 
-        binding.btnLevelBasic.setBackgroundColor(if (isBasic) primaryColor else ContextCompat.getColor(requireContext(), R.color.surface_container_low))
-        binding.btnLevelInter.setBackgroundColor(if (isInter) primaryColor else ContextCompat.getColor(requireContext(), R.color.surface_container_low))
-        binding.btnLevelAdv.setBackgroundColor(if (isAdv) primaryColor else ContextCompat.getColor(requireContext(), R.color.surface_container_low))
+    private fun styleLevelButton(
+        button: MaterialButton,
+        isSelected: Boolean,
+        primaryColor: Int,
+        surfaceColor: Int,
+        whiteColor: Int,
+        mutedColor: Int,
+        outlineColor: Int
+    ) {
+        if (isSelected) {
+            button.backgroundTintList = ColorStateList.valueOf(primaryColor)
+            button.setTextColor(whiteColor)
+            button.strokeColor = ColorStateList.valueOf(primaryColor)
+            button.strokeWidth = 0
+        } else {
+            button.backgroundTintList = ColorStateList.valueOf(surfaceColor)
+            button.setTextColor(mutedColor)
+            button.strokeColor = ColorStateList.valueOf(outlineColor)
+            button.strokeWidth = (1 * resources.displayMetrics.density).toInt()
+        }
     }
 
     private fun setupDateTimePicker() {
@@ -107,13 +194,21 @@ class PracticeFragment : Fragment() {
                     val timePickerDialog = TimePickerDialog(
                         requireContext(),
                         { _, selectedHour, selectedMinute ->
-                            val reminderText = "Recordatorio: $selectedDay/${selectedMonth + 1}/$selectedYear a las $selectedHour:${if (selectedMinute < 10) "0$selectedMinute" else selectedMinute}"
-                            binding.tvReminderResult.text = reminderText
+                            val timeStr = String.format("%02d:%02d", selectedHour, selectedMinute)
+                            val dateStr = "$selectedDay/${selectedMonth + 1}/$selectedYear"
+                            binding.tvReminderResult.text = getString(R.string.reminder_scheduled_format, dateStr, timeStr)
 
-                            val randomVerb = viewModel.dailyVerbs.value.randomOrNull() ?: Verb(base = "practice", thirdPerson = "practices", past = "practiced", pastParticiple = "practiced", gerund = "practicing", spanishMeaning = "Practicar")
+                            val randomVerb = viewModel.dailyVerbs.value.randomOrNull() ?: Verb(
+                                base = "practice",
+                                thirdPerson = "practices",
+                                past = "practiced",
+                                pastParticiple = "practiced",
+                                gerund = "practicing",
+                                spanishMeaning = "Practicar"
+                            )
                             NotificationHelper.showVerbOfDayNotification(requireContext(), randomVerb)
 
-                            Snackbar.make(binding.root, "¡Recordatorio programado con éxito!", Snackbar.LENGTH_SHORT).show()
+                            Snackbar.make(binding.root, getString(R.string.reminder_scheduled_format, dateStr, timeStr), Snackbar.LENGTH_SHORT).show()
                         },
                         hour,
                         minute,
@@ -132,13 +227,8 @@ class PracticeFragment : Fragment() {
     private fun observeViewModel() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.progressSummary.collect { summary ->
-                    val todayCount = summary.todayCompletedCount
-                    binding.tvGoalStatus.text = "$todayCount de 10 ejercicios completados"
-                    val progressPct = ((todayCount.toDouble() / 10) * 100).coerceAtMost(100.0).toInt()
-                    binding.progressGoal.progress = progressPct
-                    binding.tvGoalPct.text = "$progressPct%"
-                    binding.tvGoalRemaining.text = if (todayCount >= 10) "¡Meta diaria cumplida!" else "¡Faltan ${10 - todayCount} ejercicios!"
+                viewModel.progressSummary.collect {
+                    updateDailyGoalUI()
                 }
             }
         }
@@ -150,11 +240,20 @@ class PracticeFragment : Fragment() {
         }
 
         binding.cardModality1.setOnClickListener {
-            startQuizModal("Tríada Rápida")
+            val intent = Intent(requireContext(), QuickTriadActivity::class.java).apply {
+                val levelParam = when (selectedLevelMode) {
+                    "BASIC" -> "A1"
+                    "INTERMEDIATE" -> "B1"
+                    "ADVANCED" -> "B2"
+                    else -> "ALL"
+                }
+                putExtra(QuickTriadActivity.EXTRA_LEVEL, levelParam)
+            }
+            startActivity(intent)
         }
 
         binding.cardModality2.setOnClickListener {
-            startQuizModal("Completar en Contexto")
+            startQuizModal(getString(R.string.mod_2_title))
         }
 
         // Modality 3: Billar de Verbos opens dedicated interactive screen!
@@ -164,7 +263,7 @@ class PracticeFragment : Fragment() {
         }
 
         binding.cardModality4.setOnClickListener {
-            startQuizModal("Caza de Errores")
+            startQuizModal(getString(R.string.mod_4_title))
         }
     }
 
@@ -191,7 +290,7 @@ class PracticeFragment : Fragment() {
         if (reviewQueue.isEmpty()) return
 
         val targetVerb = reviewQueue.first()
-        val titleText = "Repaso Guiado PASO 1 • '${targetVerb.base.uppercase()}' (${targetVerb.spanishMeaning})"
+        val titleText = getString(R.string.guided_review_title_format, targetVerb.base.uppercase(), targetVerb.spanishMeaning)
 
         val options = listOf(
             targetVerb.past,
@@ -210,13 +309,13 @@ class PracticeFragment : Fragment() {
 
                 val msg = if (isCorrect) {
                     NotificationHelper.showVerbOfDayNotification(requireContext(), targetVerb)
-                    "¡Excelente paso de repaso! ${targetVerb.base} ➔ ${targetVerb.past}"
+                    getString(R.string.guided_review_success_format, targetVerb.base, targetVerb.past)
                 } else {
-                    "Repaso: El pasado de ${targetVerb.base} es ${targetVerb.past}"
+                    getString(R.string.guided_review_error_format, targetVerb.base, targetVerb.past)
                 }
 
                 Snackbar.make(binding.root, msg, Snackbar.LENGTH_LONG)
-                    .setAction("NOTIFICACIÓN") {
+                    .setAction(getString(R.string.action_notification)) {
                         NotificationHelper.showVerbOfDayNotification(requireContext(), targetVerb)
                     }
                     .show()
@@ -245,7 +344,7 @@ class PracticeFragment : Fragment() {
 
         val optionsArray = options.toTypedArray()
 
-        val titleText = "[$selectedLevelMode] ¿Pasado simple de '${targetVerb.base.uppercase()}'? (${targetVerb.spanishMeaning})"
+        val titleText = getString(R.string.quiz_modal_title_format, selectedLevelMode, targetVerb.base.uppercase(), targetVerb.spanishMeaning)
 
         MaterialAlertDialogBuilder(requireContext())
             .setTitle(titleText)
@@ -258,13 +357,13 @@ class PracticeFragment : Fragment() {
 
                 val msg = if (isCorrect) {
                     NotificationHelper.showVerbOfDayNotification(requireContext(), targetVerb)
-                    "¡Correcto! ${targetVerb.base} ➔ $correctAnswer"
+                    getString(R.string.quiz_success_format, targetVerb.base, correctAnswer)
                 } else {
-                    "Incorrecto. El pasado de ${targetVerb.base} es $correctAnswer (seleccionaste $selectedOption)"
+                    getString(R.string.quiz_error_format, targetVerb.base, correctAnswer)
                 }
 
                 Snackbar.make(binding.root, msg, Snackbar.LENGTH_LONG)
-                    .setAction("NOTIFICACIÓN") {
+                    .setAction(getString(R.string.action_notification)) {
                         NotificationHelper.showVerbOfDayNotification(requireContext(), targetVerb)
                     }
                     .show()

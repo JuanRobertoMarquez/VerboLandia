@@ -5,137 +5,38 @@
     android:id="@+id/scrollView"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:clipToPadding="false"
     android:fillViewport="true"
+    android:paddingBottom="80dp"
     tools:context=".DictionaryFragment">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingBottom="@dimen/spacing_lg">
+        android:layout_height="wrap_content">
 
-        <!-- Top Header: Logo, App Title & User Avatar -->
-        <ImageView
-            android:id="@+id/ivLogo"
-            android:layout_width="28dp"
-            android:layout_height="28dp"
-            android:layout_marginStart="@dimen/margin"
-            android:layout_marginTop="@dimen/margin"
-            android:contentDescription="@string/cd_logo"
-            android:src="@drawable/ic_dictionary"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:tint="?attr/colorPrimary" />
-
-        <TextView
-            android:id="@+id/tvHeaderTitle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/spacing_xs"
-            android:text="@string/app_name"
-            android:textColor="?attr/colorOnSurface"
-            android:textSize="@dimen/text_headline_sm"
-            android:textStyle="bold"
-            app:layout_constraintStart_toEndOf="@id/ivLogo"
-            app:layout_constraintTop_toTopOf="@id/ivLogo" />
-
-        <TextView
-            android:id="@+id/tvHeaderSubtitle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/app_subtitle"
-            android:textColor="?attr/colorPrimary"
-            android:textSize="@dimen/text_label_sm"
-            android:textStyle="bold"
-            app:layout_constraintStart_toStartOf="@id/tvHeaderTitle"
-            app:layout_constraintTop_toBottomOf="@id/tvHeaderTitle" />
-
-        <ImageView
-            android:id="@+id/ivAvatar"
-            android:layout_width="36dp"
-            android:layout_height="36dp"
-            android:layout_marginTop="@dimen/margin"
-            android:layout_marginEnd="@dimen/margin"
-            android:contentDescription="@string/cd_avatar"
-            android:src="@drawable/ic_avatar_placeholder"
+        <!-- Top Bar unificado (include_app_bar: variante raíz — logo + título + avatar) -->
+        <include
+            android:id="@+id/appBar"
+            layout="@layout/include_app_bar"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <!-- Main Title & Active Badge -->
-        <TextView
-            android:id="@+id/tvExplorerTitle"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/margin"
-            android:layout_marginTop="@dimen/spacing_lg"
-            android:layout_marginEnd="@dimen/spacing_sm"
-            android:text="@string/explorer_title"
-            android:textColor="?attr/colorOnSurface"
-            android:textSize="@dimen/text_headline_lg"
-            android:textStyle="bold"
-            app:layout_constraintEnd_toStartOf="@id/badgeActiveVerbs"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/ivLogo" />
-
-        <!-- Interactive Active Verbs Badge -->
-        <LinearLayout
-            android:id="@+id/badgeActiveVerbs"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="@dimen/margin"
-            android:background="@drawable/bg_badge_small"
-            android:gravity="center_vertical"
-            android:orientation="horizontal"
-            android:paddingHorizontal="@dimen/spacing_md"
-            android:paddingVertical="@dimen/spacing_xs"
-            app:layout_constraintBottom_toBottomOf="@id/tvExplorerTitle"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@id/tvExplorerTitle">
-
-            <ImageView
-                android:layout_width="16dp"
-                android:layout_height="16dp"
-                android:contentDescription="@null"
-                android:src="@drawable/ic_flash"
-                app:tint="?attr/colorPrimary" />
-
-            <TextView
-                android:id="@+id/tvActiveVerbsBadge"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/spacing_xs"
-                android:text="@string/active_verbs_badge"
-                android:textColor="?attr/colorOnSurface"
-                android:textSize="@dimen/text_label_md"
-                android:textStyle="bold" />
-        </LinearLayout>
-
-        <TextView
-            android:id="@+id/tvExplorerSubtitle"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/margin"
-            android:layout_marginTop="@dimen/spacing_xs"
-            android:layout_marginEnd="@dimen/margin"
-            android:text="@string/explorer_subtitle"
-            android:textColor="?attr/colorOnSurfaceVariant"
-            android:textSize="@dimen/text_body_md"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tvExplorerTitle" />
-
-        <!-- Search Bar Card -->
+        <!-- Search Bar Card with Filter Button -->
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/cardSearch"
             android:layout_width="match_parent"
             android:layout_height="@dimen/search_bar_height"
-            android:layout_marginHorizontal="@dimen/margin"
-            android:layout_marginTop="@dimen/spacing_lg"
+            android:layout_marginHorizontal="@dimen/screen_horizontal_padding"
+            android:layout_marginTop="@dimen/section_spacing_vertical"
             app:cardBackgroundColor="?attr/colorSurfaceContainerLow"
-            app:cardCornerRadius="@dimen/rounded_xl"
+            app:cardCornerRadius="@dimen/button_pill_radius"
             app:cardElevation="1dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tvExplorerSubtitle"
+            app:layout_constraintTop_toBottomOf="@id/appBar"
             app:strokeColor="?attr/colorOutlineVariant"
             app:strokeWidth="1dp">
 
@@ -144,7 +45,7 @@
                 android:layout_height="match_parent"
                 android:gravity="center_vertical"
                 android:orientation="horizontal"
-                android:paddingHorizontal="@dimen/spacing_md">
+                android:paddingHorizontal="@dimen/card_internal_padding">
 
                 <ImageView
                     android:layout_width="20dp"
@@ -155,9 +56,11 @@
 
                 <EditText
                     android:id="@+id/etSearch"
-                    android:layout_width="match_parent"
+                    android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_marginStart="@dimen/spacing_sm"
+                    android:layout_marginEnd="@dimen/spacing_xs"
+                    android:layout_weight="1"
                     android:autofillHints="none"
                     android:background="@null"
                     android:hint="@string/dict_search_hint"
@@ -167,85 +70,93 @@
                     android:textColor="?attr/colorOnSurface"
                     android:textColorHint="?attr/colorOnSurfaceVariant"
                     android:textSize="@dimen/text_body_md" />
+
+                <FrameLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+
+                    <ImageButton
+                        android:id="@+id/btnOpenFilter"
+                        android:layout_width="36dp"
+                        android:layout_height="36dp"
+                        android:background="?attr/selectableItemBackgroundBorderless"
+                        android:contentDescription="@string/filters_dialog_title"
+                        android:padding="6dp"
+                        android:scaleType="fitCenter"
+                        android:src="@drawable/ic_filter"
+                        app:tint="?attr/colorPrimary" />
+
+                    <View
+                        android:id="@+id/viewFilterActiveDot"
+                        android:layout_width="8dp"
+                        android:layout_height="8dp"
+                        android:layout_gravity="top|end"
+                        android:layout_marginTop="4dp"
+                        android:layout_marginEnd="4dp"
+                        android:background="@drawable/bg_fast_scroll_bubble"
+                        android:visibility="gone"
+                        tools:visibility="visible" />
+                </FrameLayout>
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
 
-        <!-- Horizontal Category Filters -->
-        <HorizontalScrollView
-            android:id="@+id/scrollFilters"
+        <!-- Active Filter Pill Indicator -->
+        <LinearLayout
+            android:id="@+id/layoutActiveFilterTag"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/spacing_md"
-            android:clipToPadding="false"
-            android:paddingHorizontal="@dimen/margin"
-            android:scrollbars="none"
+            android:layout_marginHorizontal="@dimen/screen_horizontal_padding"
+            android:layout_marginTop="@dimen/spacing_xs"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:visibility="gone"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/cardSearch">
+            app:layout_constraintTop_toBottomOf="@id/cardSearch"
+            tools:visibility="visible">
 
-            <LinearLayout
+            <TextView
+                android:id="@+id/tvActiveFilterDescription"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textColor="?attr/colorPrimary"
+                android:textSize="@dimen/text_label_sm"
+                android:textStyle="bold"
+                tools:text="Filtro activo: Irregulares • Nivel B1" />
+
+            <TextView
+                android:id="@+id/btnClearFilterPill"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:id="@+id/btnFilterAll"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="@dimen/spacing_sm"
-                    android:background="@drawable/bg_pill_filter"
-                    android:paddingHorizontal="@dimen/spacing_md"
-                    android:paddingVertical="@dimen/spacing_sm"
-                    android:text="@string/filter_all_count"
-                    android:textColor="?attr/colorSurface"
-                    android:textSize="@dimen/text_label_md"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:id="@+id/btnFilterIrregular"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="@dimen/spacing_sm"
-                    android:background="@drawable/bg_pill_filter"
-                    android:paddingHorizontal="@dimen/spacing_md"
-                    android:paddingVertical="@dimen/spacing_sm"
-                    android:text="@string/filter_irregular_count"
-                    android:textColor="?attr/colorOnSurfaceVariant"
-                    android:textSize="@dimen/text_label_md" />
-
-                <TextView
-                    android:id="@+id/btnFilterRegular"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/bg_pill_filter"
-                    android:paddingHorizontal="@dimen/spacing_md"
-                    android:paddingVertical="@dimen/spacing_sm"
-                    android:text="@string/filter_regular_count"
-                    android:textColor="?attr/colorOnSurfaceVariant"
-                    android:textSize="@dimen/text_label_md" />
-            </LinearLayout>
-        </HorizontalScrollView>
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:padding="4dp"
+                android:text="@string/btn_clear"
+                android:textColor="?attr/colorError"
+                android:textSize="@dimen/text_label_sm"
+                android:textStyle="bold" />
+        </LinearLayout>
 
         <!-- Featured "VERBO DEL DÍA" Card -->
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/cardVerbOfDay"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginHorizontal="@dimen/margin"
-            android:layout_marginTop="@dimen/spacing_lg"
+            android:layout_marginHorizontal="@dimen/screen_horizontal_padding"
+            android:layout_marginTop="@dimen/section_spacing_vertical"
             app:cardBackgroundColor="?attr/colorSurfaceContainerLow"
-            app:cardCornerRadius="@dimen/rounded_2xl"
+            app:cardCornerRadius="@dimen/card_corner_radius"
             app:cardElevation="0dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/scrollFilters"
+            app:layout_constraintTop_toBottomOf="@id/layoutActiveFilterTag"
             app:strokeColor="?attr/colorOutlineVariant"
             app:strokeWidth="1dp">
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:padding="@dimen/spacing_md">
+                android:padding="@dimen/card_internal_padding">
 
                 <ImageView
                     android:id="@+id/ivPin"
@@ -345,13 +256,13 @@
             </androidx.constraintlayout.widget.ConstraintLayout>
         </com.google.android.material.card.MaterialCardView>
 
-        <!-- Section Header -->
+        <!-- Section Header ("LISTA DE VERBOS") -->
         <TextView
             android:id="@+id/tvSectionHeader"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/margin"
-            android:layout_marginTop="@dimen/spacing_lg"
+            android:layout_marginStart="@dimen/screen_horizontal_padding"
+            android:layout_marginTop="@dimen/section_spacing_vertical"
             android:text="@string/list_header_title"
             android:textColor="?attr/colorOnSurfaceVariant"
             android:textSize="@dimen/text_label_md"
@@ -363,25 +274,30 @@
             android:id="@+id/tvSectionResults"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="@dimen/margin"
+            android:layout_marginEnd="@dimen/screen_horizontal_padding"
             android:text="@string/list_header_results"
             android:textColor="?attr/colorOnSurfaceVariant"
             android:textSize="@dimen/text_label_md"
             app:layout_constraintBaseline_toBaselineOf="@id/tvSectionHeader"
             app:layout_constraintEnd_toEndOf="parent" />
 
-        <!-- Sample Verb Card ("break") - hidden dynamically -->
-        <include
-            android:id="@+id/sampleVerbCardBreak"
-            layout="@layout/item_verb_card"
+        <!-- Skeleton Loaders Container (shown briefly during page/filter transitions) -->
+        <LinearLayout
+            android:id="@+id/layoutSkeleton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/spacing_sm"
+            android:layout_marginTop="@dimen/spacing_xs"
+            android:orientation="vertical"
             android:visibility="gone"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tvSectionHeader" />
+            app:layout_constraintTop_toBottomOf="@id/tvSectionHeader">
 
+            <include layout="@layout/item_verb_skeleton" />
+            <include layout="@layout/item_verb_skeleton" />
+        </LinearLayout>
+
+        <!-- Verb Cards RecyclerView (Paginated) -->
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rvVerbs"
             android:layout_width="match_parent"
@@ -391,9 +307,82 @@
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/sampleVerbCardBreak"
-            tools:itemCount="4"
+            app:layout_constraintTop_toBottomOf="@id/layoutSkeleton"
+            tools:itemCount="5"
             tools:listitem="@layout/item_verb_card" />
+
+        <!-- Pagination Bar Component with Icon-Only Chevrons and Smooth Rounded Number Pills -->
+        <LinearLayout
+            android:id="@+id/layoutPagination"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/screen_horizontal_padding"
+            android:layout_marginTop="@dimen/section_spacing_vertical"
+            android:gravity="center"
+            android:orientation="vertical"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/rvVerbs">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <!-- Previous Page (Vector Icon Button) -->
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnPrevPage"
+                    style="@style/Widget.Material3.Button.IconButton.Filled.Tonal"
+                    android:layout_width="44dp"
+                    android:layout_height="44dp"
+                    android:contentDescription="@string/cd_prev_page"
+                    app:cornerRadius="@dimen/rounded_full"
+                    app:icon="@drawable/ic_chevron_left"
+                    app:iconGravity="textStart"
+                    app:iconPadding="0dp"
+                    app:iconTint="?attr/colorPrimary" />
+
+                <!-- Scrollable Page Number Pills -->
+                <HorizontalScrollView
+                    android:id="@+id/scrollPageNumbers"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="@dimen/spacing_xs"
+                    android:layout_weight="1"
+                    android:scrollbars="none">
+
+                    <LinearLayout
+                        android:id="@+id/layoutPageNumbersContainer"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:orientation="horizontal" />
+                </HorizontalScrollView>
+
+                <!-- Next Page (Vector Icon Button) -->
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnNextPage"
+                    style="@style/Widget.Material3.Button.IconButton.Filled.Tonal"
+                    android:layout_width="44dp"
+                    android:layout_height="44dp"
+                    android:contentDescription="@string/cd_next_page"
+                    app:cornerRadius="@dimen/rounded_full"
+                    app:icon="@drawable/ic_chevron_right"
+                    app:iconGravity="textStart"
+                    app:iconPadding="0dp"
+                    app:iconTint="?attr/colorPrimary" />
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/tvPaginationSummary"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/spacing_xs"
+                android:textColor="?attr/colorOnSurfaceVariant"
+                android:textSize="@dimen/text_label_sm"
+                tools:text="Página 1 de 12 • 180 verbos en total" />
+        </LinearLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.core.widget.NestedScrollView>

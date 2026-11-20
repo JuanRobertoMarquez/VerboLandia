@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Encabezado global modular y dinámico (Header) de Verbolandia.
+    Arquitectura de 3 zonas (Slots):
+      - Slot Izquierdo (shrink-0): Logo / Botón Volver / Botón Cerrar
+      - Slot Central (flex-1 min-w-0): Eyebrow (10sp, bold, uppercase, tracking-widest) + Title (16sp, extrabold, truncate)
+      - Slot Derecho (flex items-center gap-2 shrink-0): Contenedor dinámico (NO hardcodeado) para acciones contextuales
+      - Border-b: Divisor inferior consistente de 1dp
+      - Barra de progreso superior opcional para minijuegos
+-->
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/headerRoot"
+    android:layout_width="match_parent"
+    android:layout_height="56dp"
+    android:background="?android:attr/colorBackground"
+    android:paddingHorizontal="16dp">
+
+    <!-- ═══════════════════════════════════════════════
+         BARRA DE PROGRESO SUPERIOR (Minijuegos / Actividades)
+    ════════════════════════════════════════════════ -->
+    <com.google.android.material.progressindicator.LinearProgressIndicator
+        android:id="@+id/progressLine"
+        android:layout_width="match_parent"
+        android:layout_height="3dp"
+        android:visibility="gone"
+        app:indicatorColor="?attr/colorPrimary"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:trackColor="?attr/colorSurfaceContainerHighest"
+        app:trackThickness="3dp"
+        tools:progress="65" />
+
+    <!-- ═══════════════════════════════════════════════
+         SLOT IZQUIERDO (shrink-0)
+         Muestra exclusivamente un solo elemento según la pantalla:
+         - Logo de Verbolandia (tabs raíz)
+         - Botón Volver (detalle / navegación)
+         - Botón Cerrar (minijuegos / prácticas activas)
+    ════════════════════════════════════════════════ -->
+    <ImageButton
+        android:id="@+id/slotLeftButton"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:contentDescription="@string/cd_back"
+        android:padding="8dp"
+        android:scaleType="fitCenter"
+        app:layout_constraintBottom_toTopOf="@id/bottomDivider"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="ImageContrastCheck"
+        tools:src="@drawable/ic_dictionary" />
+
+    <!-- ═══════════════════════════════════════════════
+         SLOT CENTRAL (flex-1 min-w-0)
+         Alineación vertical perfecta de 2 líneas:
+         - Eyebrow: text-[10px] font-bold uppercase tracking-widest
+         - Title: text-base font-extrabold leading-tight truncate
+    ════════════════════════════════════════════════ -->
+    <LinearLayout
+        android:id="@+id/slotCenter"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="12dp"
+        android:layout_marginEnd="12dp"
+        android:gravity="center_vertical"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toTopOf="@id/bottomDivider"
+        app:layout_constraintEnd_toStartOf="@id/slotRight"
+        app:layout_constraintStart_toEndOf="@id/slotLeftButton"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <!-- Línea superior: Eyebrow / Categoría -->
+        <TextView
+            android:id="@+id/tvEyebrow"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:includeFontPadding="false"
+            android:letterSpacing="0.1"
+            android:maxLines="1"
+            android:textAllCaps="true"
+            android:textColor="?attr/colorPrimary"
+            android:textSize="10sp"
+            android:textStyle="bold"
+            tools:text="VERBOLANDIA" />
+
+        <!-- Línea inferior: Título de pantalla -->
+        <TextView
+            android:id="@+id/tvTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            android:ellipsize="end"
+            android:includeFontPadding="false"
+            android:maxLines="1"
+            android:textColor="?attr/colorOnSurface"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            tools:text="Diccionario de Verbos" />
+    </LinearLayout>
+
+    <!-- ═══════════════════════════════════════════════
+         SLOT DERECHO (flex items-center gap-2 shrink-0)
+         Contenedor DINÁMICO. Prohibido hardcodear botones aquí.
+         Se puebla únicamente con las acciones pasadas por cada pantalla.
+    ════════════════════════════════════════════════ -->
+    <LinearLayout
+        android:id="@+id/slotRight"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toTopOf="@id/bottomDivider"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <!-- ═══════════════════════════════════════════════
+         BORDE INFERIOR (border-b)
+         Línea divisoria fija consistente de 1dp
+    ════════════════════════════════════════════════ -->
+    <View
+        android:id="@+id/bottomDivider"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="?attr/colorOutlineVariant"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

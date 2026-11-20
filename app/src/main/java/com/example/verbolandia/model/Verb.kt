@@ -16,4 +16,12 @@ data class Verb(
     val level: String = "A1",
     var mastery: Int = 0,
     var isFavorite: Boolean = false,
+    val ipaBase: String = "",
+    val ipaPast: String = "",
+    val ipaParticiple: String = "",
+    val morphGroup: String = "regular_ed",
+    val phoneticGroupId: Int = 1,
+    val commonErrorTip: String = "",
+    val tenses: List<VerbTense> = emptyList(),
+    val phrasalVerbs: List<PhrasalVerb> = emptyList()
 ) : Serializable

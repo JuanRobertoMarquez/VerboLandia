@@ -31,24 +31,27 @@ class TextureViewActivity : AppCompatActivity(), TextureView.SurfaceTextureListe
             insets
         }
 
-        binding.btnBack.setOnClickListener {
-            finish()
-        }
+        com.example.verbolandia.ui.AppBarHelper.configure(
+            binding = binding.appBar,
+            left = com.example.verbolandia.ui.LeftSlot.Back { finish() },
+            eyebrow = getString(R.string.texture_eyebrow),
+            title = getString(R.string.texture_title)
+        )
 
         binding.myTextureView.surfaceTextureListener = this
     }
 
     override fun onSurfaceTextureAvailable(surface: SurfaceTexture, width: Int, height: Int) {
-        binding.tvTextureStatus.text = "SurfaceTexture lista (${width}x${height}). Renderizando stream..."
-        Toast.makeText(this, "TextureView lista para renderizado", Toast.LENGTH_SHORT).show()
+        binding.tvTextureStatus.text = getString(R.string.texture_status_ready, width, height)
+        Toast.makeText(this, getString(R.string.texture_toast_ready), Toast.LENGTH_SHORT).show()
     }
 
     override fun onSurfaceTextureSizeChanged(surface: SurfaceTexture, width: Int, height: Int) {
-        binding.tvTextureStatus.text = "Tamaño cambiado: ${width}x${height}"
+        binding.tvTextureStatus.text = getString(R.string.texture_status_resized, width, height)
     }
 
     override fun onSurfaceTextureDestroyed(surface: SurfaceTexture): Boolean {
-        binding.tvTextureStatus.text = "SurfaceTexture destruida"
+        binding.tvTextureStatus.text = getString(R.string.texture_status_destroyed)
         return true
     }
 

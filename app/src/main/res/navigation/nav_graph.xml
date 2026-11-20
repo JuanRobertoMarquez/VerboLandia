@@ -8,7 +8,7 @@
     <fragment
         android:id="@+id/nav_dictionary"
         android:name="com.example.verbolandia.DictionaryFragment"
-        android:label="DictionaryFragment"
+        android:label="@string/nav_dictionary"
         tools:layout="@layout/fragment_dictionary">
         <action
             android:id="@+id/action_dictionary_to_verbDetail"
@@ -18,19 +18,19 @@
     <fragment
         android:id="@+id/nav_verb"
         android:name="com.example.verbolandia.VerbDetailFragment"
-        android:label="VerbDetailFragment"
+        android:label="@string/verb_detail_title"
         tools:layout="@layout/fragment_verb_detail" />
 
     <fragment
         android:id="@+id/nav_practice"
         android:name="com.example.verbolandia.PracticeFragment"
-        android:label="PracticeFragment"
+        android:label="@string/nav_practice"
         tools:layout="@layout/fragment_practice" />
 
     <fragment
         android:id="@+id/nav_progress"
         android:name="com.example.verbolandia.ProgressFragment"
-        android:label="ProgressFragment"
+        android:label="@string/nav_progress"
         tools:layout="@layout/fragment_progress" />
 
 </navigation>
