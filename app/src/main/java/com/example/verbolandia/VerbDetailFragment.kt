@@ -90,7 +90,9 @@ class VerbDetailFragment : Fragment() {
                                     .show(childFragmentManager, "VerbPracticeBottomSheet")
                             },
                             onTranslateClick = {
-                                requestTranslationDownload(verb)
+                                if (verb.spanishMeaning.isBlank()) {
+                                    requestTranslationDownload(verb)
+                                }
                             }
                         )
                     }
