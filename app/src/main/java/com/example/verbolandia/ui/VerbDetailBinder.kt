@@ -23,8 +23,7 @@ object VerbDetailBinder {
         stats: VerbStatsRecord,
         onBookmarkClick: () -> Unit,
         onShareClick: () -> Unit,
-        onPracticeClick: () -> Unit,
-        onTranslateClick: () -> Unit
+        onPracticeClick: () -> Unit
     ) {
         val context = binding.root.context
 
@@ -63,18 +62,11 @@ object VerbDetailBinder {
         binding.badgeHighFreq.visibility = if (verb.isCommon) View.VISIBLE else View.GONE
         binding.badgeLevel.text = verb.level
 
-        // Meaning: Display preloaded database translation; only offer ML Kit translation if missing
-        if (verb.spanishMeaning.isNotBlank()) {
-            binding.tvMeaningPrimary.text = verb.spanishMeaning
-            binding.cardMeaning.isClickable = false
-            binding.cardMeaning.isFocusable = false
-            binding.cardMeaning.setOnClickListener(null)
-        } else {
-            binding.tvMeaningPrimary.text = context.getString(R.string.tap_to_translate)
-            binding.cardMeaning.isClickable = true
-            binding.cardMeaning.isFocusable = true
-            binding.cardMeaning.setOnClickListener { onTranslateClick() }
-        }
+        // Meaning: Display preloaded official database translation
+        binding.tvMeaningPrimary.text = verb.spanishMeaning.ifBlank { verb.base }
+        binding.cardMeaning.isClickable = false
+        binding.cardMeaning.isFocusable = false
+        binding.cardMeaning.setOnClickListener(null)
 
         // Hide static fields without real data
         binding.tvPhonetic.visibility = View.GONE
@@ -252,12 +244,7 @@ object VerbDetailBinder {
     }
 
     fun shareVerb(context: Context, verb: Verb) {
-        val tapToTranslate = context.getString(R.string.tap_to_translate)
-        val meaning = if (verb.spanishMeaning.isNotBlank() && verb.spanishMeaning != tapToTranslate) {
-            verb.spanishMeaning
-        } else {
-            "—"
-        }
+        val meaning = verb.spanishMeaning.ifBlank { "—" }
 
         val shareText = context.getString(
             R.string.share_verb_format,

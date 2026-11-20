@@ -538,14 +538,6 @@
     <string name="dialog_cancel">Cancelar</string>
     <string name="snackbar_history_cleared">Historial de búsqueda eliminado</string>
     <string name="snackbar_progress_reset">Progreso restablecido correctamente</string>
-
-    <!-- ML Kit Translation & Details -->
-    <string name="dialog_download_model_title">Descargar Modelo On-Device (~30 MB)</string>
-    <string name="dialog_download_model_msg">¿Deseas descargar el modelo de traducción inglés a español de Google ML Kit para traducir \'%1$s\'?</string>
-    <string name="dialog_download_model_positive">Descargar y Traducir</string>
-    <string name="snackbar_translating">Descargando / Traduciendo...</string>
-    <string name="snackbar_translated_format">Traducción completada: %1$s</string>
-    <string name="snackbar_translate_error_format">Error al traducir: %1$s</string>
     <string name="snackbar_action_retry">Reintentar</string>
     <string name="snackbar_favorite_added">Añadido a favoritos</string>
     <string name="snackbar_favorite_removed">Eliminado de favoritos</string>
