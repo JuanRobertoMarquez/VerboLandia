@@ -133,7 +133,9 @@ class VerbDetailActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
                     .show(supportFragmentManager, "VerbPracticeBottomSheet")
             },
             onTranslateClick = {
-                requestTranslationDownload(verb)
+                if (verb.spanishMeaning.isBlank()) {
+                    requestTranslationDownload(verb)
+                }
             }
         )
     }

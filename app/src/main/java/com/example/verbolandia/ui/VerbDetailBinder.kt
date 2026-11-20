@@ -63,13 +63,18 @@ object VerbDetailBinder {
         binding.badgeHighFreq.visibility = if (verb.isCommon) View.VISIBLE else View.GONE
         binding.badgeLevel.text = verb.level
 
-        // Meaning
-        binding.tvMeaningPrimary.text = if (verb.spanishMeaning.isNotBlank()) {
-            verb.spanishMeaning
+        // Meaning: Display preloaded database translation; only offer ML Kit translation if missing
+        if (verb.spanishMeaning.isNotBlank()) {
+            binding.tvMeaningPrimary.text = verb.spanishMeaning
+            binding.cardMeaning.isClickable = false
+            binding.cardMeaning.isFocusable = false
+            binding.cardMeaning.setOnClickListener(null)
         } else {
-            context.getString(R.string.tap_to_translate)
+            binding.tvMeaningPrimary.text = context.getString(R.string.tap_to_translate)
+            binding.cardMeaning.isClickable = true
+            binding.cardMeaning.isFocusable = true
+            binding.cardMeaning.setOnClickListener { onTranslateClick() }
         }
-        binding.cardMeaning.setOnClickListener { onTranslateClick() }
 
         // Hide static fields without real data
         binding.tvPhonetic.visibility = View.GONE
