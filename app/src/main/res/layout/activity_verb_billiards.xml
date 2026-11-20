@@ -5,15 +5,15 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#09301B"
+    android:background="#062213"
     android:fitsSystemWindows="true">
 
-    <!-- Header Bar -->
+    <!-- Top Header Bar -->
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/topBar"
         android:layout_width="match_parent"
         android:layout_height="56dp"
-        android:background="#062213"
+        android:background="#04180D"
         android:paddingHorizontal="@dimen/margin"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -46,21 +46,35 @@
             app:layout_constraintStart_toEndOf="@id/btnBack"
             app:layout_constraintTop_toTopOf="parent" />
 
+        <!-- Difficulty Round Badge & Score -->
         <TextView
-            android:id="@+id/tvScore"
+            android:id="@+id/badgeDifficultyLevel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@drawable/bg_badge_small"
             android:paddingHorizontal="@dimen/spacing_md"
             android:paddingVertical="4dp"
-            android:text="Aciertos: 0 | 🔥 0"
+            android:text="Nivel 1 • 4 Troneras"
             android:textColor="?attr/colorPrimary"
-            android:textSize="@dimen/text_label_md"
+            android:textSize="@dimen/text_label_sm"
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <!-- Subtitle Instruction -->
+    <TextView
+        android:id="@+id/tvBilliardsSubinstruction"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="6dp"
+        android:text="Arrastra y suelta la bola blanca para disparar a una tronera."
+        android:textColor="#94A3B8"
+        android:textSize="12sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/topBar" />
 
     <!-- Pool Table Container -->
     <com.google.android.material.card.MaterialCardView
@@ -68,15 +82,16 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginHorizontal="@dimen/margin"
-        android:layout_marginVertical="@dimen/spacing_lg"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="@dimen/margin"
         app:cardBackgroundColor="#0D5C32"
         app:cardCornerRadius="@dimen/rounded_2xl"
         app:cardElevation="6dp"
-        app:layout_constraintBottom_toTopOf="@id/bottomBar"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/topBar"
-        app:strokeColor="#5C3A21"
+        app:layout_constraintTop_toBottomOf="@id/tvBilliardsSubinstruction"
+        app:strokeColor="#3D2314"
         app:strokeWidth="12dp">
 
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -94,7 +109,7 @@
                 android:id="@+id/cardTargetBanner"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="12dp"
+                android:layout_marginTop="10dp"
                 app:cardBackgroundColor="#1E293B"
                 app:cardCornerRadius="16dp"
                 app:cardElevation="4dp"
@@ -135,8 +150,8 @@
             <!-- Pocket 1: Top-Left Card -->
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/cardPocketTopLeft"
-                android:layout_width="105dp"
-                android:layout_height="75dp"
+                android:layout_width="98dp"
+                android:layout_height="72dp"
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
                 app:cardBackgroundColor="#111827"
@@ -152,7 +167,7 @@
                     android:layout_height="match_parent"
                     android:gravity="center"
                     android:orientation="vertical"
-                    android:padding="6dp">
+                    android:padding="4dp">
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -177,8 +192,8 @@
             <!-- Pocket 2: Top-Right Card -->
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/cardPocketTopRight"
-                android:layout_width="105dp"
-                android:layout_height="75dp"
+                android:layout_width="98dp"
+                android:layout_height="72dp"
                 android:layout_marginTop="8dp"
                 android:layout_marginEnd="8dp"
                 app:cardBackgroundColor="#111827"
@@ -194,7 +209,7 @@
                     android:layout_height="match_parent"
                     android:gravity="center"
                     android:orientation="vertical"
-                    android:padding="6dp">
+                    android:padding="4dp">
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -216,11 +231,99 @@
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
+            <!-- Pocket 5: Middle-Left Card (Unlocked at Level 6) -->
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/cardPocketMidLeft"
+                android:layout_width="98dp"
+                android:layout_height="72dp"
+                android:layout_marginStart="8dp"
+                android:visibility="gone"
+                app:cardBackgroundColor="#111827"
+                app:cardCornerRadius="@dimen/rounded_xl"
+                app:cardElevation="4dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:strokeColor="#374151"
+                app:strokeWidth="2dp"
+                tools:visibility="visible">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:orientation="vertical"
+                    android:padding="4dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="🕳️ Tronera 5"
+                        android:textColor="#9CA3AF"
+                        android:textSize="9sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/tvPocketMidLeftText"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="2dp"
+                        android:textColor="@color/white"
+                        android:textSize="@dimen/text_label_md"
+                        android:textStyle="bold"
+                        tools:text="freezing" />
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- Pocket 6: Middle-Right Card (Unlocked at Level 6) -->
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/cardPocketMidRight"
+                android:layout_width="98dp"
+                android:layout_height="72dp"
+                android:layout_marginEnd="8dp"
+                android:visibility="gone"
+                app:cardBackgroundColor="#111827"
+                app:cardCornerRadius="@dimen/rounded_xl"
+                app:cardElevation="4dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:strokeColor="#374151"
+                app:strokeWidth="2dp"
+                tools:visibility="visible">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:orientation="vertical"
+                    android:padding="4dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="🕳️ Tronera 6"
+                        android:textColor="#9CA3AF"
+                        android:textSize="9sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/tvPocketMidRightText"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="2dp"
+                        android:textColor="@color/white"
+                        android:textSize="@dimen/text_label_md"
+                        android:textStyle="bold"
+                        tools:text="freezes" />
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
             <!-- Pocket 3: Bottom-Left Card -->
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/cardPocketBottomLeft"
-                android:layout_width="105dp"
-                android:layout_height="75dp"
+                android:layout_width="98dp"
+                android:layout_height="72dp"
                 android:layout_marginStart="8dp"
                 android:layout_marginBottom="8dp"
                 app:cardBackgroundColor="#111827"
@@ -236,7 +339,7 @@
                     android:layout_height="match_parent"
                     android:gravity="center"
                     android:orientation="vertical"
-                    android:padding="6dp">
+                    android:padding="4dp">
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -261,8 +364,8 @@
             <!-- Pocket 4: Bottom-Right Card -->
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/cardPocketBottomRight"
-                android:layout_width="105dp"
-                android:layout_height="75dp"
+                android:layout_width="98dp"
+                android:layout_height="72dp"
                 android:layout_marginEnd="8dp"
                 android:layout_marginBottom="8dp"
                 app:cardBackgroundColor="#111827"
@@ -278,7 +381,7 @@
                     android:layout_height="match_parent"
                     android:gravity="center"
                     android:orientation="vertical"
-                    android:padding="6dp">
+                    android:padding="4dp">
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -300,42 +403,70 @@
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
+            <!-- Centered Animated Feedback Overlay -->
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/cardFeedbackOverlay"
+                android:layout_width="260dp"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                app:cardBackgroundColor="#0F172A"
+                app:cardCornerRadius="24dp"
+                app:cardElevation="12dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:strokeColor="#38BDF8"
+                app:strokeWidth="3dp"
+                tools:visibility="visible">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:orientation="vertical"
+                    android:padding="20dp">
+
+                    <TextView
+                        android:id="@+id/tvFeedbackEmoji"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="🎯"
+                        android:textSize="40sp" />
+
+                    <TextView
+                        android:id="@+id/tvFeedbackTitle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="6dp"
+                        android:text="¡TIRO PERFECTO!"
+                        android:textColor="#22C55E"
+                        android:textSize="18sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/tvFeedbackBody"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp"
+                        android:gravity="center"
+                        android:text="freeze ➔ froze"
+                        android:textColor="@color/white"
+                        android:textSize="14sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/tvFeedbackAutoNext"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:text="Siguiente ejercicio en camino..."
+                        android:textColor="#94A3B8"
+                        android:textSize="11sp" />
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
         </androidx.constraintlayout.widget.ConstraintLayout>
     </com.google.android.material.card.MaterialCardView>
-
-    <!-- Bottom Controls & Next Verb Button -->
-    <LinearLayout
-        android:id="@+id/bottomBar"
-        android:layout_width="match_parent"
-        android:layout_height="72dp"
-        android:background="#062213"
-        android:gravity="center_vertical"
-        android:orientation="horizontal"
-        android:paddingHorizontal="@dimen/margin"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent">
-
-        <TextView
-            android:id="@+id/tvBilliardsFeedback"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Arrastra y suelta la bola blanca para disparar a una tronera."
-            android:textColor="@color/white"
-            android:textSize="@dimen/text_body_sm" />
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btnNextVerb"
-            android:layout_width="wrap_content"
-            android:layout_height="@dimen/button_height"
-            android:layout_marginStart="@dimen/spacing_sm"
-            android:text="Siguiente ➔"
-            android:textColor="?attr/colorOnPrimary"
-            android:textSize="@dimen/text_label_md"
-            android:textStyle="bold"
-            app:backgroundTint="?attr/colorPrimary"
-            app:cornerRadius="@dimen/rounded_lg" />
-    </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
