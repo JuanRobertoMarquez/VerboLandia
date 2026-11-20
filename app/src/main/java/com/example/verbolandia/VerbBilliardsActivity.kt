@@ -12,6 +12,7 @@ import com.example.verbolandia.databinding.ActivityVerbBilliardsBinding
 import com.example.verbolandia.model.Verb
 import com.example.verbolandia.util.AudioSpeaker
 import com.example.verbolandia.util.NotificationHelper
+import com.example.verbolandia.view.PoolTableView
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.launch
 
@@ -24,6 +25,8 @@ class VerbBilliardsActivity : AppCompatActivity() {
     private var scoreCount = 0
     private var streakCount = 0
     private var isAnswered = false
+    private var currentShuffledPockets = listOf<String>()
+    private var currentCorrectAnswer = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -53,13 +56,31 @@ class VerbBilliardsActivity : AppCompatActivity() {
             loadNextBilliardsRound()
         }
 
+        binding.poolTableView.onPocketSunkListener = object : PoolTableView.OnPocketSunkListener {
+            override fun onPocketSunk(pocketIndex: Int) {
+                if (isAnswered || currentShuffledPockets.isEmpty()) return
+
+                val selectedText = currentShuffledPockets.getOrElse(pocketIndex) { "" }
+                val selectedCard = when (pocketIndex) {
+                    0 -> binding.cardPocketTopLeft
+                    1 -> binding.cardPocketTopRight
+                    2 -> binding.cardPocketBottomLeft
+                    else -> binding.cardPocketBottomRight
+                }
+                currentVerb?.let { verb ->
+                    onPocketShot(selectedText, currentCorrectAnswer, verb, selectedCard)
+                }
+            }
+        }
+
         loadNextBilliardsRound()
     }
 
     private fun loadNextBilliardsRound() {
         isAnswered = false
         try {
-            binding.tvBilliardsFeedback.text = "Tira a la tronera con el pasado del verbo."
+            binding.poolTableView.resetCueBall()
+            binding.tvBilliardsFeedback.text = "Arrastra la bola blanca para apuntar y disparar a la tronera."
             binding.tvBilliardsFeedback.setTextColor(ContextCompat.getColor(this, R.color.white))
 
             val darkBg = ContextCompat.getColor(this, R.color.inverse_surface)
@@ -86,6 +107,8 @@ class VerbBilliardsActivity : AppCompatActivity() {
                 binding.tvTargetVerbPrompt.text = "Significado: ${targetVerb.spanishMeaning}"
 
                 val correctAnswer = targetVerb.past
+                currentCorrectAnswer = correctAnswer
+
                 val option1 = correctAnswer
                 val option2 = targetVerb.gerund
                 val option3 = if (targetVerb.base.endsWith("e")) "${targetVerb.base}d" else "${targetVerb.base}ed"
@@ -103,12 +126,14 @@ class VerbBilliardsActivity : AppCompatActivity() {
                 }
 
                 val shuffledPockets = pocketList.shuffled()
+                currentShuffledPockets = shuffledPockets
 
                 binding.tvPocketTopLeftText.text = shuffledPockets[0]
                 binding.tvPocketTopRightText.text = shuffledPockets[1]
                 binding.tvPocketBottomLeftText.text = shuffledPockets[2]
                 binding.tvPocketBottomRightText.text = shuffledPockets[3]
 
+                // Also allow direct tap for accessibility
                 binding.cardPocketTopLeft.setOnClickListener { onPocketShot(shuffledPockets[0], correctAnswer, targetVerb, binding.cardPocketTopLeft) }
                 binding.cardPocketTopRight.setOnClickListener { onPocketShot(shuffledPockets[1], correctAnswer, targetVerb, binding.cardPocketTopRight) }
                 binding.cardPocketBottomLeft.setOnClickListener { onPocketShot(shuffledPockets[2], correctAnswer, targetVerb, binding.cardPocketBottomLeft) }
@@ -141,11 +166,11 @@ class VerbBilliardsActivity : AppCompatActivity() {
                 streakCount++
                 binding.tvScore.text = "Aciertos: $scoreCount | 🔥 $streakCount"
                 selectedCard.setCardBackgroundColor(ContextCompat.getColor(this, R.color.primary))
-                binding.tvBilliardsFeedback.text = "¡TIRO PERFECTO! ${targetVerb.base} ➔ $correctAnswer"
+                binding.tvBilliardsFeedback.text = "¡TIRO PERFECTO ENCESTA EN LA TRONERA! ${targetVerb.base} ➔ $correctAnswer"
 
                 NotificationHelper.showVerbOfDayNotification(this, targetVerb)
 
-                Snackbar.make(binding.root, "¡Encestaste en la tronera correcta! +10 pts", Snackbar.LENGTH_LONG)
+                Snackbar.make(binding.root, "¡Excelente tiro! Encestaste el pasado de '${targetVerb.base.uppercase()}' (+10 pts)", Snackbar.LENGTH_LONG)
                     .setAction("NOTIFICACIÓN") {
                         NotificationHelper.showVerbOfDayNotification(this, targetVerb)
                     }
@@ -154,7 +179,7 @@ class VerbBilliardsActivity : AppCompatActivity() {
                 streakCount = 0
                 binding.tvScore.text = "Aciertos: $scoreCount | 🔥 0"
                 selectedCard.setCardBackgroundColor(ContextCompat.getColor(this, R.color.error))
-                binding.tvBilliardsFeedback.text = "¡Fallaste la tronera! El pasado de ${targetVerb.base} es $correctAnswer"
+                binding.tvBilliardsFeedback.text = "¡Fallaste la tronera! El pasado de ${targetVerb.base} es $correctAnswer (elegiste: $selectedText)"
             }
         } catch (e: Exception) {
             e.printStackTrace()
