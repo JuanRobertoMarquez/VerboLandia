@@ -33,6 +33,16 @@ object NotificationHelper {
     }
 
     fun showVerbOfDayNotification(context: Context, verb: Verb) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            val hasPermission = androidx.core.content.ContextCompat.checkSelfPermission(
+                context,
+                android.Manifest.permission.POST_NOTIFICATIONS
+            ) == android.content.pm.PackageManager.PERMISSION_GRANTED
+            if (!hasPermission) {
+                return
+            }
+        }
+
         createNotificationChannel(context)
 
         val intent = Intent(context, MainActivity::class.java).apply {
