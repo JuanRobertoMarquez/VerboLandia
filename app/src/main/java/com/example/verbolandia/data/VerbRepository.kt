@@ -1,6 +1,7 @@
 package com.example.verbolandia.data
 
 import android.content.Context
+import com.example.verbolandia.R
 import com.example.verbolandia.db.DatabaseHelper
 import com.example.verbolandia.db.UserDatabaseHelper
 import com.example.verbolandia.model.Verb
@@ -17,6 +18,7 @@ class VerbRepository(
     context: Context,
     private val clock: Clock = DefaultClock()
 ) {
+    private val appContext: Context = context.applicationContext
 
     companion object {
         @Volatile
@@ -343,7 +345,7 @@ class VerbRepository(
             ?: LOCAL_SPANISH_DICTIONARY[verb.base.lowercase()]
             ?: (if (verb.spanishMeaning.isNotBlank()) verb.spanishMeaning else null)
 
-        val finalMeaning = customTrans ?: (if (verb.spanishMeaning.isNotBlank()) verb.spanishMeaning else "Toca para traducir")
+        val finalMeaning = customTrans ?: (if (verb.spanishMeaning.isNotBlank()) verb.spanishMeaning else appContext.getString(R.string.tap_to_translate))
 
         return verb.copy(
             spanishMeaning = finalMeaning,

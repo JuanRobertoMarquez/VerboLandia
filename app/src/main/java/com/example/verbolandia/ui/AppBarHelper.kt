@@ -62,10 +62,10 @@ object AppBarHelper {
 
         // 0. Tema de fondo y divisor
         if (isDarkTheme) {
-            binding.root.setBackgroundColor(Color.parseColor("#062213"))
+            binding.root.setBackgroundColor(ContextCompat.getColor(context, R.color.billiard_green_darkest))
             binding.tvEyebrow.setTextColor(ContextCompat.getColor(context, R.color.secondary_accent))
             binding.tvTitle.setTextColor(ContextCompat.getColor(context, R.color.white))
-            binding.bottomDivider.setBackgroundColor(Color.parseColor("#1B432E"))
+            binding.bottomDivider.setBackgroundColor(ContextCompat.getColor(context, R.color.billiard_green_divider))
         } else {
             binding.root.setBackgroundColor(ContextCompat.getColor(context, R.color.background))
             binding.tvEyebrow.setTextColor(ContextCompat.getColor(context, R.color.primary))

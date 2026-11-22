@@ -159,7 +159,7 @@
             android:insetBottom="0dp"
             android:paddingHorizontal="4dp"
             android:text="@string/wordsearch_btn_sound_hint"
-            android:textSize="11sp"
+            android:textSize="@dimen/text_label_sm"
             android:textStyle="bold"
             app:cornerRadius="@dimen/button_pill_radius"
             app:icon="@drawable/ic_volume"
@@ -178,7 +178,7 @@
             android:insetBottom="0dp"
             android:paddingHorizontal="4dp"
             android:text="@string/wordsearch_btn_phonetic_hint"
-            android:textSize="11sp"
+            android:textSize="@dimen/text_label_sm"
             android:textStyle="bold"
             app:cornerRadius="@dimen/button_pill_radius"
             app:icon="@drawable/ic_search"
@@ -197,7 +197,7 @@
             android:insetBottom="0dp"
             android:paddingHorizontal="4dp"
             android:text="@string/wordsearch_btn_restart"
-            android:textSize="11sp"
+            android:textSize="@dimen/text_label_sm"
             android:textStyle="bold"
             app:cornerRadius="@dimen/button_pill_radius"
             app:icon="@drawable/ic_refresh"
@@ -258,7 +258,7 @@
                     android:paddingHorizontal="6dp"
                     android:paddingVertical="1dp"
                     android:textColor="?attr/colorPrimary"
-                    android:textSize="10sp"
+                    android:textSize="@dimen/text_label_sm"
                     android:textStyle="bold"
                     tools:text="V2 PASADO" />
             </LinearLayout>
@@ -271,7 +271,7 @@
                 android:textColor="?attr/colorOnSurface"
                 android:textSize="@dimen/text_label_md"
                 android:textStyle="bold"
-                tools:text="CATCH → CAUGHT · Atrapar (/kɔːt/)" />
+                tools:text="CATCH - CAUGHT · Atrapar (/kɔːt/)" />
 
             <TextView
                 android:id="@+id/tvPillExplanation"

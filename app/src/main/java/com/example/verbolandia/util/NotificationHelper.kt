@@ -14,7 +14,6 @@ import com.example.verbolandia.model.Verb
 object NotificationHelper {
 
     private const val CHANNEL_ID = "verb_of_day_channel"
-    private const val CHANNEL_NAME = "Verbo del Día"
     private const val NOTIFICATION_ID = 1001
 
     fun createNotificationChannel(context: Context) {

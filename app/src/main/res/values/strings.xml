@@ -275,8 +275,10 @@
     <string name="wordsearch_tracing_idle">Desliza el dedo para conectar letras</string>
     <string name="wordsearch_tracing_format">TRAZANDO: %1$s</string>
     <string name="wordsearch_found_toast">¡Correcto! Encontraste %1$s</string>
-    <string name="wordsearch_word_item_format">%1$s → %2$s</string>
+    <string name="wordsearch_word_item_format">%1$s - %2$s</string>
     <string name="wordsearch_pill_title">Píldora Gramatical</string>
+    <string name="wordsearch_pill_verb_format">%1$s - %2$s · %3$s%4$s</string>
+    <string name="wordsearch_pill_default_explanation">Forma irregular consolidada en el catálogo general de VerboLandia.</string>
     <string name="wordsearch_btn_sound_hint">Pista Sonora</string>
     <string name="wordsearch_btn_phonetic_hint">Lupa Fonética</string>
     <string name="wordsearch_btn_restart">Reiniciar</string>
@@ -621,4 +623,18 @@
     <string name="share_verb_title">Compartir Verbo</string>
     <string name="share_verb_format">Verbo en Verbolandia: %1$s (%2$s)\nPasado: %3$s\nParticipio: %4$s\nGerundio: %5$s</string>
     <string name="share_copied_clipboard">Información del verbo copiada al portapapeles</string>
+
+    <!-- General Formats & Placeholders (AuditorRecursos) -->
+    <string name="audio_speaking_format">Pronunciando: %1$s</string>
+    <string name="percentage_format">%1$d%%</string>
+    <string name="quoted_text_format">\"%1$s\"</string>
+    <string name="placeholder_question_mark">?</string>
+    <string name="placeholder_hyphens">--</string>
+    <string name="triad_summary_headline">¡Tríada Completada!</string>
+    <string name="triad_summary_subheader">Buen esfuerzo. Cada repetición consolida los patrones irregulares en tu memoria verbal.</string>
+    <string name="triad_share_chooser_title">Compartir resumen</string>
+    <string name="triad_no_verbs_found">No se encontraron verbos para la sesión</string>
+    <string name="triad_summary_verb_title_format">%1$s · %2$s · %3$s</string>
+    <string name="triad_summary_verb_subtitle_format">%1$s · %2$s</string>
+    <string name="phonetic_transition_format">%1$s - %2$s</string>
 </resources>

@@ -117,7 +117,7 @@ class CrosswordActivity : AppCompatActivity(), CrosswordGridView.OnCellClickList
                 val sentence = pastTense?.affirmativeEn ?: "Yesterday they ${verb.past} carefully."
                 val blankSentence = sentence.replace(Regex("(?i)\\b${Regex.escape(verb.past)}\\b"), "_______")
                 val phon = if (verb.ipaBase.isNotEmpty() && verb.ipaPast.isNotEmpty()) {
-                    "${verb.ipaBase} → ${verb.ipaPast}"
+                    getString(R.string.phonetic_transition_format, verb.ipaBase, verb.ipaPast)
                 } else ""
 
                 candidates.add(
@@ -143,7 +143,7 @@ class CrosswordActivity : AppCompatActivity(), CrosswordGridView.OnCellClickList
                 val sentence = partTense?.affirmativeEn ?: "They have ${verb.pastParticiple} recently."
                 val blankSentence = sentence.replace(Regex("(?i)\\b${Regex.escape(verb.pastParticiple)}\\b"), "_______")
                 val phon = if (verb.ipaBase.isNotEmpty() && verb.ipaParticiple.isNotEmpty()) {
-                    "${verb.ipaBase} → ${verb.ipaParticiple}"
+                    getString(R.string.phonetic_transition_format, verb.ipaBase, verb.ipaParticiple)
                 } else ""
 
                 candidates.add(

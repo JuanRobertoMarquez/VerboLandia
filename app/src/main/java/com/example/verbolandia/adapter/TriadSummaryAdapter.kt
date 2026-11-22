@@ -27,8 +27,17 @@ class TriadSummaryAdapter(
         val context = holder.itemView.context
         val verb = item.verb
 
-        holder.binding.tvVerbTriadTitle.text = "${verb.base.uppercase()} · ${verb.past} · ${verb.pastParticiple}"
-        holder.binding.tvVerbLevelMeaning.text = "${verb.level.uppercase()} · ${verb.spanishMeaning}"
+        holder.binding.tvVerbTriadTitle.text = context.getString(
+            R.string.triad_summary_verb_title_format,
+            verb.base.uppercase(),
+            verb.past,
+            verb.pastParticiple
+        )
+        holder.binding.tvVerbLevelMeaning.text = context.getString(
+            R.string.triad_summary_verb_subtitle_format,
+            verb.level.uppercase(),
+            verb.spanishMeaning
+        )
 
         if (item.isCorrect) {
             holder.binding.ivStatusIcon.setImageResource(R.drawable.ic_check)

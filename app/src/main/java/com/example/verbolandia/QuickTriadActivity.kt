@@ -186,7 +186,7 @@ class QuickTriadActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
                 startSessionTimer()
                 renderCurrentVerb()
             } else {
-                Toast.makeText(this@QuickTriadActivity, "No se encontraron verbos para la sesión", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this@QuickTriadActivity, getString(R.string.triad_no_verbs_found), Toast.LENGTH_SHORT).show()
                 finish()
             }
         }
@@ -252,12 +252,12 @@ class QuickTriadActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
 
         // Slot 2 (V2 Pasado - Active Target in Step 1)
         binding.slotV2.setBackgroundResource(R.drawable.bg_triad_slot_active)
-        binding.tvSlotV2Val.text = "?"
-        binding.tvSlotV2Ipa.text = "--"
+        binding.tvSlotV2Val.text = getString(R.string.placeholder_question_mark)
+        binding.tvSlotV2Ipa.text = getString(R.string.placeholder_hyphens)
 
         // Slot 3 (V3 Participio - Locked until Step 1 Completed)
         binding.slotV3.setBackgroundResource(R.drawable.bg_triad_slot_normal)
-        binding.tvSlotV3Val.text = "?"
+        binding.tvSlotV3Val.text = getString(R.string.placeholder_question_mark)
         binding.tvSlotV3Ipa.text = getString(R.string.triad_locked_label)
 
         // Current Instruction
@@ -355,8 +355,8 @@ class QuickTriadActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
 
                 // Unlock Slot 3
                 binding.slotV3.setBackgroundResource(R.drawable.bg_triad_slot_active)
-                binding.tvSlotV3Val.text = "?"
-                binding.tvSlotV3Ipa.text = "--"
+                binding.tvSlotV3Val.text = getString(R.string.placeholder_question_mark)
+                binding.tvSlotV3Ipa.text = getString(R.string.placeholder_hyphens)
                 binding.tvCurrentInstruction.text = getString(R.string.triad_select_v3)
 
                 // Advance to Step 2 with fresh options

@@ -79,4 +79,19 @@
     <!-- Standard Colors -->
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+
+    <!-- Billiard Table Atmospheric Colors -->
+    <color name="billiard_green_darkest">#062213</color>
+    <color name="billiard_green_dark">#09301B</color>
+    <color name="billiard_green_felt">#0D5C32</color>
+    <color name="billiard_green_divider">#1B432E</color>
+    <color name="billiard_cushion_border">#5C3A21</color>
+    <color name="billiard_card_bg">#111827</color>
+    <color name="billiard_card_stroke">#374151</color>
+    <color name="billiard_text_dim">#9CA3AF</color>
+    <color name="billiard_hud_bg">#F8FAFC</color>
+
+    <!-- Widget Specific Fixed Colors -->
+    <color name="widget_accent_cyan">#38BDF8</color>
+    <color name="widget_text_slate">#CBD5E1</color>
 </resources>

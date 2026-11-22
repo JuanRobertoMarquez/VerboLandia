@@ -122,12 +122,12 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/spacing_xs"
-                        android:text="@string/goal_card_pct"
                         android:textColor="?attr/colorPrimary"
                         android:textSize="@dimen/text_label_md"
                         android:textStyle="bold"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@id/progressGoal" />
+                        app:layout_constraintTop_toBottomOf="@id/progressGoal"
+                        tools:text="@string/goal_card_pct" />
 
                     <TextView
                         android:id="@+id/tvGoalRemaining"
@@ -232,7 +232,7 @@
                     android:insetBottom="0dp"
                     android:paddingHorizontal="2dp"
                     android:text="@string/level_basic"
-                    android:textSize="10sp"
+                    android:textSize="@dimen/text_label_sm"
                     android:textStyle="bold"
                     app:cornerRadius="@dimen/button_pill_radius" />
 
@@ -247,7 +247,7 @@
                     android:insetBottom="0dp"
                     android:paddingHorizontal="2dp"
                     android:text="@string/level_intermediate"
-                    android:textSize="10sp"
+                    android:textSize="@dimen/text_label_sm"
                     android:textStyle="bold"
                     app:cornerRadius="@dimen/button_pill_radius" />
 
@@ -262,7 +262,7 @@
                     android:insetBottom="0dp"
                     android:paddingHorizontal="2dp"
                     android:text="@string/level_advanced"
-                    android:textSize="10sp"
+                    android:textSize="@dimen/text_label_sm"
                     android:textStyle="bold"
                     app:cornerRadius="@dimen/button_pill_radius" />
 
@@ -277,7 +277,7 @@
                     android:insetBottom="0dp"
                     android:paddingHorizontal="2dp"
                     android:text="@string/level_random"
-                    android:textSize="10sp"
+                    android:textSize="@dimen/text_label_sm"
                     android:textStyle="bold"
                     app:icon="@drawable/ic_shuffle"
                     app:iconGravity="textStart"

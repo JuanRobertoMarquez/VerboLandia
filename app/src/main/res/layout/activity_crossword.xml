@@ -195,7 +195,7 @@
                     android:paddingVertical="2dp"
                     android:textColor="?attr/colorOnSurfaceVariant"
                     android:textSize="@dimen/text_label_sm"
-                    tools:text="/u:/ → /oʊ/" />
+                    tools:text="/u:/ - /oʊ/" />
             </LinearLayout>
 
         </androidx.constraintlayout.widget.ConstraintLayout>

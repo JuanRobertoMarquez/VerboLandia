@@ -80,10 +80,10 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="4dp"
-                android:text="x0"
                 android:textColor="@color/accent_gold"
                 android:textSize="@dimen/text_label_md"
-                android:textStyle="bold" />
+                android:textStyle="bold"
+                tools:text="x0" />
         </LinearLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -150,10 +150,10 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="4dp"
-                    android:text="00:00"
                     android:textColor="?attr/colorOnSurfaceVariant"
                     android:textSize="@dimen/text_label_sm"
-                    android:textStyle="bold" />
+                    android:textStyle="bold"
+                    tools:text="00:00" />
             </LinearLayout>
         </LinearLayout>
 
@@ -334,9 +334,9 @@
                     android:id="@+id/tvSlotV2Ipa"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="--"
                     android:textColor="?attr/colorOnSurfaceVariant"
-                    android:textSize="@dimen/text_label_sm" />
+                    android:textSize="@dimen/text_label_sm"
+                    tools:text="--" />
             </LinearLayout>
 
             <!-- Slot 3: V3 PARTICIPIO (Objetivo 2) -->

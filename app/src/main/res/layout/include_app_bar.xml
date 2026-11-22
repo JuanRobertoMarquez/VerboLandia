@@ -85,7 +85,7 @@
             android:maxLines="1"
             android:textAllCaps="true"
             android:textColor="?attr/colorPrimary"
-            android:textSize="10sp"
+            android:textSize="@dimen/text_label_sm"
             android:textStyle="bold"
             tools:text="VERBOLANDIA" />
 

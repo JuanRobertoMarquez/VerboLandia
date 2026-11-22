@@ -95,7 +95,7 @@ class VerbDetailActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
         if (isTtsReady) {
             tts?.speak(text, TextToSpeech.QUEUE_FLUSH, null, "verb_speech")
         } else {
-            Toast.makeText(this, "Pronunciando: $text", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, getString(R.string.audio_speaking_format, text), Toast.LENGTH_SHORT).show()
         }
     }
 

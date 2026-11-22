@@ -3,6 +3,7 @@ package com.example.verbolandia.util
 import android.content.Context
 import android.speech.tts.TextToSpeech
 import android.widget.Toast
+import com.example.verbolandia.R
 import java.util.Locale
 
 object AudioSpeaker {
@@ -39,7 +40,7 @@ object AudioSpeaker {
             tts?.setSpeechRate(speechRate)
             tts?.speak(text, TextToSpeech.QUEUE_FLUSH, null, "verbolandia_audio")
         } else {
-            Toast.makeText(context.applicationContext, "Pronunciando: $text", Toast.LENGTH_SHORT).show()
+            Toast.makeText(context.applicationContext, context.getString(R.string.audio_speaking_format, text), Toast.LENGTH_SHORT).show()
         }
     }
 

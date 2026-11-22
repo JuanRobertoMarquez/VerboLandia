@@ -137,9 +137,9 @@ class WordSearchActivity : AppCompatActivity(), WordSearchCanvasView.OnWordSearc
             val word = if (isPast) v.past.uppercase() else v.pastParticiple.uppercase()
             if (word.length in 3..6 && word.all { it.isLetter() }) {
                 val phon = if (isPast) {
-                    if (v.ipaBase.isNotEmpty() && v.ipaPast.isNotEmpty()) "${v.ipaBase} → ${v.ipaPast}" else ""
+                    if (v.ipaBase.isNotEmpty() && v.ipaPast.isNotEmpty()) getString(R.string.phonetic_transition_format, v.ipaBase, v.ipaPast) else ""
                 } else {
-                    if (v.ipaBase.isNotEmpty() && v.ipaParticiple.isNotEmpty()) "${v.ipaBase} → ${v.ipaParticiple}" else ""
+                    if (v.ipaBase.isNotEmpty() && v.ipaParticiple.isNotEmpty()) getString(R.string.phonetic_transition_format, v.ipaBase, v.ipaParticiple) else ""
                 }
                 val tenseLabel = if (isPast) getString(R.string.wordsearch_tense_past_simple) else getString(R.string.wordsearch_tense_past_participle)
 
@@ -224,11 +224,17 @@ class WordSearchActivity : AppCompatActivity(), WordSearchCanvasView.OnWordSearc
     private fun updateGrammarPill(target: WordSearchTargetWord) {
         binding.tvPillTense.text = target.tenseLabel
         val phonStr = if (target.phoneticTip.isNotEmpty()) " (${target.phoneticTip})" else ""
-        binding.tvPillVerb.text = "${target.base.uppercase()} → ${target.targetWord} · ${target.spanishMeaning}$phonStr"
+        binding.tvPillVerb.text = getString(
+            R.string.wordsearch_pill_verb_format,
+            target.base.uppercase(),
+            target.targetWord,
+            target.spanishMeaning,
+            phonStr
+        )
         binding.tvPillExplanation.text = if (target.commonErrorTip.isNotEmpty()) {
             target.commonErrorTip
         } else {
-            "Forma irregular consolidada en el catálogo general de VerboLandia."
+            getString(R.string.wordsearch_pill_default_explanation)
         }
     }
 

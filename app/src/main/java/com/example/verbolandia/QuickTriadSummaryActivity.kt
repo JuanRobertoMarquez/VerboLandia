@@ -84,7 +84,7 @@ class QuickTriadSummaryActivity : AppCompatActivity() {
 
         // 2. Metrics
         val accuracyPct = if (total > 0) (correct * 100) / total else 0
-        binding.tvSummaryAccuracyPct.text = "$accuracyPct%"
+        binding.tvSummaryAccuracyPct.text = getString(R.string.percentage_format, accuracyPct)
         binding.tvSummaryAccuracyCount.text = getString(R.string.triad_accuracy_format, correct, total, accuracyPct)
 
         binding.tvSummaryMaxStreak.text = getString(R.string.triad_streak_format, maxStreak)
@@ -136,7 +136,7 @@ class QuickTriadSummaryActivity : AppCompatActivity() {
             putExtra(Intent.EXTRA_TEXT, shareText)
             type = "text/plain"
         }
-        startActivity(Intent.createChooser(sendIntent, "Compartir resumen"))
+        startActivity(Intent.createChooser(sendIntent, getString(R.string.triad_share_chooser_title)))
     }
 
     @SuppressLint("SetTextI18n")
