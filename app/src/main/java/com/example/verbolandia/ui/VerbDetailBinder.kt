@@ -92,7 +92,7 @@ object VerbDetailBinder {
         binding.tvEx1En.text = context.getString(R.string.quoted_text_format, ex1En)
         binding.tvEx1Es.text = ex1Es
         binding.btnEx1Audio.setOnClickListener {
-            com.example.verbolandia.util.AudioSpeaker.speak(context, ex1En)
+            com.example.verbolandia.util.AudioSpeaker.speak(context, ex1En, it)
         }
 
         // Example 2: V2 Past Simple
@@ -106,7 +106,7 @@ object VerbDetailBinder {
         binding.tvEx2En.text = context.getString(R.string.quoted_text_format, ex2En)
         binding.tvEx2Es.text = ex2Es
         binding.btnEx2Audio.setOnClickListener {
-            com.example.verbolandia.util.AudioSpeaker.speak(context, ex2En)
+            com.example.verbolandia.util.AudioSpeaker.speak(context, ex2En, it)
         }
 
         // Example 3: V3 Present Perfect
@@ -120,7 +120,7 @@ object VerbDetailBinder {
         binding.tvEx3En.text = context.getString(R.string.quoted_text_format, ex3En)
         binding.tvEx3Es.text = ex3Es
         binding.btnEx3Audio.setOnClickListener {
-            com.example.verbolandia.util.AudioSpeaker.speak(context, ex3En)
+            com.example.verbolandia.util.AudioSpeaker.speak(context, ex3En, it)
         }
 
         // Matrix V1, V2, V3 with real IPA phonetics

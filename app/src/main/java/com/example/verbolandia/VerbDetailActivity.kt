@@ -96,11 +96,7 @@ class VerbDetailActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
     }
 
     private fun speakText(text: String) {
-        if (isTtsReady) {
-            tts?.speak(text, TextToSpeech.QUEUE_FLUSH, null, "verb_speech")
-        } else {
-            Toast.makeText(this, getString(R.string.audio_speaking_format, text), Toast.LENGTH_SHORT).show()
-        }
+        com.example.verbolandia.util.AudioSpeaker.speak(this, text)
     }
 
     private fun renderVerb(verb: Verb) {

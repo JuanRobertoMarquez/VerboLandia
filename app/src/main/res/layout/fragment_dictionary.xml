@@ -48,6 +48,7 @@
                 android:paddingHorizontal="@dimen/card_internal_padding">
 
                 <ImageView
+                    android:id="@+id/ivSearchIcon"
                     android:layout_width="20dp"
                     android:layout_height="20dp"
                     android:contentDescription="@null"
@@ -70,6 +71,20 @@
                     android:textColor="?attr/colorOnSurface"
                     android:textColorHint="?attr/colorOnSurfaceVariant"
                     android:textSize="@dimen/text_body_md" />
+
+                <ImageButton
+                    android:id="@+id/btnClearSearch"
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:layout_marginEnd="@dimen/spacing_xs"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:contentDescription="@string/cd_clear_search"
+                    android:padding="6dp"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/ic_close"
+                    android:visibility="gone"
+                    app:tint="?attr/colorOnSurfaceVariant"
+                    tools:visibility="visible" />
 
                 <FrameLayout
                     android:layout_width="wrap_content"

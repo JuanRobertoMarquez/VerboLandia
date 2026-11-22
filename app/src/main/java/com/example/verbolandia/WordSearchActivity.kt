@@ -64,7 +64,7 @@ class WordSearchActivity : AppCompatActivity(), WordSearchCanvasView.OnWordSearc
         binding.btnSoundHint.setOnClickListener {
             val pending = board?.targetWords?.find { !it.isFound }
             if (pending != null) {
-                AudioSpeaker.speak(this, pending.targetWord)
+                AudioSpeaker.speak(this, pending.targetWord, it)
                 Snackbar.make(binding.root, getString(R.string.crossword_chip_format, 1, "", pending.targetWord), Snackbar.LENGTH_SHORT).show()
             }
         }

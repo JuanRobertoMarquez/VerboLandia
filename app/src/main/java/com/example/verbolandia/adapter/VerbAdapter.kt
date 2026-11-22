@@ -76,7 +76,7 @@ class VerbAdapter(
             progressMastery.progress = verb.mastery
 
             btnPlayAudio.setOnClickListener {
-                AudioSpeaker.speak(root.context, verb.base)
+                AudioSpeaker.speak(root.context, verb.base, it)
             }
 
             root.setOnClickListener {

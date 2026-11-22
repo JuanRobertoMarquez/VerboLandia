@@ -1,6 +1,7 @@
 package com.example.verbolandia
 
 import android.content.Intent
+import android.content.res.ColorStateList
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -26,6 +27,7 @@ import com.example.verbolandia.ui.LeftSlot
 import com.example.verbolandia.ui.RightAction
 import com.example.verbolandia.ui.SharedViewModel
 import com.google.android.material.bottomsheet.BottomSheetDialog
+import com.google.android.material.color.MaterialColors
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.delay
@@ -84,19 +86,31 @@ class DictionaryFragment : Fragment() {
         binding.etSearch.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                val query = s?.toString() ?: ""
+                val hasText = query.isNotBlank()
+                binding.btnClearSearch.visibility = if (hasText) View.VISIBLE else View.GONE
+                updateSearchHighlight(binding.etSearch.hasFocus() || hasText)
                 showSkeletonLoading()
-                viewModel.onSearchQueryChanged(s?.toString() ?: "")
+                viewModel.onSearchQueryChanged(query)
             }
             override fun afterTextChanged(s: Editable?) {}
         })
 
         binding.etSearch.setOnFocusChangeListener { _, hasFocus ->
-            if (hasFocus && binding.etSearch.text.isNull_or_empty()) {
+            val hasText = !binding.etSearch.text.isNull_or_empty()
+            updateSearchHighlight(hasFocus || hasText)
+            if (hasFocus && !hasText) {
                 val history = viewModel.searchHistory.value
                 if (history.isNotEmpty()) {
                     showHistoryList(history)
                 }
             }
+        }
+
+        binding.btnClearSearch.setOnClickListener {
+            binding.etSearch.text?.clear()
+            binding.btnClearSearch.visibility = View.GONE
+            updateSearchHighlight(binding.etSearch.hasFocus())
         }
 
         binding.btnOpenFilter.setOnClickListener {
@@ -106,6 +120,28 @@ class DictionaryFragment : Fragment() {
         binding.btnClearFilterPill.setOnClickListener {
             showSkeletonLoading()
             viewModel.resetFilters()
+        }
+    }
+
+    private fun updateSearchHighlight(isActive: Boolean) {
+        if (!isAdded) return
+        if (isActive) {
+            val primaryBlue = MaterialColors.getColor(binding.root, androidx.appcompat.R.attr.colorPrimary)
+            val surfaceActive = MaterialColors.getColor(binding.root, com.google.android.material.R.attr.colorSurfaceContainerLowest)
+            binding.cardSearch.strokeColor = primaryBlue
+            binding.cardSearch.strokeWidth = (2 * resources.displayMetrics.density).toInt()
+            binding.cardSearch.setCardBackgroundColor(surfaceActive)
+            binding.cardSearch.cardElevation = 3 * resources.displayMetrics.density
+            binding.ivSearchIcon.imageTintList = ColorStateList.valueOf(primaryBlue)
+        } else {
+            val outlineColor = MaterialColors.getColor(binding.root, com.google.android.material.R.attr.colorOutlineVariant)
+            val surfaceNormal = MaterialColors.getColor(binding.root, com.google.android.material.R.attr.colorSurfaceContainerLow)
+            val mutedIconColor = MaterialColors.getColor(binding.root, com.google.android.material.R.attr.colorOnSurfaceVariant)
+            binding.cardSearch.strokeColor = outlineColor
+            binding.cardSearch.strokeWidth = (1 * resources.displayMetrics.density).toInt()
+            binding.cardSearch.setCardBackgroundColor(surfaceNormal)
+            binding.cardSearch.cardElevation = 1 * resources.displayMetrics.density
+            binding.ivSearchIcon.imageTintList = ColorStateList.valueOf(mutedIconColor)
         }
     }
 
@@ -277,7 +313,7 @@ class DictionaryFragment : Fragment() {
                             }
 
                             binding.btnVerbOfDayAudio.setOnClickListener {
-                                com.example.verbolandia.util.AudioSpeaker.speak(requireContext(), verbOfToday.base)
+                                com.example.verbolandia.util.AudioSpeaker.speak(requireContext(), verbOfToday.base, it)
                             }
                         }
                     }

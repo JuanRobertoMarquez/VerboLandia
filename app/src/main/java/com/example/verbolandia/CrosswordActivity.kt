@@ -69,7 +69,7 @@ class CrosswordActivity : AppCompatActivity(), CrosswordGridView.OnCellClickList
 
         binding.btnSpeaker.setOnClickListener {
             activeWord?.let { w ->
-                com.example.verbolandia.util.AudioSpeaker.speak(this, w.word)
+                com.example.verbolandia.util.AudioSpeaker.speak(this, w.word, it)
             }
         }
     }

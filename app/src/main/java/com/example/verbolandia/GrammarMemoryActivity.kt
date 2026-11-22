@@ -70,7 +70,7 @@ class GrammarMemoryActivity : AppCompatActivity() {
             val targetVerb = engine.getUnmatchedPairVerb()
             if (targetVerb != null) {
                 val wordToSpeak = if (engine.isPastTense) targetVerb.past else targetVerb.pastParticiple
-                AudioSpeaker.speak(this, wordToSpeak)
+                AudioSpeaker.speak(this, wordToSpeak, it)
                 Snackbar.make(
                     binding.root,
                     getString(R.string.memory_match_success_format, "${targetVerb.base.uppercase()} ($wordToSpeak)"),

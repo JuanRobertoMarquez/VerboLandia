@@ -71,7 +71,13 @@ class MainActivity : AppCompatActivity() {
         val navController = navHostFragment.navController
 
         binding.bottomNavigation.setupWithNavController(navController)
+        com.example.verbolandia.util.AudioSpeaker.init(this)
         com.example.verbolandia.widget.VerbAppWidgetProvider.updateAllWidgets(this)
+    }
+
+    override fun onDestroy() {
+        com.example.verbolandia.util.AudioSpeaker.shutdown()
+        super.onDestroy()
     }
 
     private fun checkAndRequestNotificationPermission() {
