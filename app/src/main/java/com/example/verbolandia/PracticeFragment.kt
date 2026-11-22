@@ -6,6 +6,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.res.ColorStateList
 import android.os.Bundle
+import android.view.HapticFeedbackConstants
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -128,23 +129,27 @@ class PracticeFragment : Fragment() {
     }
 
     private fun setupLevelSelectors() {
+        binding.btnLevelRandom.setOnClickListener {
+            it.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP)
+            selectedLevelMode = "RANDOM"
+            updateLevelPillsUI()
+        }
+
         binding.btnLevelBasic.setOnClickListener {
+            it.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP)
             selectedLevelMode = "BASIC"
             updateLevelPillsUI()
         }
 
         binding.btnLevelInter.setOnClickListener {
+            it.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP)
             selectedLevelMode = "INTERMEDIATE"
             updateLevelPillsUI()
         }
 
         binding.btnLevelAdv.setOnClickListener {
+            it.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP)
             selectedLevelMode = "ADVANCED"
-            updateLevelPillsUI()
-        }
-
-        binding.btnLevelRandom.setOnClickListener {
-            selectedLevelMode = "RANDOM"
             updateLevelPillsUI()
         }
 
@@ -158,15 +163,15 @@ class PracticeFragment : Fragment() {
         val surfaceColor = ContextCompat.getColor(requireContext(), R.color.surface_container_low)
         val outlineColor = ContextCompat.getColor(requireContext(), R.color.outline_variant)
 
+        val isRandom = selectedLevelMode == "RANDOM"
         val isBasic = selectedLevelMode == "BASIC"
         val isInter = selectedLevelMode == "INTERMEDIATE"
         val isAdv = selectedLevelMode == "ADVANCED"
-        val isRandom = selectedLevelMode == "RANDOM"
 
+        styleLevelButton(binding.btnLevelRandom, isRandom, primaryColor, surfaceColor, whiteColor, mutedColor, outlineColor)
         styleLevelButton(binding.btnLevelBasic, isBasic, primaryColor, surfaceColor, whiteColor, mutedColor, outlineColor)
         styleLevelButton(binding.btnLevelInter, isInter, primaryColor, surfaceColor, whiteColor, mutedColor, outlineColor)
         styleLevelButton(binding.btnLevelAdv, isAdv, primaryColor, surfaceColor, whiteColor, mutedColor, outlineColor)
-        styleLevelButton(binding.btnLevelRandom, isRandom, primaryColor, surfaceColor, whiteColor, mutedColor, outlineColor)
         binding.btnLevelRandom.iconTint = ColorStateList.valueOf(if (isRandom) whiteColor else mutedColor)
     }
 
@@ -286,15 +291,17 @@ class PracticeFragment : Fragment() {
 
     private fun setupPracticeModalities() {
         binding.btnStartGuidedReview.setOnClickListener {
+            it.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP)
             startGuidedReviewSession()
         }
 
         binding.cardModality1.setOnClickListener {
+            it.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP)
             val intent = Intent(requireContext(), QuickTriadActivity::class.java).apply {
                 val levelParam = when (selectedLevelMode) {
                     "BASIC" -> "A1"
                     "INTERMEDIATE" -> "B1"
-                    "ADVANCED" -> "B2"
+                    "ADVANCED" -> "C1"
                     else -> "ALL"
                 }
                 putExtra(QuickTriadActivity.EXTRA_LEVEL, levelParam)
@@ -303,11 +310,12 @@ class PracticeFragment : Fragment() {
         }
 
         binding.cardModality2.setOnClickListener {
+            it.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP)
             val intent = Intent(requireContext(), CrosswordActivity::class.java).apply {
                 val levelParam = when (selectedLevelMode) {
                     "BASIC" -> "A1"
                     "INTERMEDIATE" -> "B1"
-                    "ADVANCED" -> "B2"
+                    "ADVANCED" -> "C1"
                     else -> "ALL"
                 }
                 putExtra(CrosswordActivity.EXTRA_LEVEL, levelParam)
@@ -316,11 +324,12 @@ class PracticeFragment : Fragment() {
         }
 
         binding.cardModality3.setOnClickListener {
+            it.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP)
             val intent = Intent(requireContext(), WordSearchActivity::class.java).apply {
                 val levelParam = when (selectedLevelMode) {
                     "BASIC" -> "A1"
                     "INTERMEDIATE" -> "B1"
-                    "ADVANCED" -> "B2"
+                    "ADVANCED" -> "C1"
                     else -> "ALL"
                 }
                 putExtra(WordSearchActivity.EXTRA_LEVEL, levelParam)
@@ -329,11 +338,12 @@ class PracticeFragment : Fragment() {
         }
 
         binding.cardModality4.setOnClickListener {
+            it.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP)
             val intent = Intent(requireContext(), GrammarMemoryActivity::class.java).apply {
                 val levelParam = when (selectedLevelMode) {
                     "BASIC" -> "A1"
                     "INTERMEDIATE" -> "B1"
-                    "ADVANCED" -> "B2"
+                    "ADVANCED" -> "C1"
                     else -> "ALL"
                 }
                 putExtra(GrammarMemoryActivity.EXTRA_LEVEL, levelParam)
@@ -342,6 +352,7 @@ class PracticeFragment : Fragment() {
         }
 
         binding.cardModality5.setOnClickListener {
+            it.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP)
             val intent = Intent(requireContext(), VerbBilliardsActivity::class.java)
             startActivity(intent)
         }
@@ -349,9 +360,9 @@ class PracticeFragment : Fragment() {
 
     private fun filterVerbsByPedagogicalLevel(verbs: List<Verb>): List<Verb> {
         return when (selectedLevelMode) {
-            "BASIC" -> verbs.filter { !it.isIrregular || it.isCommon }
-            "INTERMEDIATE" -> verbs.filter { it.isIrregular }
-            "ADVANCED" -> verbs.filter { it.isIrregular && !it.isCommon }.ifEmpty { verbs.filter { it.isIrregular } }
+            "BASIC" -> verbs.filter { it.level.equals("A1", true) || it.level.equals("A2", true) || !it.isIrregular || it.isCommon }
+            "INTERMEDIATE" -> verbs.filter { it.level.equals("B1", true) || it.level.equals("B2", true) || it.isIrregular }
+            "ADVANCED" -> verbs.filter { it.level.equals("C1", true) || it.level.equals("C2", true) }.ifEmpty { verbs.filter { it.isIrregular && !it.isCommon } }
             "RANDOM" -> verbs.shuffled()
             else -> verbs
         }

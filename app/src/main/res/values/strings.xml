@@ -143,12 +143,12 @@
     <string name="goal_option_format">%1$d ejercicios</string>
     <string name="cd_edit_goal">Editar meta diaria</string>
     <string name="toast_goal_updated">Meta diaria actualizada a %1$d ejercicios</string>
-    <string name="pedagogical_level_label">NIVEL PEDAGÓGICO</string>
-    <string name="level_basic">Básico (A1–A2)</string>
-    <string name="level_intermediate">Intermedio (B1–B2)</string>
-    <string name="level_advanced">Avanzado (C1–C2)</string>
+    <string name="pedagogical_level_label">DIFICULTAD</string>
+    <string name="level_basic">A1 - A2</string>
+    <string name="level_intermediate">B1 - B2</string>
+    <string name="level_advanced">C1 - C2</string>
     <string name="level_random">Aleatorio</string>
-    <string name="cd_level_random">Nivel aleatorio mixto</string>
+    <string name="cd_level_random">Modo aleatorio mixto</string>
     <string name="reinforcement_title">Batería de refuerzo</string>
     <string name="reinforcement_badge">10 VERBOS</string>
     <string name="reinforcement_desc">Verbos con más vacilaciones recientes (arise, shrink, tread...).</string>
@@ -269,7 +269,7 @@
     <string name="mod_wordsearch_subtitle">Tense Word Search</string>
     <string name="mod_wordsearch_badge">Escaneo Visual • 8x8</string>
     <string name="mod_wordsearch_desc">Desliza el dedo y conecta las letras en horizontal, vertical o diagonal para hallar los verbos en el tiempo objetivo.</string>
-    <string name="mod_wordsearch_sample">SPEAK -> SPOKE · CATCH -> CAUGHT</string>
+    <string name="mod_wordsearch_sample">SPEAK · SPOKE · CATCH · CAUGHT   +15 pts</string>
     <string name="wordsearch_title">Sopa de Tiempos</string>
     <string name="wordsearch_target_tense_format">Tiempo Objetivo: %1$s</string>
     <string name="wordsearch_tracing_idle">Desliza el dedo para conectar letras</string>
@@ -296,7 +296,7 @@
     <string name="mod_memory_subtitle">Grammar Memory</string>
     <string name="mod_memory_badge">Asociación • Retención</string>
     <string name="mod_memory_desc">Empareja cartas por tiempo gramatical y significado, reforzando tu memoria auditiva y espacial.</string>
-    <string name="mod_memory_sample">FREEZE · FROZE · Congelar</string>
+    <string name="mod_memory_sample">FREEZE · FROZE · CONGELAR   +15 pts</string>
     <string name="memory_title">Memorama Gramatical</string>
     <string name="memory_subtitle_format">Nivel %1$s • Empareja 6 Verbos</string>
     <string name="memory_target_tense_format">Tiempo: %1$s</string>
@@ -324,10 +324,11 @@
     <string name="mod_2_opt_2">drew</string>
     <string name="mod_2_opt_3">drawn up</string>
 
-    <string name="mod_3_title">Billar de verbos</string>
+    <string name="mod_3_title">Billar de Verbos</string>
     <string name="mod_3_subtitle">Pattern Match</string>
     <string name="mod_3_badge">Asociación Mental</string>
-    <string name="mod_3_desc">Lanza los verbos al tiempo gramatical correspondiente, sin fallar la tronera</string>
+    <string name="mod_3_desc">Lanza los verbos al tiempo gramatical correspondiente, sin fallar la tronera.</string>
+    <string name="mod_3_sample">SING · SANG · SUNG   +20 pts</string>
     <string name="mod_3_family_1">Sing / Sang / Sung</string>
     <string name="mod_3_family_2">Ring / Rang / Rung</string>
     <string name="mod_3_family_3">+ ¿Sink?</string>
