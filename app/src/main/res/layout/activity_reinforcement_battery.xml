@@ -1,0 +1,803 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="?attr/colorSurface"
+    android:fitsSystemWindows="true">
+
+    <!-- Top App Bar -->
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/layoutTopBar"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:paddingHorizontal="@dimen/screen_horizontal_padding"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageButton
+            android:id="@+id/btnClose"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="@string/dialog_cancel"
+            android:src="@drawable/ic_close"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:tint="?attr/colorOnSurface" />
+
+        <TextView
+            android:id="@+id/tvActivityTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/spacing_sm"
+            android:text="@string/battery_activity_title"
+            android:textColor="?attr/colorOnSurface"
+            android:textSize="@dimen/text_headline_sm"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@id/btnClose"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <!-- Stat Chips Row -->
+        <LinearLayout
+            android:id="@+id/layoutTopStats"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <TextView
+                android:id="@+id/chipTimer"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="6dp"
+                android:background="@drawable/bg_focus_pill"
+                android:drawableStart="@drawable/ic_timer"
+                android:drawablePadding="4dp"
+                android:paddingHorizontal="8dp"
+                android:paddingVertical="4dp"
+                android:text="03:00"
+                android:textColor="?attr/colorPrimary"
+                android:textSize="@dimen/text_label_sm"
+                android:textStyle="bold"
+                app:drawableTint="?attr/colorPrimary" />
+
+            <TextView
+                android:id="@+id/chipProgress"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bg_icon_button_soft"
+                android:paddingHorizontal="8dp"
+                android:paddingVertical="4dp"
+                android:text="1/5 Verbos"
+                android:textColor="?attr/colorOnSurface"
+                android:textSize="@dimen/text_label_sm"
+                android:textStyle="bold" />
+        </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <!-- Scrollable Content Area -->
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/scrollViewContent"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:fillViewport="true"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/layoutTopBar">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingHorizontal="@dimen/screen_horizontal_padding"
+            android:paddingBottom="@dimen/spacing_xl">
+
+            <!-- Battery Charge / Status Card -->
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/cardBatteryStatus"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/spacing_sm"
+                app:cardBackgroundColor="?attr/colorSurfaceContainerLow"
+                app:cardCornerRadius="@dimen/card_corner_radius"
+                app:cardElevation="0dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:strokeColor="?attr/colorOutlineVariant"
+                app:strokeWidth="1dp">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="@dimen/card_internal_padding">
+
+                    <FrameLayout
+                        android:id="@+id/layoutBatteryIcon"
+                        android:layout_width="38dp"
+                        android:layout_height="38dp"
+                        android:background="@drawable/bg_icon_button_soft"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent">
+
+                        <ImageView
+                            android:layout_width="22dp"
+                            android:layout_height="22dp"
+                            android:layout_gravity="center"
+                            android:contentDescription="@null"
+                            android:src="@drawable/ic_flash"
+                            app:tint="?attr/colorPrimary" />
+                    </FrameLayout>
+
+                    <TextView
+                        android:id="@+id/tvBatteryTitle"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/spacing_sm"
+                        android:text="@string/battery_charge_title"
+                        android:textColor="?attr/colorOnSurface"
+                        android:textSize="@dimen/text_label_md"
+                        android:textStyle="bold"
+                        app:layout_constraintEnd_toStartOf="@id/tvChargePct"
+                        app:layout_constraintStart_toEndOf="@id/layoutBatteryIcon"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <TextView
+                        android:id="@+id/tvBatteryMode"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/spacing_sm"
+                        android:layout_marginTop="2dp"
+                        android:text="@string/battery_mode_subtitle"
+                        android:textColor="?attr/colorOnSurfaceVariant"
+                        android:textSize="@dimen/text_label_sm"
+                        app:layout_constraintEnd_toStartOf="@id/tvChargePct"
+                        app:layout_constraintStart_toEndOf="@id/layoutBatteryIcon"
+                        app:layout_constraintTop_toBottomOf="@id/tvBatteryTitle" />
+
+                    <TextView
+                        android:id="@+id/tvChargePct"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="0%"
+                        android:textColor="?attr/colorPrimary"
+                        android:textSize="@dimen/text_headline_sm"
+                        android:textStyle="bold"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <com.google.android.material.progressindicator.LinearProgressIndicator
+                        android:id="@+id/progressBattery"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/spacing_md"
+                        android:max="100"
+                        android:progress="0"
+                        app:indicatorColor="?attr/colorPrimary"
+                        app:layout_constraintTop_toBottomOf="@id/tvBatteryMode"
+                        app:trackColor="?attr/colorSurfaceContainerHigh"
+                        app:trackCornerRadius="4dp"
+                        app:trackThickness="8dp" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- Target Verb Card -->
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/cardTargetVerb"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/spacing_md"
+                app:cardBackgroundColor="?attr/colorSurfaceContainerLowest"
+                app:cardCornerRadius="@dimen/card_corner_radius"
+                app:cardElevation="1dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/cardBatteryStatus"
+                app:strokeColor="?attr/colorOutlineVariant"
+                app:strokeWidth="1dp">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="@dimen/card_internal_padding">
+
+                    <TextView
+                        android:id="@+id/badgeVerbType"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/bg_focus_pill"
+                        android:paddingHorizontal="8dp"
+                        android:paddingVertical="3dp"
+                        android:text="IRREGULAR"
+                        android:textColor="?attr/colorPrimary"
+                        android:textSize="11sp"
+                        android:textStyle="bold"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <TextView
+                        android:id="@+id/badgeVerbLevel"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="6dp"
+                        android:background="@drawable/bg_icon_button_soft"
+                        android:paddingHorizontal="8dp"
+                        android:paddingVertical="3dp"
+                        android:text="NIVEL B1"
+                        android:textColor="?attr/colorOnSurfaceVariant"
+                        android:textSize="11sp"
+                        android:textStyle="bold"
+                        app:layout_constraintStart_toEndOf="@id/badgeVerbType"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <TextView
+                        android:id="@+id/tvRoundGoal"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/battery_target_goal_format"
+                        android:textColor="?attr/colorPrimary"
+                        android:textSize="@dimen/text_label_sm"
+                        android:textStyle="bold"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <TextView
+                        android:id="@+id/tvTargetVerbBase"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/spacing_sm"
+                        android:textColor="?attr/colorOnSurface"
+                        android:textSize="26sp"
+                        android:textStyle="bold"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/badgeVerbType"
+                        tools:text="WRITE" />
+
+                    <ImageButton
+                        android:id="@+id/btnSpeaker"
+                        android:layout_width="36dp"
+                        android:layout_height="36dp"
+                        android:layout_marginStart="@dimen/spacing_xs"
+                        android:background="?attr/selectableItemBackgroundBorderless"
+                        android:contentDescription="@null"
+                        android:src="@drawable/ic_volume"
+                        app:layout_constraintBottom_toBottomOf="@id/tvTargetVerbBase"
+                        app:layout_constraintStart_toEndOf="@id/tvTargetVerbBase"
+                        app:layout_constraintTop_toTopOf="@id/tvTargetVerbBase"
+                        app:tint="?attr/colorPrimary" />
+
+                    <TextView
+                        android:id="@+id/tvTargetSpanish"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="2dp"
+                        android:textColor="?attr/colorOnSurfaceVariant"
+                        android:textSize="@dimen/text_body_md"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/tvTargetVerbBase"
+                        tools:text="escribir" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- Receptors Section Header -->
+            <TextView
+                android:id="@+id/tvReceptorsHeader"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/spacing_lg"
+                android:text="@string/battery_receptors_title"
+                android:textColor="?attr/colorOnSurface"
+                android:textSize="@dimen/text_label_md"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/cardTargetVerb" />
+
+            <TextView
+                android:id="@+id/tvSyncStatus"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/battery_sync_status"
+                android:textColor="?attr/colorPrimary"
+                android:textSize="@dimen/text_label_sm"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toBottomOf="@id/tvReceptorsHeader"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@id/tvReceptorsHeader" />
+
+            <!-- 3 Receptor Capsules Container -->
+            <LinearLayout
+                android:id="@+id/layoutReceptorCapsules"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/spacing_sm"
+                android:baselineAligned="false"
+                android:orientation="horizontal"
+                android:weightSum="3"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tvReceptorsHeader">
+
+                <!-- Slot 1: V1 BASE -->
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/capsule1"
+                    android:layout_width="0dp"
+                    android:layout_height="165dp"
+                    android:layout_marginEnd="4dp"
+                    android:layout_weight="1"
+                    app:cardBackgroundColor="?attr/colorSurfaceContainerLowest"
+                    app:cardCornerRadius="14dp"
+                    app:cardElevation="1dp"
+                    app:strokeColor="?attr/colorPrimary"
+                    app:strokeWidth="1.5dp">
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:padding="8dp">
+
+                        <TextView
+                            android:id="@+id/tagV1"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/bg_focus_pill"
+                            android:ellipsize="end"
+                            android:maxLines="1"
+                            android:paddingHorizontal="4dp"
+                            android:paddingVertical="2dp"
+                            android:text="@string/battery_v1_title"
+                            android:textColor="?attr/colorPrimary"
+                            android:textSize="10sp"
+                            android:textStyle="bold"
+                            app:layout_constraintEnd_toStartOf="@id/ivV1Status"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <ImageView
+                            android:id="@+id/ivV1Status"
+                            android:layout_width="16dp"
+                            android:layout_height="16dp"
+                            android:contentDescription="@null"
+                            android:src="@drawable/ic_check"
+                            app:layout_constraintBottom_toBottomOf="@id/tagV1"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintTop_toTopOf="@id/tagV1"
+                            app:tint="@color/success" />
+
+                        <!-- Inner Absorbed Box -->
+                        <LinearLayout
+                            android:id="@+id/boxV1"
+                            android:layout_width="match_parent"
+                            android:layout_height="0dp"
+                            android:layout_marginVertical="6dp"
+                            android:background="@drawable/bg_triad_slot_active"
+                            android:gravity="center"
+                            android:orientation="vertical"
+                            android:padding="4dp"
+                            app:layout_constraintBottom_toTopOf="@id/tvV1BottomStatus"
+                            app:layout_constraintTop_toBottomOf="@id/tagV1">
+
+                            <TextView
+                                android:id="@+id/tvV1Word"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:ellipsize="end"
+                                android:maxLines="1"
+                                android:textColor="?attr/colorPrimary"
+                                android:textSize="16sp"
+                                android:textStyle="bold"
+                                tools:text="write" />
+
+                            <TextView
+                                android:id="@+id/tvV1Ipa"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textColor="?attr/colorOnSurfaceVariant"
+                                android:textSize="11sp"
+                                tools:text="/raɪt/" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="2dp"
+                                android:text="@string/battery_charge_100"
+                                android:textColor="@color/success"
+                                android:textSize="10sp"
+                                android:textStyle="bold" />
+                        </LinearLayout>
+
+                        <TextView
+                            android:id="@+id/tvV1BottomStatus"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:gravity="center"
+                            android:text="@string/battery_absorbed"
+                            android:textColor="?attr/colorPrimary"
+                            android:textSize="11sp"
+                            android:textStyle="bold"
+                            app:layout_constraintBottom_toBottomOf="parent" />
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+                </com.google.android.material.card.MaterialCardView>
+
+                <!-- Slot 2: V2 PASADO -->
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/capsule2"
+                    android:layout_width="0dp"
+                    android:layout_height="165dp"
+                    android:layout_marginHorizontal="2dp"
+                    android:layout_weight="1"
+                    app:cardBackgroundColor="?attr/colorSurfaceContainerLowest"
+                    app:cardCornerRadius="14dp"
+                    app:cardElevation="1dp"
+                    app:strokeColor="?attr/colorPrimary"
+                    app:strokeWidth="1.5dp">
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:padding="8dp">
+
+                        <TextView
+                            android:id="@+id/tagV2"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/bg_focus_pill"
+                            android:ellipsize="end"
+                            android:maxLines="1"
+                            android:paddingHorizontal="4dp"
+                            android:paddingVertical="2dp"
+                            android:text="@string/battery_v2_title"
+                            android:textColor="?attr/colorPrimary"
+                            android:textSize="10sp"
+                            android:textStyle="bold"
+                            app:layout_constraintEnd_toStartOf="@id/ivV2Status"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <ImageView
+                            android:id="@+id/ivV2Status"
+                            android:layout_width="16dp"
+                            android:layout_height="16dp"
+                            android:contentDescription="@null"
+                            android:src="@drawable/ic_arrow_downward"
+                            app:layout_constraintBottom_toBottomOf="@id/tagV2"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintTop_toTopOf="@id/tagV2"
+                            app:tint="?attr/colorPrimary" />
+
+                        <!-- Inner Box -->
+                        <LinearLayout
+                            android:id="@+id/boxV2"
+                            android:layout_width="match_parent"
+                            android:layout_height="0dp"
+                            android:layout_marginVertical="6dp"
+                            android:background="@drawable/bg_triad_slot_normal"
+                            android:gravity="center"
+                            android:orientation="vertical"
+                            android:padding="4dp"
+                            app:layout_constraintBottom_toTopOf="@id/tvV2BottomStatus"
+                            app:layout_constraintTop_toBottomOf="@id/tagV2">
+
+                            <ImageView
+                                android:id="@+id/ivV2SlotIcon"
+                                android:layout_width="22dp"
+                                android:layout_height="22dp"
+                                android:contentDescription="@null"
+                                android:src="@drawable/ic_arrow_downward"
+                                app:tint="?attr/colorPrimary" />
+
+                            <TextView
+                                android:id="@+id/tvV2SlotText"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="2dp"
+                                android:ellipsize="end"
+                                android:maxLines="1"
+                                android:text="@string/battery_insert_v2"
+                                android:textColor="?attr/colorOnSurface"
+                                android:textSize="13sp"
+                                android:textStyle="bold" />
+
+                            <TextView
+                                android:id="@+id/tvV2SlotSubtext"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:ellipsize="end"
+                                android:maxLines="1"
+                                android:text="@string/battery_slot_open"
+                                android:textColor="?attr/colorOnSurfaceVariant"
+                                android:textSize="10sp" />
+                        </LinearLayout>
+
+                        <TextView
+                            android:id="@+id/tvV2BottomStatus"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:gravity="center"
+                            android:text="@string/battery_waiting"
+                            android:textColor="?attr/colorPrimary"
+                            android:textSize="11sp"
+                            android:textStyle="bold"
+                            app:layout_constraintBottom_toBottomOf="parent" />
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+                </com.google.android.material.card.MaterialCardView>
+
+                <!-- Slot 3: V3 PARTICIPIO -->
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/capsule3"
+                    android:layout_width="0dp"
+                    android:layout_height="165dp"
+                    android:layout_marginStart="4dp"
+                    android:layout_weight="1"
+                    app:cardBackgroundColor="?attr/colorSurfaceContainerLowest"
+                    app:cardCornerRadius="14dp"
+                    app:cardElevation="1dp"
+                    app:strokeColor="?attr/colorOutlineVariant"
+                    app:strokeWidth="1dp">
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:padding="8dp">
+
+                        <TextView
+                            android:id="@+id/tagV3"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/bg_icon_button_soft"
+                            android:ellipsize="end"
+                            android:maxLines="1"
+                            android:paddingHorizontal="4dp"
+                            android:paddingVertical="2dp"
+                            android:text="@string/battery_v3_title"
+                            android:textColor="?attr/colorOnSurfaceVariant"
+                            android:textSize="10sp"
+                            android:textStyle="bold"
+                            app:layout_constraintEnd_toStartOf="@id/ivV3Status"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <ImageView
+                            android:id="@+id/ivV3Status"
+                            android:layout_width="16dp"
+                            android:layout_height="16dp"
+                            android:contentDescription="@null"
+                            android:src="@drawable/ic_lock"
+                            app:layout_constraintBottom_toBottomOf="@id/tagV3"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintTop_toTopOf="@id/tagV3"
+                            app:tint="?attr/colorOnSurfaceVariant" />
+
+                        <!-- Inner Box -->
+                        <LinearLayout
+                            android:id="@+id/boxV3"
+                            android:layout_width="match_parent"
+                            android:layout_height="0dp"
+                            android:layout_marginVertical="6dp"
+                            android:background="@drawable/bg_triad_slot_normal"
+                            android:gravity="center"
+                            android:orientation="vertical"
+                            android:padding="4dp"
+                            app:layout_constraintBottom_toTopOf="@id/tvV3BottomStatus"
+                            app:layout_constraintTop_toBottomOf="@id/tagV3">
+
+                            <ImageView
+                                android:id="@+id/ivV3SlotIcon"
+                                android:layout_width="22dp"
+                                android:layout_height="22dp"
+                                android:contentDescription="@null"
+                                android:src="@drawable/ic_lock"
+                                app:tint="?attr/colorOnSurfaceVariant" />
+
+                            <TextView
+                                android:id="@+id/tvV3SlotText"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="2dp"
+                                android:ellipsize="end"
+                                android:maxLines="1"
+                                android:text="@string/battery_receptor_v3"
+                                android:textColor="?attr/colorOnSurfaceVariant"
+                                android:textSize="12sp"
+                                android:textStyle="bold" />
+
+                            <TextView
+                                android:id="@+id/tvV3SlotSubtext"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:ellipsize="end"
+                                android:maxLines="1"
+                                android:text="@string/battery_on_standby"
+                                android:textColor="?attr/colorOnSurfaceVariant"
+                                android:textSize="10sp" />
+                        </LinearLayout>
+
+                        <TextView
+                            android:id="@+id/tvV3BottomStatus"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:gravity="center"
+                            android:text="@string/battery_vacant"
+                            android:textColor="?attr/colorOnSurfaceVariant"
+                            android:textSize="11sp"
+                            app:layout_constraintBottom_toBottomOf="parent" />
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+                </com.google.android.material.card.MaterialCardView>
+            </LinearLayout>
+
+            <!-- Conveyor Section Header -->
+            <TextView
+                android:id="@+id/tvConveyorTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/spacing_lg"
+                android:text="@string/battery_conveyor_title"
+                android:textColor="?attr/colorOnSurface"
+                android:textSize="@dimen/text_label_md"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/layoutReceptorCapsules" />
+
+            <TextView
+                android:id="@+id/tvConveyorSubtitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/battery_conveyor_subtitle"
+                android:textColor="?attr/colorOnSurfaceVariant"
+                android:textSize="@dimen/text_label_sm"
+                app:layout_constraintBottom_toBottomOf="@id/tvConveyorTitle"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@id/tvConveyorTitle" />
+
+            <!-- Instruction Pill -->
+            <TextView
+                android:id="@+id/tvConveyorInstruction"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/spacing_sm"
+                android:background="@drawable/bg_focus_pill"
+                android:drawableStart="@drawable/ic_flash"
+                android:drawablePadding="6dp"
+                android:paddingHorizontal="@dimen/spacing_sm"
+                android:paddingVertical="8dp"
+                android:text="@string/battery_instruction_v2_format"
+                android:textColor="?attr/colorPrimary"
+                android:textSize="@dimen/text_label_sm"
+                android:textStyle="bold"
+                app:drawableTint="?attr/colorPrimary"
+                app:layout_constraintTop_toBottomOf="@id/tvConveyorTitle" />
+
+            <!-- Horizontal Options Conveyor RecyclerView -->
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rvOptionCards"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/spacing_sm"
+                android:clipToPadding="false"
+                android:nestedScrollingEnabled="false"
+                android:orientation="horizontal"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tvConveyorInstruction"
+                tools:itemCount="6"
+                tools:listitem="@layout/item_battery_card" />
+
+            <!-- Circuit Feedback Card -->
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/cardCircuitFeedback"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/spacing_md"
+                app:cardBackgroundColor="?attr/colorSurfaceContainerLow"
+                app:cardCornerRadius="@dimen/card_corner_radius"
+                app:cardElevation="0dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/rvOptionCards"
+                app:strokeColor="?attr/colorOutlineVariant"
+                app:strokeWidth="1dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:padding="@dimen/card_internal_padding">
+
+                    <ImageView
+                        android:id="@+id/ivCircuitIcon"
+                        android:layout_width="28dp"
+                        android:layout_height="28dp"
+                        android:contentDescription="@null"
+                        android:src="@drawable/ic_target"
+                        app:tint="?attr/colorPrimary" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/spacing_sm"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:id="@+id/tvCircuitStatusTitle"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="@string/battery_circuit_stable_title"
+                            android:textColor="?attr/colorOnSurface"
+                            android:textSize="@dimen/text_label_md"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:id="@+id/tvCircuitStatusDesc"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="2dp"
+                            android:lineSpacingExtra="2dp"
+                            android:text="@string/battery_circuit_stable_desc"
+                            android:textColor="?attr/colorOnSurfaceVariant"
+                            android:textSize="@dimen/text_body_sm" />
+                    </LinearLayout>
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- Bottom Action Row -->
+            <LinearLayout
+                android:id="@+id/layoutBottomActions"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/spacing_md"
+                android:layout_marginBottom="@dimen/spacing_lg"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/cardCircuitFeedback">
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnMnemonicHint"
+                    style="@style/Widget.Material3.Button.OutlinedButton"
+                    android:layout_width="0dp"
+                    android:layout_height="44dp"
+                    android:layout_marginEnd="@dimen/spacing_sm"
+                    android:layout_weight="1"
+                    android:insetTop="0dp"
+                    android:insetBottom="0dp"
+                    android:text="@string/battery_hint_label"
+                    android:textColor="?attr/colorPrimary"
+                    android:textSize="@dimen/text_label_sm"
+                    android:textStyle="bold"
+                    app:cornerRadius="@dimen/button_pill_radius"
+                    app:icon="@drawable/ic_lightbulb"
+                    app:iconGravity="textStart"
+                    app:iconSize="18dp"
+                    app:iconTint="?attr/colorPrimary"
+                    app:strokeColor="?attr/colorOutlineVariant" />
+
+                <TextView
+                    android:id="@+id/tvStreakFooter"
+                    android:layout_width="wrap_content"
+                    android:layout_height="44dp"
+                    android:background="@drawable/bg_icon_button_soft"
+                    android:drawableStart="@drawable/ic_fire"
+                    android:drawablePadding="6dp"
+                    android:gravity="center"
+                    android:paddingHorizontal="@dimen/spacing_md"
+                    android:text="0 Tríadas en Racha"
+                    android:textColor="?attr/colorOnSurface"
+                    android:textSize="@dimen/text_label_sm"
+                    android:textStyle="bold"
+                    app:drawableTint="?attr/colorPrimary" />
+            </LinearLayout>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.core.widget.NestedScrollView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

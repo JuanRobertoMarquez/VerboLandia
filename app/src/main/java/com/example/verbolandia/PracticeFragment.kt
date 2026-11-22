@@ -292,7 +292,8 @@ class PracticeFragment : Fragment() {
     private fun setupPracticeModalities() {
         binding.cardReinforcement.setOnClickListener {
             it.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP)
-            startGuidedReviewSession()
+            val intent = Intent(requireContext(), ReinforcementBatteryActivity::class.java)
+            startActivity(intent)
         }
 
         binding.cardModality1.setOnClickListener {
@@ -368,59 +369,6 @@ class PracticeFragment : Fragment() {
         }
     }
 
-    private fun startGuidedReviewSession() {
-        val summary = viewModel.progressSummary.value
-        val weakBases = summary.topWeakVerbs.map { it.base }
-        val dailyVerbs = viewModel.dailyVerbs.value
-
-        val reviewQueue = if (weakBases.isNotEmpty()) {
-            dailyVerbs.filter { it.base in weakBases } + dailyVerbs.filter { it.base !in weakBases }
-        } else {
-            dailyVerbs
-        }
-
-        if (reviewQueue.isEmpty()) return
-
-        val targetVerb = reviewQueue.first()
-        val titleText = getString(R.string.guided_review_title_format, targetVerb.base.uppercase(), targetVerb.spanishMeaning)
-
-        val options = listOf(
-            targetVerb.past,
-            targetVerb.gerund,
-            if (targetVerb.base.endsWith("e")) "${targetVerb.base}d" else "${targetVerb.base}ed"
-        ).distinct().shuffled().toTypedArray()
-
-        MaterialAlertDialogBuilder(requireContext())
-            .setTitle(titleText)
-            .setItems(options) { dialog, which ->
-                dialog.dismiss()
-                val selectedOption = options[which]
-                val isCorrect = selectedOption == targetVerb.past
-
-                viewModel.recordPracticeAttempt(targetVerb.base, isCorrect, "Repaso Guiado")
-
-                val msg = if (isCorrect) {
-                    try {
-                        NotificationHelper.showVerbOfDayNotification(requireContext(), targetVerb)
-                    } catch (_: Exception) {
-                    }
-                    getString(R.string.guided_review_success_format, targetVerb.base, targetVerb.past)
-                } else {
-                    getString(R.string.guided_review_error_format, targetVerb.base, targetVerb.past)
-                }
-
-                Snackbar.make(binding.root, msg, Snackbar.LENGTH_LONG)
-                    .setAction(getString(R.string.action_notification)) {
-                        try {
-                            NotificationHelper.showVerbOfDayNotification(requireContext(), targetVerb)
-                        } catch (_: Exception) {
-                        }
-                    }
-                    .show()
-            }
-            .setNegativeButton(R.string.dialog_cancel, null)
-            .show()
-    }
 
     private fun startQuizModal(modalityName: String) {
         val allVerbs = viewModel.dailyVerbs.value

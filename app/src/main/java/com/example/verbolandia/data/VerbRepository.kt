@@ -367,6 +367,29 @@ class VerbRepository(
         enrichVerbs(verbs)
     }
 
+    suspend fun getWeakOrChallengingVerbs(limit: Int = 5): List<Verb> = withContext(Dispatchers.IO) {
+        val summary = getProgressSummary()
+        val weakBases = summary.topWeakVerbs.map { it.base }
+        val weakVerbs = mutableListOf<Verb>()
+        for (base in weakBases) {
+            val v = getVerbByBase(base)
+            if (v != null && !weakVerbs.any { it.base.equals(v.base, ignoreCase = true) }) {
+                weakVerbs.add(v)
+            }
+            if (weakVerbs.size >= limit) break
+        }
+        if (weakVerbs.size < limit) {
+            val irregulars = getCatalogVerbs(category = "IRREGULAR").shuffled()
+            for (v in irregulars) {
+                if (!weakVerbs.any { it.base.equals(v.base, ignoreCase = true) }) {
+                    weakVerbs.add(v)
+                }
+                if (weakVerbs.size >= limit) break
+            }
+        }
+        weakVerbs.take(limit)
+    }
+
     private fun enrichVerbs(verbs: List<Verb>): List<Verb> {
         return verbs.map { enrichVerb(it) }
     }

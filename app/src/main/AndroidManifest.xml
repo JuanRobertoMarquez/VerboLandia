@@ -72,6 +72,11 @@
             android:parentActivityName=".MainActivity" />
 
         <activity
+            android:name=".ReinforcementBatteryActivity"
+            android:exported="false"
+            android:parentActivityName=".MainActivity" />
+
+        <activity
             android:name=".TextureViewActivity"
             android:exported="false"
             android:parentActivityName=".MainActivity" />
