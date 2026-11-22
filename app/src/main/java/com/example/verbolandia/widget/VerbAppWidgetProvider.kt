@@ -19,6 +19,13 @@ class VerbAppWidgetProvider : AppWidgetProvider() {
 
     companion object {
         const val ACTION_REFRESH_WIDGET = "com.example.verbolandia.ACTION_REFRESH_WIDGET"
+
+        fun updateAllWidgets(context: Context) {
+            val intent = Intent(context, VerbAppWidgetProvider::class.java).apply {
+                action = ACTION_REFRESH_WIDGET
+            }
+            context.sendBroadcast(intent)
+        }
     }
 
     override fun onUpdate(

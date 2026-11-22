@@ -71,6 +71,12 @@ class PracticeFragment : Fragment() {
         super.onResume()
         viewModel.loadInitialData()
         updateDailyGoalUI()
+
+        val prefs = requireContext().getSharedPreferences("practice_prefs", Context.MODE_PRIVATE)
+        val savedReminder = prefs.getString("scheduled_reminder_text", null)
+        if (!savedReminder.isNullOrEmpty()) {
+            binding.tvReminderResult.text = savedReminder
+        }
     }
 
     private fun loadDailyGoal(): Int {
@@ -137,6 +143,11 @@ class PracticeFragment : Fragment() {
             updateLevelPillsUI()
         }
 
+        binding.btnLevelRandom.setOnClickListener {
+            selectedLevelMode = "RANDOM"
+            updateLevelPillsUI()
+        }
+
         updateLevelPillsUI()
     }
 
@@ -150,10 +161,13 @@ class PracticeFragment : Fragment() {
         val isBasic = selectedLevelMode == "BASIC"
         val isInter = selectedLevelMode == "INTERMEDIATE"
         val isAdv = selectedLevelMode == "ADVANCED"
+        val isRandom = selectedLevelMode == "RANDOM"
 
         styleLevelButton(binding.btnLevelBasic, isBasic, primaryColor, surfaceColor, whiteColor, mutedColor, outlineColor)
         styleLevelButton(binding.btnLevelInter, isInter, primaryColor, surfaceColor, whiteColor, mutedColor, outlineColor)
         styleLevelButton(binding.btnLevelAdv, isAdv, primaryColor, surfaceColor, whiteColor, mutedColor, outlineColor)
+        styleLevelButton(binding.btnLevelRandom, isRandom, primaryColor, surfaceColor, whiteColor, mutedColor, outlineColor)
+        binding.btnLevelRandom.iconTint = ColorStateList.valueOf(if (isRandom) whiteColor else mutedColor)
     }
 
     private fun styleLevelButton(
@@ -194,21 +208,27 @@ class PracticeFragment : Fragment() {
                     val timePickerDialog = TimePickerDialog(
                         requireContext(),
                         { _, selectedHour, selectedMinute ->
+                            val targetCal = Calendar.getInstance().apply {
+                                set(Calendar.YEAR, selectedYear)
+                                set(Calendar.MONTH, selectedMonth)
+                                set(Calendar.DAY_OF_MONTH, selectedDay)
+                                set(Calendar.HOUR_OF_DAY, selectedHour)
+                                set(Calendar.MINUTE, selectedMinute)
+                                set(Calendar.SECOND, 0)
+                                set(Calendar.MILLISECOND, 0)
+                            }
+
                             val timeStr = String.format("%02d:%02d", selectedHour, selectedMinute)
                             val dateStr = "$selectedDay/${selectedMonth + 1}/$selectedYear"
-                            binding.tvReminderResult.text = getString(R.string.reminder_scheduled_format, dateStr, timeStr)
+                            val reminderText = getString(R.string.reminder_scheduled_format, dateStr, timeStr)
+                            binding.tvReminderResult.text = reminderText
 
-                            val randomVerb = viewModel.dailyVerbs.value.randomOrNull() ?: Verb(
-                                base = "practice",
-                                thirdPerson = "practices",
-                                past = "practiced",
-                                pastParticiple = "practiced",
-                                gerund = "practicing",
-                                spanishMeaning = "Practicar"
-                            )
-                            NotificationHelper.showVerbOfDayNotification(requireContext(), randomVerb)
+                            val prefs = requireContext().getSharedPreferences("practice_prefs", Context.MODE_PRIVATE)
+                            prefs.edit().putString("scheduled_reminder_text", reminderText).apply()
 
-                            Snackbar.make(binding.root, getString(R.string.reminder_scheduled_format, dateStr, timeStr), Snackbar.LENGTH_SHORT).show()
+                            scheduleStudyAlarm(targetCal.timeInMillis)
+
+                            Snackbar.make(binding.root, reminderText, Snackbar.LENGTH_SHORT).show()
                         },
                         hour,
                         minute,
@@ -221,6 +241,36 @@ class PracticeFragment : Fragment() {
                 day
             )
             datePickerDialog.show()
+        }
+    }
+
+    private fun scheduleStudyAlarm(timeMs: Long) {
+        val ctx = context ?: return
+        val alarmManager = ctx.getSystemService(Context.ALARM_SERVICE) as? android.app.AlarmManager ?: return
+        val intent = Intent(ctx, com.example.verbolandia.util.StudyReminderReceiver::class.java).apply {
+            action = com.example.verbolandia.util.StudyReminderReceiver.ACTION_STUDY_REMINDER
+        }
+        val pendingIntent = android.app.PendingIntent.getBroadcast(
+            ctx,
+            com.example.verbolandia.util.StudyReminderReceiver.REMINDER_REQUEST_CODE,
+            intent,
+            android.app.PendingIntent.FLAG_UPDATE_CURRENT or android.app.PendingIntent.FLAG_IMMUTABLE
+        )
+
+        try {
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S) {
+                if (alarmManager.canScheduleExactAlarms()) {
+                    alarmManager.setExactAndAllowWhileIdle(android.app.AlarmManager.RTC_WAKEUP, timeMs, pendingIntent)
+                } else {
+                    alarmManager.setAndAllowWhileIdle(android.app.AlarmManager.RTC_WAKEUP, timeMs, pendingIntent)
+                }
+            } else if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
+                alarmManager.setExactAndAllowWhileIdle(android.app.AlarmManager.RTC_WAKEUP, timeMs, pendingIntent)
+            } else {
+                alarmManager.set(android.app.AlarmManager.RTC_WAKEUP, timeMs, pendingIntent)
+            }
+        } catch (_: SecurityException) {
+            alarmManager.set(android.app.AlarmManager.RTC_WAKEUP, timeMs, pendingIntent)
         }
     }
 
@@ -253,17 +303,47 @@ class PracticeFragment : Fragment() {
         }
 
         binding.cardModality2.setOnClickListener {
-            startQuizModal(getString(R.string.mod_2_title))
+            val intent = Intent(requireContext(), CrosswordActivity::class.java).apply {
+                val levelParam = when (selectedLevelMode) {
+                    "BASIC" -> "A1"
+                    "INTERMEDIATE" -> "B1"
+                    "ADVANCED" -> "B2"
+                    else -> "ALL"
+                }
+                putExtra(CrosswordActivity.EXTRA_LEVEL, levelParam)
+            }
+            startActivity(intent)
         }
 
-        // Modality 3: Billar de Verbos opens dedicated interactive screen!
         binding.cardModality3.setOnClickListener {
-            val intent = Intent(requireContext(), VerbBilliardsActivity::class.java)
+            val intent = Intent(requireContext(), WordSearchActivity::class.java).apply {
+                val levelParam = when (selectedLevelMode) {
+                    "BASIC" -> "A1"
+                    "INTERMEDIATE" -> "B1"
+                    "ADVANCED" -> "B2"
+                    else -> "ALL"
+                }
+                putExtra(WordSearchActivity.EXTRA_LEVEL, levelParam)
+            }
             startActivity(intent)
         }
 
         binding.cardModality4.setOnClickListener {
-            startQuizModal(getString(R.string.mod_4_title))
+            val intent = Intent(requireContext(), GrammarMemoryActivity::class.java).apply {
+                val levelParam = when (selectedLevelMode) {
+                    "BASIC" -> "A1"
+                    "INTERMEDIATE" -> "B1"
+                    "ADVANCED" -> "B2"
+                    else -> "ALL"
+                }
+                putExtra(GrammarMemoryActivity.EXTRA_LEVEL, levelParam)
+            }
+            startActivity(intent)
+        }
+
+        binding.cardModality5.setOnClickListener {
+            val intent = Intent(requireContext(), VerbBilliardsActivity::class.java)
+            startActivity(intent)
         }
     }
 
@@ -272,6 +352,7 @@ class PracticeFragment : Fragment() {
             "BASIC" -> verbs.filter { !it.isIrregular || it.isCommon }
             "INTERMEDIATE" -> verbs.filter { it.isIrregular }
             "ADVANCED" -> verbs.filter { it.isIrregular && !it.isCommon }.ifEmpty { verbs.filter { it.isIrregular } }
+            "RANDOM" -> verbs.shuffled()
             else -> verbs
         }
     }
@@ -308,7 +389,10 @@ class PracticeFragment : Fragment() {
                 viewModel.recordPracticeAttempt(targetVerb.base, isCorrect, "Repaso Guiado")
 
                 val msg = if (isCorrect) {
-                    NotificationHelper.showVerbOfDayNotification(requireContext(), targetVerb)
+                    try {
+                        NotificationHelper.showVerbOfDayNotification(requireContext(), targetVerb)
+                    } catch (_: Exception) {
+                    }
                     getString(R.string.guided_review_success_format, targetVerb.base, targetVerb.past)
                 } else {
                     getString(R.string.guided_review_error_format, targetVerb.base, targetVerb.past)
@@ -316,7 +400,10 @@ class PracticeFragment : Fragment() {
 
                 Snackbar.make(binding.root, msg, Snackbar.LENGTH_LONG)
                     .setAction(getString(R.string.action_notification)) {
-                        NotificationHelper.showVerbOfDayNotification(requireContext(), targetVerb)
+                        try {
+                            NotificationHelper.showVerbOfDayNotification(requireContext(), targetVerb)
+                        } catch (_: Exception) {
+                        }
                     }
                     .show()
             }
@@ -356,7 +443,10 @@ class PracticeFragment : Fragment() {
                 viewModel.recordPracticeAttempt(targetVerb.base, isCorrect, modalityName)
 
                 val msg = if (isCorrect) {
-                    NotificationHelper.showVerbOfDayNotification(requireContext(), targetVerb)
+                    try {
+                        NotificationHelper.showVerbOfDayNotification(requireContext(), targetVerb)
+                    } catch (_: Exception) {
+                    }
                     getString(R.string.quiz_success_format, targetVerb.base, correctAnswer)
                 } else {
                     getString(R.string.quiz_error_format, targetVerb.base, correctAnswer)
@@ -364,7 +454,10 @@ class PracticeFragment : Fragment() {
 
                 Snackbar.make(binding.root, msg, Snackbar.LENGTH_LONG)
                     .setAction(getString(R.string.action_notification)) {
-                        NotificationHelper.showVerbOfDayNotification(requireContext(), targetVerb)
+                        try {
+                            NotificationHelper.showVerbOfDayNotification(requireContext(), targetVerb)
+                        } catch (_: Exception) {
+                        }
                     }
                     .show()
             }

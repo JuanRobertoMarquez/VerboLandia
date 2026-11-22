@@ -71,6 +71,7 @@ class MainActivity : AppCompatActivity() {
         val navController = navHostFragment.navController
 
         binding.bottomNavigation.setupWithNavController(navController)
+        com.example.verbolandia.widget.VerbAppWidgetProvider.updateAllWidgets(this)
     }
 
     private fun checkAndRequestNotificationPermission() {

@@ -147,6 +147,8 @@
     <string name="level_basic">Básico (A1–A2)</string>
     <string name="level_intermediate">Intermedio (B1–B2)</string>
     <string name="level_advanced">Avanzado (C1–C2)</string>
+    <string name="level_random">Aleatorio</string>
+    <string name="cd_level_random">Nivel aleatorio mixto</string>
     <string name="reinforcement_title">Batería de refuerzo</string>
     <string name="reinforcement_badge">10 VERBOS</string>
     <string name="reinforcement_desc">Verbos con más vacilaciones recientes (arise, shrink, tread...).</string>
@@ -236,10 +238,84 @@
     <string name="triad_summary_retention_tip">Curva del Olvido Superada: Hacer 1 ronda más en los próximos 10 minutos duplica la retención a largo plazo.</string>
     <string name="triad_summary_main_menu">Volver al Menú Principal</string>
 
-    <string name="mod_2_title">Completar en Contexto</string>
-    <string name="mod_2_subtitle">Fill the Gap</string>
-    <string name="mod_2_badge">Conocimiento Real</string>
-    <string name="mod_2_desc">Elige la conjugación precisa atendiendo al contexto narrativo de la oración real en prosa natural.</string>
+    <!-- Crucigrama Gramatical -->
+    <string name="mod_crossword_title">Crucigrama Gramatical</string>
+    <string name="mod_crossword_subtitle">Verb Crossword</string>
+    <string name="mod_crossword_badge">Ortografía • V2/V3</string>
+    <string name="mod_crossword_desc">Cruza conjugaciones verbales en un tablero interactivo con pistas contextuales y teclado guiado.</string>
+    <string name="mod_crossword_sample">1H: SPOKE · 2V: CHOSEN   +15 pts</string>
+    <string name="crossword_title">Crucigrama Gramatical</string>
+    <string name="crossword_subtitle_format">Nivel %1$s • Crucigrama Interactivo</string>
+    <string name="crossword_clue_direction_format">%1$d %2$s</string>
+    <string name="crossword_direction_h">HORIZONTAL</string>
+    <string name="crossword_direction_v">VERTICAL</string>
+    <string name="crossword_clue_v2_format">Pasado Simple (V2) de %1$s</string>
+    <string name="crossword_clue_v3_format">Participio Pasado (V3) de %1$s</string>
+    <string name="crossword_btn_hint">Pista</string>
+    <string name="crossword_btn_audio">Pronunciar</string>
+    <string name="crossword_clear_btn">Borrar letra</string>
+    <string name="crossword_chip_format">%1$d%2$s: %3$s</string>
+    <string name="crossword_word_solved_format">¡Correcto! %1$s resuelto</string>
+    <string name="crossword_victory_title">¡Crucigrama Completado!</string>
+    <string name="crossword_victory_desc">Has dominado todas las conjugaciones verbales del tablero.</string>
+    <string name="crossword_score_earned">+40 EXP</string>
+    <string name="crossword_btn_next">Nuevo Tablero</string>
+    <string name="crossword_btn_finish">Volver a Práctica</string>
+    <string name="crossword_hint_used">Pista: la siguiente letra es \'%1$s\'</string>
+    <string name="crossword_no_more_hints">Ya has completado todas las pistas disponibles para esta palabra.</string>
+
+    <!-- Sopa de Tiempos -->
+    <string name="mod_wordsearch_title">Sopa de Tiempos</string>
+    <string name="mod_wordsearch_subtitle">Tense Word Search</string>
+    <string name="mod_wordsearch_badge">Escaneo Visual • 8x8</string>
+    <string name="mod_wordsearch_desc">Desliza el dedo y conecta las letras en horizontal, vertical o diagonal para hallar los verbos en el tiempo objetivo.</string>
+    <string name="mod_wordsearch_sample">SPEAK -> SPOKE · CATCH -> CAUGHT</string>
+    <string name="wordsearch_title">Sopa de Tiempos</string>
+    <string name="wordsearch_target_tense_format">Tiempo Objetivo: %1$s</string>
+    <string name="wordsearch_tracing_idle">Desliza el dedo para conectar letras</string>
+    <string name="wordsearch_tracing_format">TRAZANDO: %1$s</string>
+    <string name="wordsearch_found_toast">¡Correcto! Encontraste %1$s</string>
+    <string name="wordsearch_word_item_format">%1$s → %2$s</string>
+    <string name="wordsearch_pill_title">Píldora Gramatical</string>
+    <string name="wordsearch_btn_sound_hint">Pista Sonora</string>
+    <string name="wordsearch_btn_phonetic_hint">Lupa Fonética</string>
+    <string name="wordsearch_btn_restart">Reiniciar</string>
+    <string name="wordsearch_victory_title">¡Sopa de Tiempos Completada!</string>
+    <string name="wordsearch_victory_desc">Has encontrado todas las formas verbales objetivo.</string>
+    <string name="wordsearch_score_earned">+40 EXP</string>
+    <string name="wordsearch_btn_next">Nuevo Tablero</string>
+    <string name="wordsearch_btn_finish">Volver a Práctica</string>
+    <string name="wordsearch_hint_revealed">Pista: \'%1$s\' empieza cerca de la fila %2$d</string>
+    <string name="wordsearch_tense_past_simple">Pasado Simple (V2)</string>
+    <string name="wordsearch_tense_past_participle">Participio Pasado (V3)</string>
+
+    <!-- Memorama Gramatical -->
+    <string name="mod_memory_title">Memorama Gramatical</string>
+    <string name="mod_memory_subtitle">Grammar Memory</string>
+    <string name="mod_memory_badge">Asociación • Retención</string>
+    <string name="mod_memory_desc">Empareja cartas por tiempo gramatical y significado, reforzando tu memoria auditiva y espacial.</string>
+    <string name="mod_memory_sample">FREEZE · FROZE · Congelar</string>
+    <string name="memory_title">Memorama Gramatical</string>
+    <string name="memory_subtitle_format">Nivel %1$s • Empareja 6 Verbos</string>
+    <string name="memory_target_tense_format">Tiempo: %1$s</string>
+    <string name="memory_pairs_counter_format">%1$d / %2$d</string>
+    <string name="memory_streak_format">x%1$d</string>
+    <string name="memory_card_v1_label">V1 BASE</string>
+    <string name="memory_btn_audio_hint">Pista Auditiva</string>
+    <string name="memory_btn_shuffle">Reordenar</string>
+    <string name="memory_btn_restart">Reiniciar</string>
+    <string name="memory_match_success_format">¡Excelente! %1$s</string>
+    <string name="memory_match_error">No coinciden. ¡Memoriza la posición!</string>
+    <string name="memory_victory_title">¡Memorama Completado!</string>
+    <string name="memory_victory_desc">Has emparejado todos los verbos. Racha máxima: x%1$d.</string>
+    <string name="memory_score_earned">+40 EXP</string>
+    <string name="memory_btn_next">Nuevo Tablero</string>
+    <string name="memory_btn_finish">Volver a Práctica</string>
+
+    <string name="mod_2_title">Crucigrama Gramatical</string>
+    <string name="mod_2_subtitle">Verb Crossword</string>
+    <string name="mod_2_badge">Ortografía • V2/V3</string>
+    <string name="mod_2_desc">Cruza conjugaciones verbales en un tablero interactivo con pistas contextuales y teclado guiado.</string>
     <string name="mod_2_quote">"By next month, the architects will have..."</string>
     <string name="mod_2_options">drawn   drew   drawn up</string>
     <string name="mod_2_opt_1">drawn</string>
