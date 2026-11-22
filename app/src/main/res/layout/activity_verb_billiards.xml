@@ -12,7 +12,7 @@
     <include
         android:id="@+id/appBar"
         layout="@layout/include_app_bar"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="@dimen/app_bar_height"
         android:background="@color/billiard_green_darkest"
         app:layout_constraintEnd_toEndOf="parent"
@@ -279,7 +279,7 @@
     <!-- Bottom Controls & Next Verb Button -->
     <LinearLayout
         android:id="@+id/bottomBar"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="@dimen/bottom_bar_height"
         android:background="@color/billiard_green_darkest"
         android:gravity="center_vertical"

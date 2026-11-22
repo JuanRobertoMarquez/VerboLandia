@@ -27,7 +27,7 @@
         <!-- Search Bar Card with Filter Button -->
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/cardSearch"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="@dimen/search_bar_height"
             android:layout_marginHorizontal="@dimen/screen_horizontal_padding"
             android:layout_marginTop="@dimen/section_spacing_vertical"
@@ -103,7 +103,7 @@
         <!-- Active Filter Pill Indicator -->
         <LinearLayout
             android:id="@+id/layoutActiveFilterTag"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="@dimen/screen_horizontal_padding"
             android:layout_marginTop="@dimen/spacing_xs"
@@ -140,7 +140,7 @@
         <!-- Featured "VERBO DEL DÍA" Card -->
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/cardVerbOfDay"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="@dimen/screen_horizontal_padding"
             android:layout_marginTop="@dimen/section_spacing_vertical"
@@ -284,7 +284,7 @@
         <!-- Skeleton Loaders Container (shown briefly during page/filter transitions) -->
         <LinearLayout
             android:id="@+id/layoutSkeleton"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/spacing_xs"
             android:orientation="vertical"
@@ -300,7 +300,7 @@
         <!-- Verb Cards RecyclerView (Paginated) -->
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rvVerbs"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/spacing_xs"
             android:nestedScrollingEnabled="false"
@@ -314,7 +314,7 @@
         <!-- Pagination Bar Component with Icon-Only Chevrons and Smooth Rounded Number Pills -->
         <LinearLayout
             android:id="@+id/layoutPagination"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="@dimen/screen_horizontal_padding"
             android:layout_marginTop="@dimen/section_spacing_vertical"

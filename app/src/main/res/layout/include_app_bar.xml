@@ -23,7 +23,7 @@
     ════════════════════════════════════════════════ -->
     <com.google.android.material.progressindicator.LinearProgressIndicator
         android:id="@+id/progressLine"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="3dp"
         android:visibility="gone"
         app:indicatorColor="?attr/colorPrimary"
@@ -125,7 +125,7 @@
     ════════════════════════════════════════════════ -->
     <View
         android:id="@+id/bottomDivider"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="1dp"
         android:background="?attr/colorOutlineVariant"
         app:layout_constraintBottom_toBottomOf="parent"

@@ -59,6 +59,9 @@
         android:layout_alignBaseline="@id/tvWidgetVerbBase"
         android:layout_marginStart="8dp"
         android:layout_toEndOf="@id/tvWidgetVerbBase"
+        android:layout_alignParentEnd="true"
+        android:ellipsize="end"
+        android:maxLines="1"
         android:text="@string/widget_default_meaning"
         android:textColor="@color/widget_text_slate"
         android:textSize="@dimen/text_body_sm" />

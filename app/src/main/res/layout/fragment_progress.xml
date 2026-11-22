@@ -4,8 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="?android:attr/colorBackground">
+    android:layout_height="match_parent">
 
     <!-- Top Bar unificado (include_app_bar: variante raíz — logo + título + avatar) -->
     <include
@@ -35,19 +34,20 @@
             <!-- Clean Subtitle below Header -->
             <TextView
                 android:id="@+id/tvProgressSubtitle"
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/spacing_sm"
                 android:text="@string/domain_metrics_subtitle"
                 android:textColor="?attr/colorOnSurfaceVariant"
                 android:textSize="@dimen/text_body_sm"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <!-- 2x2 Grid of Main Metrics (Strictly Symmetrical) -->
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/gridMetrics"
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/section_spacing_vertical"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -373,7 +373,7 @@
             <!-- Card: Evolución de Precisión -->
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/cardChart"
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/section_spacing_vertical"
                 app:cardBackgroundColor="?attr/colorSurfaceContainerLowest"
@@ -614,7 +614,7 @@
             <!-- CalendarView Widget Card -->
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/cardCalendar"
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/section_spacing_vertical"
                 app:cardBackgroundColor="?attr/colorSurfaceContainerLow"
@@ -783,7 +783,7 @@
             <!-- Weak Card 1: Choose -->
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/cardWeak1"
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/card_grid_spacing"
                 app:cardBackgroundColor="?attr/colorSurfaceContainerLowest"
@@ -850,7 +850,7 @@
 
                     <TextView
                         android:id="@+id/tvWeak1Note"
-                        android:layout_width="match_parent"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/spacing_xs"
                         android:background="@drawable/bg_practice_quote_card"
@@ -858,6 +858,8 @@
                         android:text="@string/weak_1_note"
                         android:textColor="?attr/colorOnSurfaceVariant"
                         android:textSize="@dimen/text_body_sm"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@id/tvWeak1Forms" />
 
                     <TextView
@@ -892,7 +894,7 @@
             <!-- Weak Card 2: Freeze -->
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/cardWeak2"
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/card_grid_spacing"
                 app:cardBackgroundColor="?attr/colorSurfaceContainerLowest"
@@ -959,7 +961,7 @@
 
                     <TextView
                         android:id="@+id/tvWeak2Note"
-                        android:layout_width="match_parent"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/spacing_xs"
                         android:background="@drawable/bg_practice_quote_card"
@@ -967,6 +969,8 @@
                         android:text="@string/weak_2_note"
                         android:textColor="?attr/colorOnSurfaceVariant"
                         android:textSize="@dimen/text_body_sm"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@id/tvWeak2Forms" />
 
                     <TextView
@@ -1001,7 +1005,7 @@
             <!-- Weak Card 3: Lie vs Lay -->
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/cardWeak3"
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/card_grid_spacing"
                 app:cardBackgroundColor="?attr/colorSurfaceContainerLowest"
@@ -1068,7 +1072,7 @@
 
                     <TextView
                         android:id="@+id/tvWeak3Note"
-                        android:layout_width="match_parent"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/spacing_xs"
                         android:background="@drawable/bg_practice_quote_card"
@@ -1076,6 +1080,8 @@
                         android:text="@string/weak_3_note"
                         android:textColor="?attr/colorOnSurfaceVariant"
                         android:textSize="@dimen/text_body_sm"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@id/tvWeak3Forms" />
 
                     <TextView
@@ -1110,7 +1116,7 @@
             <!-- Weak Card 4: Begin -->
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/cardWeak4"
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/card_grid_spacing"
                 app:cardBackgroundColor="?attr/colorSurfaceContainerLowest"
@@ -1177,7 +1183,7 @@
 
                     <TextView
                         android:id="@+id/tvWeak4Note"
-                        android:layout_width="match_parent"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/spacing_xs"
                         android:background="@drawable/bg_practice_quote_card"
@@ -1185,6 +1191,8 @@
                         android:text="@string/weak_4_note"
                         android:textColor="?attr/colorOnSurfaceVariant"
                         android:textSize="@dimen/text_body_sm"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@id/tvWeak4Forms" />
 
                     <TextView
@@ -1219,7 +1227,7 @@
             <!-- Card: Dominio por Tipología Verbal -->
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/cardTypology"
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/section_spacing_vertical"
                 app:cardBackgroundColor="?attr/colorSurfaceContainerLow"
@@ -1369,7 +1377,7 @@
             <!-- Main Action Button -->
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnGenerateTestErrors"
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:minHeight="@dimen/button_height"
                 android:layout_marginTop="@dimen/section_spacing_vertical"
@@ -1392,7 +1400,7 @@
 
             <TextView
                 android:id="@+id/tvTestSubtext"
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/spacing_xs"
                 android:gravity="center"
