@@ -237,9 +237,41 @@ class VerbRepository(
         return filterVerbs(verbs, category, "ALL")
     }
 
+    suspend fun getDailyVerbOfTheDay(): Verb = withContext(Dispatchers.IO) {
+        val now = clock.currentTimeMillis()
+        val todayStr = dailyPicker.getTodayDayString(now)
+
+        // 1. Comprobar si ya existe un verbo del día persistido para todayStr
+        val singleDailyDayKey = "VOD_$todayStr"
+        val storedBases = userDbHelper.getDailyPicks(singleDailyDayKey)
+        if (storedBases.isNotEmpty()) {
+            val verb = dbHelper.getVerbByBase(storedBases.first())
+            if (verb != null) {
+                return@withContext enrichVerb(verb)
+            }
+        }
+
+        // 2. Si no existe para hoy, seleccionar de toda la base de datos (185 verbos)
+        val allVerbs = dbHelper.getAllVerbs(2000)
+        val recentDays = dailyPicker.getRecentDayStrings(7, now).map { "VOD_$it" }
+        val recentlyUsedBases = userDbHelper.getBasesPickedInDays(recentDays)
+
+        // 3. Excluir los verbos usados en los últimos 7 días
+        val candidates = allVerbs.filter { it.base !in recentlyUsedBases }
+        val pool = if (candidates.isNotEmpty()) candidates else allVerbs
+
+        // 4. Semilla pseudoaleatoria basada en la fecha para consistencia absoluta durante las 24 horas
+        val seed = todayStr.toLongOrNull() ?: todayStr.hashCode().toLong()
+        val random = kotlin.random.Random(seed)
+        val chosen = pool.random(random)
+
+        // 5. Guardar en user_data.db como el verbo exclusivo para hoy
+        userDbHelper.saveDailyPicks(singleDailyDayKey, listOf(chosen.base))
+        enrichVerb(chosen)
+    }
+
     suspend fun getVerbOfDay(): Verb = withContext(Dispatchers.IO) {
-        val daily = getDailyVerbs("ALL")
-        daily.firstOrNull() ?: Verb(base = "break", thirdPerson = "breaks", past = "broke", pastParticiple = "broken", gerund = "breaking", spanishMeaning = "Romper, quebrar")
+        getDailyVerbOfTheDay()
     }
 
     suspend fun getSearchHistory(): List<Verb> = withContext(Dispatchers.IO) {

@@ -95,6 +95,21 @@ class DictionaryFragment : Fragment() {
     }
 
     private fun setupSearchAndFilterButton() {
+        val triggerSearch = View.OnClickListener {
+            binding.etSearch.requestFocus()
+            val window = activity?.window
+            if (window != null) {
+                androidx.core.view.WindowCompat.getInsetsController(window, window.decorView)
+                    .show(WindowInsetsCompat.Type.ime())
+            } else {
+                val imm = context?.getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
+                imm?.showSoftInput(binding.etSearch, 0)
+            }
+        }
+        binding.layoutSearchInputArea.setOnClickListener(triggerSearch)
+        binding.ivSearchIcon.setOnClickListener(triggerSearch)
+        binding.cardSearch.setOnClickListener(triggerSearch)
+
         binding.etSearch.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
@@ -110,22 +125,6 @@ class DictionaryFragment : Fragment() {
 
         binding.etSearch.setOnFocusChangeListener { _, hasFocus ->
             updateSearchHighlight(hasFocus)
-            if (hasFocus && binding.etSearch.text.isNull_or_empty()) {
-                val history = viewModel.searchHistory.value
-                if (history.isNotEmpty()) {
-                    showHistoryList(history)
-                }
-            } else if (!hasFocus && binding.etSearch.text.isNull_or_empty()) {
-                // Si pierde foco y no hay texto, asegurar que la cabecera muestre el estado de la lista normal
-                if (!viewModel.isSearching.value) {
-                    binding.tvSectionHeader.text = getString(R.string.list_header_title)
-                    val page = viewModel.currentPage.value
-                    val totalPages = viewModel.totalPages.value
-                    binding.tvSectionResults.text = getString(R.string.page_indicator, page, totalPages)
-                    binding.tvSectionResults.setOnClickListener(null)
-                    adapter.submitList(viewModel.paginatedVerbs.value)
-                }
-            }
         }
 
         binding.etSearch.setOnEditorActionListener { _, actionId, _ ->
@@ -398,7 +397,7 @@ class DictionaryFragment : Fragment() {
 
                 // Verb of the Day
                 launch {
-                    viewModel.currentDetailVerb.collect { verbOfToday ->
+                    viewModel.verbOfTheDay.collect { verbOfToday ->
                         if (verbOfToday != null) {
                             binding.tvVerbOfDayTitle.text = getString(R.string.verbo_del_dia_title_dynamic, verbOfToday.base, verbOfToday.spanishMeaning)
                             binding.tvVerbOfDayV1.text = getString(R.string.verbo_del_dia_v1_dynamic, verbOfToday.base)
@@ -540,6 +539,21 @@ class DictionaryFragment : Fragment() {
     }
 
     private fun CharSequence?.isNull_or_empty(): Boolean = this == null || this.isEmpty()
+
+    fun handleBackPressed(): Boolean {
+        if (_binding == null) return false
+        val hadFocus = binding.etSearch.hasFocus()
+        val hasText = !binding.etSearch.text.isNullOrEmpty()
+
+        if (hadFocus || hasText) {
+            if (hasText) {
+                binding.etSearch.text?.clear()
+            }
+            hideKeyboardAndClearSearchFocus()
+            return true
+        }
+        return false
+    }
 
     override fun onDestroyView() {
         globalLayoutListener?.let { listener ->

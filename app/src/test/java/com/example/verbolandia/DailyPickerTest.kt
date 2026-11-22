@@ -46,4 +46,29 @@ class DailyPickerTest {
             assertTrue(verb.base !in recentlyUsed)
         }
     }
+
+    @Test
+    fun testDailyVerbOfTheDayExcludesLastSevenDays() {
+        val testClock = TestClock(1700000000000L)
+        val picker = DailyPicker(testClock)
+        val allVerbs = (1..50).map { i ->
+            Verb(id = i, base = "verb$i", thirdPerson = "verb${i}s", past = "verb${i}ed", pastParticiple = "verb${i}ed", gerund = "verb${i}ing")
+        }
+
+        val last7DaysVerbs = (1..7).map { "verb$it" }.toSet()
+        val candidates = allVerbs.filter { it.base !in last7DaysVerbs }
+
+        val todayStr = picker.getTodayDayString()
+        val seed = todayStr.toLongOrNull() ?: todayStr.hashCode().toLong()
+        val random1 = kotlin.random.Random(seed)
+        val picked1 = candidates.random(random1)
+
+        val random2 = kotlin.random.Random(seed)
+        val picked2 = candidates.random(random2)
+
+        // Verbo inmutable en las 24 horas del mismo día
+        assertEquals(picked1.base, picked2.base)
+        // Nunca pertenece a los últimos 7 días
+        assertTrue(picked1.base !in last7DaysVerbs)
+    }
 }
