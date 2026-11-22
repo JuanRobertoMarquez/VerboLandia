@@ -290,7 +290,7 @@ class PracticeFragment : Fragment() {
     }
 
     private fun setupPracticeModalities() {
-        binding.btnStartGuidedReview.setOnClickListener {
+        binding.cardReinforcement.setOnClickListener {
             it.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP)
             startGuidedReviewSession()
         }

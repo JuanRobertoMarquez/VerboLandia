@@ -144,12 +144,13 @@
     <string name="cd_edit_goal">Editar meta diaria</string>
     <string name="toast_goal_updated">Meta diaria actualizada a %1$d ejercicios</string>
     <string name="pedagogical_level_label">DIFICULTAD</string>
-    <string name="level_basic">A1 - A2</string>
-    <string name="level_intermediate">B1 - B2</string>
-    <string name="level_advanced">C1 - C2</string>
+    <string name="level_basic">Fácil (A1–A2)</string>
+    <string name="level_intermediate">Medio (B1–B2)</string>
+    <string name="level_advanced">Difícil (C1–C2)</string>
     <string name="level_random">Aleatorio</string>
     <string name="cd_level_random">Modo aleatorio mixto</string>
-    <string name="reinforcement_title">Batería de refuerzo</string>
+    <string name="reinforcement_title">Batería de Refuerzo</string>
+    <string name="reinforcement_subtitle">Repaso guiado</string>
     <string name="reinforcement_badge">10 VERBOS</string>
     <string name="reinforcement_desc">Verbos con más vacilaciones recientes (arise, shrink, tread...).</string>
     <string name="reinforcement_v_badge">V1 V2 V3</string>
@@ -340,7 +341,7 @@
     <string name="mod_4_quote">"He didn\'t went there"</string>
     <string name="mod_4_link">Corregir</string>
 
-    <string name="banner_tip_text">Aprende a tu ritmo. Cada práctica se adapta a tus intervalos de retención espaciada.</string>
+    <string name="banner_tip_text">Aprende a tu ritmo. Sin vidas, ni castigos.</string>
 
     <!-- Progress & Domain Screen -->
     <string name="progress_top_title">PROGRESO Y DOMINIO</string>
