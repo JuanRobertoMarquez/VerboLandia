@@ -14,7 +14,6 @@ import com.example.verbolandia.model.Verb
 object NotificationHelper {
 
     private const val CHANNEL_ID = "verb_of_day_channel"
-    private const val CHANNEL_NAME = "Verbo del Día"
     private const val NOTIFICATION_ID = 1001
 
     fun createNotificationChannel(context: Context) {
@@ -34,6 +33,16 @@ object NotificationHelper {
     }
 
     fun showVerbOfDayNotification(context: Context, verb: Verb) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            val hasPermission = androidx.core.content.ContextCompat.checkSelfPermission(
+                context,
+                android.Manifest.permission.POST_NOTIFICATIONS
+            ) == android.content.pm.PackageManager.PERMISSION_GRANTED
+            if (!hasPermission) {
+                return
+            }
+        }
+
         createNotificationChannel(context)
 
         val intent = Intent(context, MainActivity::class.java).apply {

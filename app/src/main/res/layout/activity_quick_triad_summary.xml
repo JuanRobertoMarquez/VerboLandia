@@ -4,8 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="?android:attr/colorBackground">
+    android:layout_height="match_parent">
 
     <!-- Top Bar -->
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -134,10 +133,11 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/spacing_xs"
-                        android:text="¡Tríada Completada!"
+                        android:text="@string/triad_summary_headline"
                         android:textColor="?attr/colorOnSurface"
                         android:textSize="@dimen/text_headline_lg"
-                        android:textStyle="bold" />
+                        android:textStyle="bold"
+                        tools:text="¡Tríada Completada!" />
 
                     <TextView
                         android:id="@+id/tvSummarySubheader"
@@ -145,9 +145,10 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="4dp"
                         android:gravity="center"
-                        android:text="Buen esfuerzo. Cada repetición consolida los patrones irregulares en tu memoria verbal."
+                        android:text="@string/triad_summary_subheader"
                         android:textColor="?attr/colorOnSurfaceVariant"
-                        android:textSize="@dimen/text_body_sm" />
+                        android:textSize="@dimen/text_body_sm"
+                        tools:text="Buen esfuerzo. Cada repetición consolida los patrones irregulares en tu memoria verbal." />
 
                     <!-- EXP Gained Banner -->
                     <LinearLayout
@@ -185,10 +186,10 @@
                                 android:id="@+id/tvSummaryExpGained"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="+116 EXP"
                                 android:textColor="?attr/colorPrimary"
                                 android:textSize="@dimen/text_headline_md"
-                                android:textStyle="bold" />
+                                android:textStyle="bold"
+                                tools:text="+116 EXP" />
                         </LinearLayout>
 
                         <TextView
@@ -198,10 +199,10 @@
                             android:background="@drawable/bg_pill_detail_badge"
                             android:paddingHorizontal="8dp"
                             android:paddingVertical="4dp"
-                            android:text="↗ +25 por combo"
                             android:textColor="@color/accent_gold"
                             android:textSize="@dimen/text_label_sm"
-                            android:textStyle="bold" />
+                            android:textStyle="bold"
+                            tools:text="+25 por combo" />
                     </LinearLayout>
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
@@ -244,18 +245,18 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="2dp"
-                            android:text="80%"
                             android:textColor="?attr/colorOnSurface"
                             android:textSize="@dimen/text_headline_sm"
-                            android:textStyle="bold" />
+                            android:textStyle="bold"
+                            tools:text="80%" />
 
                         <TextView
                             android:id="@+id/tvSummaryAccuracyCount"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="8 de 10"
                             android:textColor="?attr/colorPrimary"
-                            android:textSize="@dimen/text_label_sm" />
+                            android:textSize="@dimen/text_label_sm"
+                            tools:text="8 de 10" />
                     </LinearLayout>
                 </com.google.android.material.card.MaterialCardView>
 
@@ -372,9 +373,9 @@
                             android:id="@+id/tvSummarySpeedPace"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="~10s / verbo"
                             android:textColor="?attr/colorOnSurfaceVariant"
-                            android:textSize="@dimen/text_label_sm" />
+                            android:textSize="@dimen/text_label_sm"
+                            tools:text="~10s / verbo" />
                     </LinearLayout>
                 </com.google.android.material.card.MaterialCardView>
             </LinearLayout>
@@ -409,10 +410,10 @@
                             android:background="@drawable/bg_pill_detail_badge"
                             android:paddingHorizontal="8dp"
                             android:paddingVertical="3dp"
-                            android:text="Nivel 4 de Maestría"
                             android:textColor="?attr/colorPrimary"
                             android:textSize="@dimen/text_label_sm"
-                            android:textStyle="bold" />
+                            android:textStyle="bold"
+                            tools:text="Nivel 4 de Maestría" />
 
                         <TextView
                             android:id="@+id/tvMasteryExpFraction"
@@ -420,9 +421,9 @@
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:gravity="end"
-                            android:text="780 / 1000 EXP"
                             android:textColor="?attr/colorOnSurfaceVariant"
-                            android:textSize="@dimen/text_label_sm" />
+                            android:textSize="@dimen/text_label_sm"
+                            tools:text="780 / 1000 EXP" />
                     </LinearLayout>
 
                     <com.google.android.material.progressindicator.LinearProgressIndicator
@@ -441,9 +442,9 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="6dp"
-                        android:text="Aprendiz Constante · Faltan 220 EXP para Nivel 5"
                         android:textColor="?attr/colorOnSurfaceVariant"
-                        android:textSize="@dimen/text_body_sm" />
+                        android:textSize="@dimen/text_body_sm"
+                        tools:text="Aprendiz Constante · Faltan 220 EXP para Nivel 5" />
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
@@ -471,9 +472,9 @@
                     android:background="@drawable/bg_pill_detail_badge"
                     android:paddingHorizontal="8dp"
                     android:paddingVertical="2dp"
-                    android:text="10 Analizados"
                     android:textColor="?attr/colorOnSurfaceVariant"
-                    android:textSize="@dimen/text_label_sm" />
+                    android:textSize="@dimen/text_label_sm"
+                    tools:text="10 Analizados" />
             </LinearLayout>
 
             <!-- Spaced Repetition Info Box -->

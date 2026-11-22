@@ -46,12 +46,16 @@
             android:layout_width="32dp"
             android:layout_height="32dp"
             android:layout_marginStart="@dimen/spacing_xs"
+            android:layout_marginEnd="@dimen/spacing_xs"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:contentDescription="@string/cd_play_audio"
             android:padding="4dp"
             android:scaleType="fitCenter"
             android:src="@drawable/ic_volume"
+            app:layout_constrainedWidth="true"
             app:layout_constraintBottom_toBottomOf="@id/tvInfinitive"
+            app:layout_constraintEnd_toStartOf="@id/tvLevelBadge"
+            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toEndOf="@id/tvPhonetic"
             app:layout_constraintTop_toTopOf="@id/tvInfinitive"
             app:tint="?attr/colorPrimary" />
@@ -112,7 +116,7 @@
         <!-- Syntactic Matrix (V1, V2, V3) -->
         <LinearLayout
             android:id="@+id/layoutSyntacticMatrix"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/spacing_md"
             android:background="?attr/colorSurfaceContainerLow"
@@ -211,7 +215,7 @@
         <!-- Progress Indicator -->
         <com.google.android.material.progressindicator.LinearProgressIndicator
             android:id="@+id/progressMastery"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/spacing_md"
             app:indicatorColor="?attr/colorPrimary"

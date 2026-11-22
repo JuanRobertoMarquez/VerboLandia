@@ -89,10 +89,10 @@ object VerbDetailBinder {
             context.getString(R.string.ex_v1_es_format, verb.base)
         }
         binding.tvEx1Title.text = context.getString(R.string.ex_v1_title)
-        binding.tvEx1En.text = "\"$ex1En\""
+        binding.tvEx1En.text = context.getString(R.string.quoted_text_format, ex1En)
         binding.tvEx1Es.text = ex1Es
         binding.btnEx1Audio.setOnClickListener {
-            com.example.verbolandia.util.AudioSpeaker.speak(context, ex1En)
+            com.example.verbolandia.util.AudioSpeaker.speak(context, ex1En, it)
         }
 
         // Example 2: V2 Past Simple
@@ -103,10 +103,10 @@ object VerbDetailBinder {
             context.getString(R.string.ex_v2_es_format, verb.past)
         }
         binding.tvEx2Title.text = context.getString(R.string.ex_v2_title)
-        binding.tvEx2En.text = "\"$ex2En\""
+        binding.tvEx2En.text = context.getString(R.string.quoted_text_format, ex2En)
         binding.tvEx2Es.text = ex2Es
         binding.btnEx2Audio.setOnClickListener {
-            com.example.verbolandia.util.AudioSpeaker.speak(context, ex2En)
+            com.example.verbolandia.util.AudioSpeaker.speak(context, ex2En, it)
         }
 
         // Example 3: V3 Present Perfect
@@ -117,10 +117,10 @@ object VerbDetailBinder {
             context.getString(R.string.ex_v3_es_format, verb.pastParticiple)
         }
         binding.tvEx3Title.text = context.getString(R.string.ex_v3_title)
-        binding.tvEx3En.text = "\"$ex3En\""
+        binding.tvEx3En.text = context.getString(R.string.quoted_text_format, ex3En)
         binding.tvEx3Es.text = ex3Es
         binding.btnEx3Audio.setOnClickListener {
-            com.example.verbolandia.util.AudioSpeaker.speak(context, ex3En)
+            com.example.verbolandia.util.AudioSpeaker.speak(context, ex3En, it)
         }
 
         // Matrix V1, V2, V3 with real IPA phonetics
@@ -154,7 +154,7 @@ object VerbDetailBinder {
         binding.cardRetention.visibility = View.VISIBLE
         if (stats.attempts > 0) {
             val accuracyPct = ((stats.correctCount.toDouble() / stats.attempts) * 100).toInt()
-            binding.tvRetentionMetric.text = "$accuracyPct%"
+            binding.tvRetentionMetric.text = context.getString(R.string.percentage_format, accuracyPct)
             binding.progressRetention.progress = accuracyPct
             binding.tvRetentionViews.text = context.getString(R.string.retention_views_format, stats.views, stats.attempts)
             binding.tvRetentionLastSuccess.text = if (stats.lastCorrectAtMs > 0) {
@@ -163,7 +163,7 @@ object VerbDetailBinder {
                 context.getString(R.string.retention_no_correct_yet)
             }
         } else {
-            binding.tvRetentionMetric.text = "0%"
+            binding.tvRetentionMetric.text = context.getString(R.string.percentage_format, 0)
             binding.progressRetention.progress = 0
             binding.tvRetentionViews.text = context.getString(R.string.retention_not_practiced)
             binding.tvRetentionLastSuccess.text = context.getString(R.string.retention_views_only_format, stats.views)

@@ -6,6 +6,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.res.ColorStateList
 import android.os.Bundle
+import android.view.HapticFeedbackConstants
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -71,6 +72,12 @@ class PracticeFragment : Fragment() {
         super.onResume()
         viewModel.loadInitialData()
         updateDailyGoalUI()
+
+        val prefs = requireContext().getSharedPreferences("practice_prefs", Context.MODE_PRIVATE)
+        val savedReminder = prefs.getString("scheduled_reminder_text", null)
+        if (!savedReminder.isNullOrEmpty()) {
+            binding.tvReminderResult.text = savedReminder
+        }
     }
 
     private fun loadDailyGoal(): Int {
@@ -122,17 +129,26 @@ class PracticeFragment : Fragment() {
     }
 
     private fun setupLevelSelectors() {
+        binding.btnLevelRandom.setOnClickListener {
+            it.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP)
+            selectedLevelMode = "RANDOM"
+            updateLevelPillsUI()
+        }
+
         binding.btnLevelBasic.setOnClickListener {
+            it.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP)
             selectedLevelMode = "BASIC"
             updateLevelPillsUI()
         }
 
         binding.btnLevelInter.setOnClickListener {
+            it.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP)
             selectedLevelMode = "INTERMEDIATE"
             updateLevelPillsUI()
         }
 
         binding.btnLevelAdv.setOnClickListener {
+            it.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP)
             selectedLevelMode = "ADVANCED"
             updateLevelPillsUI()
         }
@@ -147,13 +163,16 @@ class PracticeFragment : Fragment() {
         val surfaceColor = ContextCompat.getColor(requireContext(), R.color.surface_container_low)
         val outlineColor = ContextCompat.getColor(requireContext(), R.color.outline_variant)
 
+        val isRandom = selectedLevelMode == "RANDOM"
         val isBasic = selectedLevelMode == "BASIC"
         val isInter = selectedLevelMode == "INTERMEDIATE"
         val isAdv = selectedLevelMode == "ADVANCED"
 
+        styleLevelButton(binding.btnLevelRandom, isRandom, primaryColor, surfaceColor, whiteColor, mutedColor, outlineColor)
         styleLevelButton(binding.btnLevelBasic, isBasic, primaryColor, surfaceColor, whiteColor, mutedColor, outlineColor)
         styleLevelButton(binding.btnLevelInter, isInter, primaryColor, surfaceColor, whiteColor, mutedColor, outlineColor)
         styleLevelButton(binding.btnLevelAdv, isAdv, primaryColor, surfaceColor, whiteColor, mutedColor, outlineColor)
+        binding.btnLevelRandom.iconTint = ColorStateList.valueOf(if (isRandom) whiteColor else mutedColor)
     }
 
     private fun styleLevelButton(
@@ -194,21 +213,27 @@ class PracticeFragment : Fragment() {
                     val timePickerDialog = TimePickerDialog(
                         requireContext(),
                         { _, selectedHour, selectedMinute ->
+                            val targetCal = Calendar.getInstance().apply {
+                                set(Calendar.YEAR, selectedYear)
+                                set(Calendar.MONTH, selectedMonth)
+                                set(Calendar.DAY_OF_MONTH, selectedDay)
+                                set(Calendar.HOUR_OF_DAY, selectedHour)
+                                set(Calendar.MINUTE, selectedMinute)
+                                set(Calendar.SECOND, 0)
+                                set(Calendar.MILLISECOND, 0)
+                            }
+
                             val timeStr = String.format("%02d:%02d", selectedHour, selectedMinute)
                             val dateStr = "$selectedDay/${selectedMonth + 1}/$selectedYear"
-                            binding.tvReminderResult.text = getString(R.string.reminder_scheduled_format, dateStr, timeStr)
+                            val reminderText = getString(R.string.reminder_scheduled_format, dateStr, timeStr)
+                            binding.tvReminderResult.text = reminderText
 
-                            val randomVerb = viewModel.dailyVerbs.value.randomOrNull() ?: Verb(
-                                base = "practice",
-                                thirdPerson = "practices",
-                                past = "practiced",
-                                pastParticiple = "practiced",
-                                gerund = "practicing",
-                                spanishMeaning = "Practicar"
-                            )
-                            NotificationHelper.showVerbOfDayNotification(requireContext(), randomVerb)
+                            val prefs = requireContext().getSharedPreferences("practice_prefs", Context.MODE_PRIVATE)
+                            prefs.edit().putString("scheduled_reminder_text", reminderText).apply()
 
-                            Snackbar.make(binding.root, getString(R.string.reminder_scheduled_format, dateStr, timeStr), Snackbar.LENGTH_SHORT).show()
+                            scheduleStudyAlarm(targetCal.timeInMillis)
+
+                            Snackbar.make(binding.root, reminderText, Snackbar.LENGTH_SHORT).show()
                         },
                         hour,
                         minute,
@@ -224,6 +249,36 @@ class PracticeFragment : Fragment() {
         }
     }
 
+    private fun scheduleStudyAlarm(timeMs: Long) {
+        val ctx = context ?: return
+        val alarmManager = ctx.getSystemService(Context.ALARM_SERVICE) as? android.app.AlarmManager ?: return
+        val intent = Intent(ctx, com.example.verbolandia.util.StudyReminderReceiver::class.java).apply {
+            action = com.example.verbolandia.util.StudyReminderReceiver.ACTION_STUDY_REMINDER
+        }
+        val pendingIntent = android.app.PendingIntent.getBroadcast(
+            ctx,
+            com.example.verbolandia.util.StudyReminderReceiver.REMINDER_REQUEST_CODE,
+            intent,
+            android.app.PendingIntent.FLAG_UPDATE_CURRENT or android.app.PendingIntent.FLAG_IMMUTABLE
+        )
+
+        try {
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S) {
+                if (alarmManager.canScheduleExactAlarms()) {
+                    alarmManager.setExactAndAllowWhileIdle(android.app.AlarmManager.RTC_WAKEUP, timeMs, pendingIntent)
+                } else {
+                    alarmManager.setAndAllowWhileIdle(android.app.AlarmManager.RTC_WAKEUP, timeMs, pendingIntent)
+                }
+            } else if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
+                alarmManager.setExactAndAllowWhileIdle(android.app.AlarmManager.RTC_WAKEUP, timeMs, pendingIntent)
+            } else {
+                alarmManager.set(android.app.AlarmManager.RTC_WAKEUP, timeMs, pendingIntent)
+            }
+        } catch (_: SecurityException) {
+            alarmManager.set(android.app.AlarmManager.RTC_WAKEUP, timeMs, pendingIntent)
+        }
+    }
+
     private fun observeViewModel() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
@@ -235,16 +290,19 @@ class PracticeFragment : Fragment() {
     }
 
     private fun setupPracticeModalities() {
-        binding.btnStartGuidedReview.setOnClickListener {
-            startGuidedReviewSession()
+        binding.cardReinforcement.setOnClickListener {
+            it.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP)
+            val intent = Intent(requireContext(), ReinforcementBatteryActivity::class.java)
+            startActivity(intent)
         }
 
         binding.cardModality1.setOnClickListener {
+            it.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP)
             val intent = Intent(requireContext(), QuickTriadActivity::class.java).apply {
                 val levelParam = when (selectedLevelMode) {
                     "BASIC" -> "A1"
                     "INTERMEDIATE" -> "B1"
-                    "ADVANCED" -> "B2"
+                    "ADVANCED" -> "C1"
                     else -> "ALL"
                 }
                 putExtra(QuickTriadActivity.EXTRA_LEVEL, levelParam)
@@ -253,76 +311,64 @@ class PracticeFragment : Fragment() {
         }
 
         binding.cardModality2.setOnClickListener {
-            startQuizModal(getString(R.string.mod_2_title))
+            it.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP)
+            val intent = Intent(requireContext(), CrosswordActivity::class.java).apply {
+                val levelParam = when (selectedLevelMode) {
+                    "BASIC" -> "A1"
+                    "INTERMEDIATE" -> "B1"
+                    "ADVANCED" -> "C1"
+                    else -> "ALL"
+                }
+                putExtra(CrosswordActivity.EXTRA_LEVEL, levelParam)
+            }
+            startActivity(intent)
         }
 
-        // Modality 3: Billar de Verbos opens dedicated interactive screen!
         binding.cardModality3.setOnClickListener {
-            val intent = Intent(requireContext(), VerbBilliardsActivity::class.java)
+            it.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP)
+            val intent = Intent(requireContext(), WordSearchActivity::class.java).apply {
+                val levelParam = when (selectedLevelMode) {
+                    "BASIC" -> "A1"
+                    "INTERMEDIATE" -> "B1"
+                    "ADVANCED" -> "C1"
+                    else -> "ALL"
+                }
+                putExtra(WordSearchActivity.EXTRA_LEVEL, levelParam)
+            }
             startActivity(intent)
         }
 
         binding.cardModality4.setOnClickListener {
-            startQuizModal(getString(R.string.mod_4_title))
+            it.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP)
+            val intent = Intent(requireContext(), GrammarMemoryActivity::class.java).apply {
+                val levelParam = when (selectedLevelMode) {
+                    "BASIC" -> "A1"
+                    "INTERMEDIATE" -> "B1"
+                    "ADVANCED" -> "C1"
+                    else -> "ALL"
+                }
+                putExtra(GrammarMemoryActivity.EXTRA_LEVEL, levelParam)
+            }
+            startActivity(intent)
+        }
+
+        binding.cardModality5.setOnClickListener {
+            it.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP)
+            val intent = Intent(requireContext(), VerbBilliardsActivity::class.java)
+            startActivity(intent)
         }
     }
 
     private fun filterVerbsByPedagogicalLevel(verbs: List<Verb>): List<Verb> {
         return when (selectedLevelMode) {
-            "BASIC" -> verbs.filter { !it.isIrregular || it.isCommon }
-            "INTERMEDIATE" -> verbs.filter { it.isIrregular }
-            "ADVANCED" -> verbs.filter { it.isIrregular && !it.isCommon }.ifEmpty { verbs.filter { it.isIrregular } }
+            "BASIC" -> verbs.filter { it.level.equals("A1", true) || it.level.equals("A2", true) || !it.isIrregular || it.isCommon }
+            "INTERMEDIATE" -> verbs.filter { it.level.equals("B1", true) || it.level.equals("B2", true) || it.isIrregular }
+            "ADVANCED" -> verbs.filter { it.level.equals("C1", true) || it.level.equals("C2", true) }.ifEmpty { verbs.filter { it.isIrregular && !it.isCommon } }
+            "RANDOM" -> verbs.shuffled()
             else -> verbs
         }
     }
 
-    private fun startGuidedReviewSession() {
-        val summary = viewModel.progressSummary.value
-        val weakBases = summary.topWeakVerbs.map { it.base }
-        val dailyVerbs = viewModel.dailyVerbs.value
-
-        val reviewQueue = if (weakBases.isNotEmpty()) {
-            dailyVerbs.filter { it.base in weakBases } + dailyVerbs.filter { it.base !in weakBases }
-        } else {
-            dailyVerbs
-        }
-
-        if (reviewQueue.isEmpty()) return
-
-        val targetVerb = reviewQueue.first()
-        val titleText = getString(R.string.guided_review_title_format, targetVerb.base.uppercase(), targetVerb.spanishMeaning)
-
-        val options = listOf(
-            targetVerb.past,
-            targetVerb.gerund,
-            if (targetVerb.base.endsWith("e")) "${targetVerb.base}d" else "${targetVerb.base}ed"
-        ).distinct().shuffled().toTypedArray()
-
-        MaterialAlertDialogBuilder(requireContext())
-            .setTitle(titleText)
-            .setItems(options) { dialog, which ->
-                dialog.dismiss()
-                val selectedOption = options[which]
-                val isCorrect = selectedOption == targetVerb.past
-
-                viewModel.recordPracticeAttempt(targetVerb.base, isCorrect, "Repaso Guiado")
-
-                val msg = if (isCorrect) {
-                    NotificationHelper.showVerbOfDayNotification(requireContext(), targetVerb)
-                    getString(R.string.guided_review_success_format, targetVerb.base, targetVerb.past)
-                } else {
-                    getString(R.string.guided_review_error_format, targetVerb.base, targetVerb.past)
-                }
-
-                Snackbar.make(binding.root, msg, Snackbar.LENGTH_LONG)
-                    .setAction(getString(R.string.action_notification)) {
-                        NotificationHelper.showVerbOfDayNotification(requireContext(), targetVerb)
-                    }
-                    .show()
-            }
-            .setNegativeButton(R.string.dialog_cancel, null)
-            .show()
-    }
 
     private fun startQuizModal(modalityName: String) {
         val allVerbs = viewModel.dailyVerbs.value
@@ -356,7 +402,10 @@ class PracticeFragment : Fragment() {
                 viewModel.recordPracticeAttempt(targetVerb.base, isCorrect, modalityName)
 
                 val msg = if (isCorrect) {
-                    NotificationHelper.showVerbOfDayNotification(requireContext(), targetVerb)
+                    try {
+                        NotificationHelper.showVerbOfDayNotification(requireContext(), targetVerb)
+                    } catch (_: Exception) {
+                    }
                     getString(R.string.quiz_success_format, targetVerb.base, correctAnswer)
                 } else {
                     getString(R.string.quiz_error_format, targetVerb.base, correctAnswer)
@@ -364,7 +413,10 @@ class PracticeFragment : Fragment() {
 
                 Snackbar.make(binding.root, msg, Snackbar.LENGTH_LONG)
                     .setAction(getString(R.string.action_notification)) {
-                        NotificationHelper.showVerbOfDayNotification(requireContext(), targetVerb)
+                        try {
+                            NotificationHelper.showVerbOfDayNotification(requireContext(), targetVerb)
+                        } catch (_: Exception) {
+                        }
                     }
                     .show()
             }

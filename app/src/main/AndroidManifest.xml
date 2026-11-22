@@ -4,6 +4,7 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
 
     <application
         android:allowBackup="true"
@@ -46,6 +47,21 @@
             android:parentActivityName=".MainActivity" />
 
         <activity
+            android:name=".CrosswordActivity"
+            android:exported="false"
+            android:parentActivityName=".MainActivity" />
+
+        <activity
+            android:name=".WordSearchActivity"
+            android:exported="false"
+            android:parentActivityName=".MainActivity" />
+
+        <activity
+            android:name=".GrammarMemoryActivity"
+            android:exported="false"
+            android:parentActivityName=".MainActivity" />
+
+        <activity
             android:name=".GrammarWebActivity"
             android:exported="false"
             android:parentActivityName=".MainActivity" />
@@ -56,9 +72,22 @@
             android:parentActivityName=".MainActivity" />
 
         <activity
+            android:name=".ReinforcementBatteryActivity"
+            android:exported="false"
+            android:parentActivityName=".MainActivity" />
+
+        <activity
             android:name=".TextureViewActivity"
             android:exported="false"
             android:parentActivityName=".MainActivity" />
+
+        <receiver
+            android:name=".util.StudyReminderReceiver"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.example.verbolandia.ACTION_STUDY_REMINDER" />
+            </intent-filter>
+        </receiver>
 
         <receiver
             android:name=".widget.VerbAppWidgetProvider"

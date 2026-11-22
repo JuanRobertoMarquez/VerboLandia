@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/cardRoot"
+    android:layout_width="match_parent"
+    android:layout_height="96dp"
+    android:layout_margin="4dp"
+    android:clickable="true"
+    android:focusable="true"
+    android:foreground="?attr/selectableItemBackground"
+    app:cardBackgroundColor="?attr/colorSurfaceContainerLowest"
+    app:cardCornerRadius="@dimen/rounded_md"
+    app:cardElevation="2dp"
+    app:strokeColor="?attr/colorOutlineVariant"
+    app:strokeWidth="1.5dp">
+
+    <!-- Container for Flip Animation -->
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <!-- Face Down / Card Back -->
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/layoutCardBack"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/bg_memory_card_back"
+            android:visibility="visible">
+
+            <ImageView
+                android:layout_width="28dp"
+                android:layout_height="28dp"
+                android:contentDescription="@null"
+                android:src="@drawable/ic_memory_card"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:tint="?attr/colorPrimary" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <!-- Face Up / Card Front -->
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/layoutCardFront"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/bg_memory_card_front"
+            android:padding="4dp"
+            android:visibility="gone">
+
+            <TextView
+                android:id="@+id/tvCardBadge"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bg_focus_pill"
+                android:paddingHorizontal="4dp"
+                android:paddingVertical="1dp"
+                android:textColor="?attr/colorPrimary"
+                android:textSize="@dimen/text_label_sm"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="V1 BASE" />
+
+            <TextView
+                android:id="@+id/tvCardWord"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:textColor="?attr/colorOnSurface"
+                android:textSize="@dimen/text_label_lg"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toTopOf="@id/tvCardPhonetic"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tvCardBadge"
+                tools:text="FREEZE" />
+
+            <TextView
+                android:id="@+id/tvCardPhonetic"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:textColor="?attr/colorOnSurfaceVariant"
+                android:textSize="@dimen/text_label_sm"
+                app:layout_constraintBottom_toTopOf="@id/tvCardMeaning"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                tools:text="/friːz/" />
+
+            <TextView
+                android:id="@+id/tvCardMeaning"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:textColor="?attr/colorPrimary"
+                android:textSize="@dimen/text_label_sm"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                tools:text="Congelar" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </FrameLayout>
+</com.google.android.material.card.MaterialCardView>

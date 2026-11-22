@@ -63,6 +63,9 @@ class SharedViewModel(application: Application) : AndroidViewModel(application) 
     private val _progressSummary = MutableStateFlow(ProgressSummary())
     val progressSummary: StateFlow<ProgressSummary> = _progressSummary.asStateFlow()
 
+    private val _verbOfTheDay = MutableStateFlow<Verb?>(null)
+    val verbOfTheDay: StateFlow<Verb?> = _verbOfTheDay.asStateFlow()
+
     private val _currentDetailVerb = MutableStateFlow<Verb?>(null)
     val currentDetailVerb: StateFlow<Verb?> = _currentDetailVerb.asStateFlow()
 
@@ -82,8 +85,10 @@ class SharedViewModel(application: Application) : AndroidViewModel(application) 
 
             refreshVerbs(lastQuery)
 
+            _verbOfTheDay.value = repository.getDailyVerbOfTheDay()
+
             if (_currentDetailVerb.value == null) {
-                _currentDetailVerb.value = repository.getLastOpenedOrFirstDailyVerb()
+                _currentDetailVerb.value = _verbOfTheDay.value
             }
         }
     }
@@ -183,9 +188,6 @@ class SharedViewModel(application: Application) : AndroidViewModel(application) 
     fun onVerbOpened(verb: Verb) {
         viewModelScope.launch {
             repository.recordView(verb.base)
-            repository.addSearchHistory(verb.base)
-            _searchHistory.value = repository.getSearchHistory()
-
             val refreshed = repository.getVerbByBase(verb.base) ?: verb
             _currentDetailVerb.value = refreshed
 

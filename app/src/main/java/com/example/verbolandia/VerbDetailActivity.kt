@@ -61,7 +61,11 @@ class VerbDetailActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
 
         val initialTitle = currentVerb?.let { if (it.phonetic.isNotBlank()) "${it.base} · ${it.phonetic}" else it.base }
             ?: getString(R.string.verb_detail_title)
-        val initialCategory = if (currentVerb?.isIrregular == true) "VERBO IRREGULAR" else "VERBO REGULAR"
+        val initialCategory = if (currentVerb?.isIrregular == true) {
+            getString(R.string.eyebrow_verb_irregular)
+        } else {
+            getString(R.string.eyebrow_verb_regular)
+        }
 
         com.example.verbolandia.ui.AppBarHelper.configure(
             binding = binding.appBar,
@@ -92,11 +96,7 @@ class VerbDetailActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
     }
 
     private fun speakText(text: String) {
-        if (isTtsReady) {
-            tts?.speak(text, TextToSpeech.QUEUE_FLUSH, null, "verb_speech")
-        } else {
-            Toast.makeText(this, "Pronunciando: $text", Toast.LENGTH_SHORT).show()
-        }
+        com.example.verbolandia.util.AudioSpeaker.speak(this, text)
     }
 
     private fun renderVerb(verb: Verb) {

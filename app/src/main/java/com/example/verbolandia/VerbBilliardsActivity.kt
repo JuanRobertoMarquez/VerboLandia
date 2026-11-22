@@ -96,8 +96,10 @@ class VerbBilliardsActivity : AppCompatActivity() {
                         pocketList.add(d)
                     }
                 }
-                while (pocketList.size < 4) {
-                    pocketList.add("opcion_${pocketList.size + 1}")
+                val fallbackForms = verbs.flatMap { listOf(it.past, it.pastParticiple, it.gerund) }.filter { it.isNotBlank() && it !in pocketList }
+                for (fb in fallbackForms) {
+                    if (pocketList.size >= 4) break
+                    pocketList.add(fb)
                 }
 
                 val shuffledPockets = pocketList.shuffled()

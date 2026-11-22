@@ -24,8 +24,8 @@
         android:layout_marginStart="6dp"
         android:layout_toEndOf="@id/ivWidgetIcon"
         android:text="@string/widget_header"
-        android:textColor="#38BDF8"
-        android:textSize="10sp"
+        android:textColor="@color/secondary_accent"
+        android:textSize="@dimen/text_label_sm"
         android:textStyle="bold" />
 
     <ImageButton
@@ -48,7 +48,7 @@
         android:layout_below="@id/tvWidgetHeader"
         android:layout_marginTop="4dp"
         android:text="@string/widget_default_base"
-        android:textColor="#FFFFFF"
+        android:textColor="@color/white"
         android:textSize="18sp"
         android:textStyle="bold" />
 
@@ -59,9 +59,12 @@
         android:layout_alignBaseline="@id/tvWidgetVerbBase"
         android:layout_marginStart="8dp"
         android:layout_toEndOf="@id/tvWidgetVerbBase"
+        android:layout_alignParentEnd="true"
+        android:ellipsize="end"
+        android:maxLines="1"
         android:text="@string/widget_default_meaning"
-        android:textColor="#CBD5E1"
-        android:textSize="12sp" />
+        android:textColor="@color/widget_text_slate"
+        android:textSize="@dimen/text_body_sm" />
 
     <!-- Conjugations Row -->
     <LinearLayout
@@ -80,8 +83,8 @@
             android:gravity="center"
             android:paddingVertical="3dp"
             android:text="@string/widget_default_v1"
-            android:textColor="#0284C7"
-            android:textSize="10sp"
+            android:textColor="@color/primary_accent"
+            android:textSize="@dimen/text_label_sm"
             android:textStyle="bold" />
 
         <TextView
@@ -94,8 +97,8 @@
             android:gravity="center"
             android:paddingVertical="3dp"
             android:text="@string/widget_default_v2"
-            android:textColor="#0284C7"
-            android:textSize="10sp"
+            android:textColor="@color/primary_accent"
+            android:textSize="@dimen/text_label_sm"
             android:textStyle="bold" />
 
         <TextView
@@ -108,8 +111,8 @@
             android:gravity="center"
             android:paddingVertical="3dp"
             android:text="@string/widget_default_v3"
-            android:textColor="#0284C7"
-            android:textSize="10sp"
+            android:textColor="@color/primary_accent"
+            android:textSize="@dimen/text_label_sm"
             android:textStyle="bold" />
     </LinearLayout>
 

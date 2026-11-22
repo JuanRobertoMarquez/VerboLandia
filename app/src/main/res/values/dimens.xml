@@ -30,7 +30,7 @@
     <dimen name="rounded_2xl">16dp</dimen>
     <dimen name="rounded_full">9999dp</dimen>
 
-    <!-- Typography Text Sizes (Plus Jakarta Sans Scale) -->
+    <!-- Typography Text Sizes (Plus Jakarta Sans Scale - Min 12sp for Accessibility) -->
     <dimen name="text_display_lg">36sp</dimen>
     <dimen name="text_headline_lg">28sp</dimen>
     <dimen name="text_headline_lg_mobile">24sp</dimen>
@@ -41,11 +41,22 @@
     <dimen name="text_body_sm">12sp</dimen>
     <dimen name="text_label_lg">14sp</dimen>
     <dimen name="text_label_md">12sp</dimen>
-    <dimen name="text_label_sm">10sp</dimen>
+    <dimen name="text_label_sm">12sp</dimen>
 
-    <!-- Key Component Heights & Heights -->
+    <!-- Key Component Dimensions -->
     <dimen name="button_height">48dp</dimen>
     <dimen name="search_bar_height">48dp</dimen>
     <dimen name="verb_card_min_height">280dp</dimen>
     <dimen name="progress_track_height">6dp</dimen>
+    <dimen name="app_bar_height">56dp</dimen>
+    <dimen name="bottom_bar_height">72dp</dimen>
+
+    <!-- Billiards Game Dimensions -->
+    <dimen name="billiard_pocket_width">120dp</dimen>
+    <dimen name="billiard_pocket_height">90dp</dimen>
+    <dimen name="billiard_cue_ball_size">180dp</dimen>
+    <dimen name="billiard_cue_ball_radius">90dp</dimen>
+    <dimen name="billiard_cushion_stroke">12dp</dimen>
+    <dimen name="billiard_pocket_stroke">2dp</dimen>
+    <dimen name="billiard_cue_stroke">6dp</dimen>
 </resources>

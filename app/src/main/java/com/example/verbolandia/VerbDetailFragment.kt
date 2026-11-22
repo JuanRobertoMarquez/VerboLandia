@@ -40,7 +40,7 @@ class VerbDetailFragment : Fragment() {
         com.example.verbolandia.ui.AppBarHelper.configure(
             binding = binding.appBar,
             left = com.example.verbolandia.ui.LeftSlot.Back { findNavController().navigateUp() },
-            eyebrow = "DETALLE DE VERBO",
+            eyebrow = getString(R.string.verb_detail_title),
             title = getString(R.string.verb_detail_title)
         )
 

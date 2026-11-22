@@ -4,8 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="?android:attr/colorBackground">
+    android:layout_height="match_parent">
 
     <!-- Top Navigation Bar -->
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -80,10 +79,10 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="4dp"
-                android:text="x0"
                 android:textColor="@color/accent_gold"
                 android:textSize="@dimen/text_label_md"
-                android:textStyle="bold" />
+                android:textStyle="bold"
+                tools:text="x0" />
         </LinearLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -150,10 +149,10 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="4dp"
-                    android:text="00:00"
                     android:textColor="?attr/colorOnSurfaceVariant"
                     android:textSize="@dimen/text_label_sm"
-                    android:textStyle="bold" />
+                    android:textStyle="bold"
+                    tools:text="00:00" />
             </LinearLayout>
         </LinearLayout>
 
@@ -217,22 +216,25 @@
 
                 <TextView
                     android:id="@+id/tvBasePhonetic"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:textColor="?attr/colorOnSurfaceVariant"
                     android:textSize="@dimen/text_body_sm"
+                    app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/tvBaseVerb"
                     tools:text="/tʃuːz/ • V1 Infinitivo" />
 
                 <TextView
                     android:id="@+id/tvSpanishMeaning"
-                    android:layout_width="match_parent"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="2dp"
                     android:textColor="?attr/colorOnSurface"
                     android:textSize="@dimen/text_body_md"
                     android:textStyle="bold"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/tvBasePhonetic"
                     tools:text="elegir, escoger" />
 
@@ -334,9 +336,9 @@
                     android:id="@+id/tvSlotV2Ipa"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="--"
                     android:textColor="?attr/colorOnSurfaceVariant"
-                    android:textSize="@dimen/text_label_sm" />
+                    android:textSize="@dimen/text_label_sm"
+                    tools:text="--" />
             </LinearLayout>
 
             <!-- Slot 3: V3 PARTICIPIO (Objetivo 2) -->

@@ -70,10 +70,4 @@ object VerbClassifier {
             verb.pastParticiple
         )
     }
-
-    fun generateCommonError(verb: Verb): String? {
-        if (!verb.isIrregular) return null
-        val regularizedPast = if (verb.base.endsWith("e")) "${verb.base}d" else "${verb.base}ed"
-        return "NUNCA digas \"$regularizedPast\" ni \"have ${verb.past}\". Con los auxiliares have/has/had la forma obligatoria siempre es ${verb.pastParticiple}."
-    }
 }
