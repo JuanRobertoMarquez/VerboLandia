@@ -3,6 +3,7 @@ package com.example.verbolandia
 import android.content.res.ColorStateList
 import android.os.Bundle
 import android.os.CountDownTimer
+import android.view.DragEvent
 import android.view.HapticFeedbackConstants
 import android.view.View
 import androidx.activity.OnBackPressedCallback
@@ -17,6 +18,7 @@ import com.example.verbolandia.databinding.ActivityReinforcementBatteryBinding
 import com.example.verbolandia.model.Verb
 import com.example.verbolandia.util.AudioSpeaker
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -31,9 +33,14 @@ class ReinforcementBatteryActivity : AppCompatActivity() {
     private var targetVerbs: List<Verb> = emptyList()
     private var allCatalogVerbs: List<Verb> = emptyList()
     private var currentVerbIndex = 0
-    private var currentActiveSlot = 2 // 2 for V2 Pasado, 3 for V3 Participio
-    private var comboCount = 1
+
+    // Round state: V2 and V3 are both free to fill in any order
+    private var isV2Filled = false
+    private var isV3Filled = false
+
+    private var comboCount = 0
     private var completedTriads = 0
+    private var hintsRemaining = 3
 
     private var timer: CountDownTimer? = null
     private var timeRemainingMs = 180_000L // 3 minutes
@@ -48,6 +55,7 @@ class ReinforcementBatteryActivity : AppCompatActivity() {
 
         setupUI()
         setupListeners()
+        setupDragAndDrop()
         setupBackHandler()
         loadVerbsAndStart()
     }
@@ -65,6 +73,9 @@ class ReinforcementBatteryActivity : AppCompatActivity() {
             )
             adapter = cardAdapter
         }
+
+        binding.chipStreak.text = getString(R.string.battery_streak_short_format, comboCount)
+        updateHintsButtonText()
     }
 
     private fun setupListeners() {
@@ -82,6 +93,58 @@ class ReinforcementBatteryActivity : AppCompatActivity() {
         binding.btnMnemonicHint.setOnClickListener {
             it.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP)
             showMnemonicHint()
+        }
+    }
+
+    private fun setupDragAndDrop() {
+        // Drag listener for Capsule 2 (V2 Pasado)
+        binding.capsule2.setOnDragListener { view, event ->
+            when (event.action) {
+                DragEvent.ACTION_DRAG_STARTED -> true
+                DragEvent.ACTION_DRAG_ENTERED -> {
+                    if (!isV2Filled) {
+                        binding.capsule2.strokeWidth = dpToPx(3f)
+                    }
+                    true
+                }
+                DragEvent.ACTION_DRAG_EXITED, DragEvent.ACTION_DRAG_ENDED -> {
+                    binding.capsule2.strokeWidth = dpToPx(1.5f)
+                    true
+                }
+                DragEvent.ACTION_DROP -> {
+                    val item = event.localState as? BatteryCardItem
+                    if (item != null) {
+                        handleDropOnSlot(item, targetSlot = 2)
+                    }
+                    true
+                }
+                else -> false
+            }
+        }
+
+        // Drag listener for Capsule 3 (V3 Participio)
+        binding.capsule3.setOnDragListener { view, event ->
+            when (event.action) {
+                DragEvent.ACTION_DRAG_STARTED -> true
+                DragEvent.ACTION_DRAG_ENTERED -> {
+                    if (!isV3Filled) {
+                        binding.capsule3.strokeWidth = dpToPx(3f)
+                    }
+                    true
+                }
+                DragEvent.ACTION_DRAG_EXITED, DragEvent.ACTION_DRAG_ENDED -> {
+                    binding.capsule3.strokeWidth = dpToPx(1.5f)
+                    true
+                }
+                DragEvent.ACTION_DROP -> {
+                    val item = event.localState as? BatteryCardItem
+                    if (item != null) {
+                        handleDropOnSlot(item, targetSlot = 3)
+                    }
+                    true
+                }
+                else -> false
+            }
         }
     }
 
@@ -138,105 +201,88 @@ class ReinforcementBatteryActivity : AppCompatActivity() {
     private fun loadCurrentVerbRound() {
         val verb = getCurrentVerb() ?: return
 
-        currentActiveSlot = 2
+        isV2Filled = false
+        isV3Filled = false
 
-        // Top progress
-        binding.chipProgress.text = getString(
+        // Top progress pill
+        binding.chipProgressCount.text = getString(
             R.string.battery_round_progress_format,
             currentVerbIndex + 1,
             targetVerbs.size
         )
 
         // Verb Card Info
-        binding.badgeVerbType.text = if (verb.isIrregular) "IRREGULAR" else "REGULAR"
-        binding.badgeVerbLevel.text = "NIVEL ${verb.level.uppercase()}"
-        binding.tvTargetVerbBase.text = verb.base.uppercase()
+        binding.badgeVerbType.text = if (verb.isIrregular) getString(R.string.badge_irregular) else getString(R.string.badge_regular)
+        binding.badgeVerbLevel.text = getString(R.string.battery_badge_level_format, verb.level.uppercase(Locale.ROOT))
+        binding.tvTargetVerbBase.text = verb.base.uppercase(Locale.ROOT)
         binding.tvTargetSpanish.text = verb.spanishMeaning
 
-        // Reset Capsules
-        resetCapsulesUI(verb)
+        // Reset Containers UI
+        resetContainersUI(verb)
 
-        // Generate Conveyor Cards
+        // Generate Conveyor Cards without distinctBy so identical V2/V3 (found/found) both exist!
         val cards = generateConveyorCards(verb)
         cardAdapter.submitList(cards)
-
-        // Reset circuit status card
-        val primaryColor = ContextCompat.getColor(this, R.color.primary)
-        binding.ivCircuitIcon.setImageResource(R.drawable.ic_target)
-        binding.ivCircuitIcon.imageTintList = ColorStateList.valueOf(primaryColor)
-        binding.tvCircuitStatusTitle.text = getString(R.string.battery_circuit_stable_title)
-        binding.tvCircuitStatusDesc.text = getString(R.string.battery_circuit_stable_desc)
-
-        // Instruction
-        binding.tvConveyorInstruction.text = getString(R.string.battery_instruction_v2_format)
 
         // Pronounce base verb
         AudioSpeaker.speak(this, verb.base, binding.btnSpeaker)
     }
 
-    private fun resetCapsulesUI(verb: Verb) {
+    private fun resetContainersUI(verb: Verb) {
         val primaryColor = ContextCompat.getColor(this, R.color.primary)
-        val outlineColor = ContextCompat.getColor(this, R.color.outline_variant)
-        val onSurfaceVariant = ContextCompat.getColor(this, R.color.on_surface_variant)
 
-        // Capsule 1 (V1 Base - preloaded)
+        // Container 1 (V1 Base - preloaded)
         binding.tvV1Word.text = verb.base
         binding.tvV1Ipa.text = verb.ipaBase.ifBlank { "/${verb.base}/" }
-        binding.tvV1BottomStatus.text = getString(R.string.battery_absorbed)
+        binding.ivV1Status.visibility = View.VISIBLE
         binding.ivV1Status.setImageResource(R.drawable.ic_check)
         binding.ivV1Status.imageTintList = ColorStateList.valueOf(ContextCompat.getColor(this, R.color.success))
 
-        // Capsule 2 (V2 Pasado - Active open slot)
+        // Container 2 (V2 Pasado - Open, unlocked)
         binding.capsule2.strokeColor = primaryColor
-        binding.tagV2.background = ContextCompat.getDrawable(this, R.drawable.bg_focus_pill)
-        binding.tagV2.setTextColor(primaryColor)
-        binding.ivV2Status.setImageResource(R.drawable.ic_arrow_downward)
-        binding.ivV2Status.imageTintList = ColorStateList.valueOf(primaryColor)
         binding.boxV2.background = ContextCompat.getDrawable(this, R.drawable.bg_triad_slot_normal)
         binding.ivV2SlotIcon.visibility = View.VISIBLE
         binding.ivV2SlotIcon.setImageResource(R.drawable.ic_arrow_downward)
         binding.ivV2SlotIcon.imageTintList = ColorStateList.valueOf(primaryColor)
         binding.tvV2SlotText.text = getString(R.string.battery_insert_v2)
-        binding.tvV2SlotSubtext.text = getString(R.string.battery_slot_open)
-        binding.tvV2BottomStatus.text = getString(R.string.battery_waiting)
+        binding.tvV2SlotText.setTextColor(ContextCompat.getColor(this, R.color.on_surface))
+        binding.tvV2SlotText.textSize = 13f
+        binding.tvV2SlotSubtext.text = ""
 
-        // Capsule 3 (V3 Participio - Locked on standby)
-        binding.capsule3.strokeColor = outlineColor
-        binding.tagV3.background = ContextCompat.getDrawable(this, R.drawable.bg_icon_button_soft)
-        binding.tagV3.setTextColor(onSurfaceVariant)
-        binding.ivV3Status.setImageResource(R.drawable.ic_lock)
-        binding.ivV3Status.imageTintList = ColorStateList.valueOf(onSurfaceVariant)
+        // Container 3 (V3 Participio - Also open and unlocked for free choice!)
+        binding.capsule3.strokeColor = primaryColor
         binding.boxV3.background = ContextCompat.getDrawable(this, R.drawable.bg_triad_slot_normal)
         binding.ivV3SlotIcon.visibility = View.VISIBLE
-        binding.ivV3SlotIcon.setImageResource(R.drawable.ic_lock)
-        binding.ivV3SlotIcon.imageTintList = ColorStateList.valueOf(onSurfaceVariant)
-        binding.tvV3SlotText.text = getString(R.string.battery_receptor_v3)
-        binding.tvV3SlotSubtext.text = getString(R.string.battery_on_standby)
-        binding.tvV3BottomStatus.text = getString(R.string.battery_vacant)
+        binding.ivV3SlotIcon.setImageResource(R.drawable.ic_arrow_downward)
+        binding.ivV3SlotIcon.imageTintList = ColorStateList.valueOf(primaryColor)
+        binding.tvV3SlotText.text = getString(R.string.battery_insert_v3)
+        binding.tvV3SlotText.setTextColor(ContextCompat.getColor(this, R.color.on_surface))
+        binding.tvV3SlotText.textSize = 13f
+        binding.tvV3SlotSubtext.text = ""
     }
 
     private fun generateConveyorCards(verb: Verb): List<BatteryCardItem> {
         val list = mutableListOf<BatteryCardItem>()
 
-        // 1. Correct V2 Pasado
+        // 1. Correct V2 Pasado Card
         list.add(
             BatteryCardItem(
-                id = "v2_${verb.past}",
+                id = "v2_${verb.past}_${System.currentTimeMillis()}_1",
                 word = verb.past,
                 ipa = verb.ipaPast.ifBlank { "/${verb.past}/" },
-                tag = getString(R.string.battery_tag_past),
+                tag = "Pasado",
                 role = "Pasado Simple",
                 targetTense = 2
             )
         )
 
-        // 2. Correct V3 Participio
+        // 2. Correct V3 Participio Card (Unique ID even if verb.past == verb.pastParticiple!)
         list.add(
             BatteryCardItem(
-                id = "v3_${verb.pastParticiple}",
+                id = "v3_${verb.pastParticiple}_${System.currentTimeMillis()}_2",
                 word = verb.pastParticiple,
                 ipa = verb.ipaParticiple.ifBlank { "/${verb.pastParticiple}/" },
-                tag = getString(R.string.battery_tag_participle),
+                tag = "Participio",
                 role = "Participio",
                 targetTense = 3
             )
@@ -247,10 +293,10 @@ class ReinforcementBatteryActivity : AppCompatActivity() {
             val trapWord = if (verb.base.endsWith("e", true)) "${verb.base}d" else "${verb.base}ed"
             list.add(
                 BatteryCardItem(
-                    id = "trap_ed",
+                    id = "trap_ed_${verb.base}",
                     word = trapWord,
-                    ipa = "/${trapWord}/",
-                    tag = getString(R.string.battery_tag_trap),
+                    ipa = "/$trapWord/",
+                    tag = "Trampa",
                     role = "Trampa Morfológica",
                     isTrap = true,
                     trapReason = getString(R.string.battery_circuit_error_trap_format, trapWord, verb.base, verb.past),
@@ -261,13 +307,13 @@ class ReinforcementBatteryActivity : AppCompatActivity() {
             val trapWord = "${verb.base}en"
             list.add(
                 BatteryCardItem(
-                    id = "trap_en",
+                    id = "trap_en_${verb.base}",
                     word = trapWord,
-                    ipa = "/${trapWord}/",
-                    tag = getString(R.string.battery_tag_trap),
+                    ipa = "/$trapWord/",
+                    tag = "Trampa",
                     role = "Trampa -en",
                     isTrap = true,
-                    trapReason = "¡Cuidado! '${verb.base}' es regular y termina en '-ed', no en '-en'.",
+                    trapReason = getString(R.string.battery_circuit_error_trap_regular, verb.base),
                     targetTense = 0
                 )
             )
@@ -279,7 +325,7 @@ class ReinforcementBatteryActivity : AppCompatActivity() {
                 id = "gerund_${verb.gerund}",
                 word = verb.gerund,
                 ipa = "/${verb.gerund}/",
-                tag = getString(R.string.battery_tag_gerund),
+                tag = "Gerundio",
                 role = "Gerundio",
                 trapReason = getString(R.string.battery_circuit_error_gerund),
                 targetTense = 0
@@ -297,17 +343,17 @@ class ReinforcementBatteryActivity : AppCompatActivity() {
                 id = "alt_$altWord",
                 word = altWord,
                 ipa = "/$altWord/",
-                tag = getString(R.string.battery_tag_form),
+                tag = "Alterna",
                 role = "Forma Alterna",
                 isTrap = true,
-                trapReason = getString(R.string.battery_circuit_error_wrong_time),
+                trapReason = getString(R.string.battery_circuit_error_alternative),
                 targetTense = 0
             )
         )
 
         // 6. Real lexical distractor from other catalog verbs
         val distractorVerb = allCatalogVerbs
-            .filter { !it.base.equals(verb.base, ignoreCase = true) }
+            .filter { !it.base.equals(verb.base, ignoreCase = true) && !it.past.equals(verb.past, ignoreCase = true) }
             .shuffled()
             .firstOrNull()
 
@@ -318,160 +364,192 @@ class ReinforcementBatteryActivity : AppCompatActivity() {
                     id = "dist_$distWord",
                     word = distWord,
                     ipa = distractorVerb.ipaPast.ifBlank { "/$distWord/" },
-                    tag = getString(R.string.battery_tag_distractor),
+                    tag = "Distractor",
                     role = "Distractor Léxico",
-                    trapReason = "La palabra '$distWord' pertenece a otro verbo ('${distractorVerb.base}').",
+                    trapReason = getString(R.string.battery_circuit_error_distractor_format, distWord, distractorVerb.base),
                     targetTense = 0
                 )
             )
         }
 
-        return list.distinctBy { it.word.lowercase() }.shuffled()
+        // Shuffle cards so correct options are distributed
+        return list.shuffled()
     }
 
+    /**
+     * Handles card click (Tap). User has free choice: if it matches V2 (and V2 is empty),
+     * fills V2; if it matches V3 (and V3 is empty), fills V3!
+     */
     private fun handleCardSelected(item: BatteryCardItem, position: Int) {
         val verb = getCurrentVerb() ?: return
 
-        if (item.targetTense == currentActiveSlot) {
-            // SUCCESSFUL INSERTION!
-            item.isUsed = true
-            cardAdapter.notifyItemChanged(position)
+        val matchesV2 = item.word.equals(verb.past, ignoreCase = true)
+        val matchesV3 = item.word.equals(verb.pastParticiple, ignoreCase = true)
 
-            if (currentActiveSlot == 2) {
-                // Completed V2 Pasado!
-                fillV2Capsule(item.word, item.ipa)
-                AudioSpeaker.speak(this, item.word, binding.capsule2)
-
-                // Unlock Slot 3 (V3 Participio)
-                unlockV3Capsule()
-            } else if (currentActiveSlot == 3) {
-                // Completed V3 Participio!
-                fillV3Capsule(item.word, item.ipa)
-                completeRound(verb)
-            }
+        if (!isV2Filled && matchesV2) {
+            // Fill V2
+            fillV2Container(item)
+            checkRoundCompletion(verb)
+        } else if (!isV3Filled && matchesV3) {
+            // Fill V3
+            fillV3Container(item)
+            checkRoundCompletion(verb)
         } else {
-            // INCORRECT CARD (Multiple attempts allowed!)
-            val holder = binding.rvOptionCards.findViewHolderForAdapterPosition(position)
-                    as? BatteryCardAdapter.ViewHolder
-            holder?.shakeAndHighlightError()
+            // Error: Card does not match any open container
+            handleErrorCard(item, position, verb)
+        }
+    }
 
-            comboCount = 1
-            binding.tvStreakFooter.text = getString(R.string.battery_streak_format, 0)
+    /**
+     * Handles dropping a card onto a specific container (Drag & Drop).
+     */
+    private fun handleDropOnSlot(item: BatteryCardItem, targetSlot: Int) {
+        val verb = getCurrentVerb() ?: return
 
-            val errorColor = ContextCompat.getColor(this, R.color.error)
-            binding.ivCircuitIcon.setImageResource(R.drawable.ic_warning)
-            binding.ivCircuitIcon.imageTintList = ColorStateList.valueOf(errorColor)
-            binding.tvCircuitStatusTitle.text = "¡Interferencia de Circuito!"
-            binding.tvCircuitStatusDesc.text = if (item.trapReason.isNotBlank()) {
-                item.trapReason
+        if (targetSlot == 2) {
+            if (!isV2Filled && item.word.equals(verb.past, ignoreCase = true)) {
+                fillV2Container(item)
+                checkRoundCompletion(verb)
             } else {
-                getString(R.string.battery_circuit_error_wrong_time)
+                handleErrorDropped(item, verb)
             }
-
-            // Record practice error in DB without kicking user out
-            lifecycleScope.launch(Dispatchers.IO) {
-                verbRepo.recordPracticeAttempt(verb.base, false, "Batería de Refuerzo")
+        } else if (targetSlot == 3) {
+            if (!isV3Filled && item.word.equals(verb.pastParticiple, ignoreCase = true)) {
+                fillV3Container(item)
+                checkRoundCompletion(verb)
+            } else {
+                handleErrorDropped(item, verb)
             }
         }
     }
 
-    private fun fillV2Capsule(word: String, ipa: String) {
+    private fun fillV2Container(item: BatteryCardItem) {
+        isV2Filled = true
+        cardAdapter.markUsedById(item.id)
+
         binding.ivV2SlotIcon.visibility = View.GONE
-        binding.tvV2SlotText.text = word
+        binding.tvV2SlotText.text = item.word
         binding.tvV2SlotText.setTextColor(ContextCompat.getColor(this, R.color.primary))
-        binding.tvV2SlotText.textSize = 16f
-        binding.tvV2SlotSubtext.text = ipa
+        binding.tvV2SlotText.textSize = 15f
+        binding.tvV2SlotSubtext.text = item.ipa
         binding.boxV2.background = ContextCompat.getDrawable(this, R.drawable.bg_triad_slot_completed)
-        binding.ivV2Status.setImageResource(R.drawable.ic_check)
-        binding.ivV2Status.imageTintList = ColorStateList.valueOf(ContextCompat.getColor(this, R.color.success))
-        binding.tvV2BottomStatus.text = getString(R.string.battery_absorbed)
+
+        AudioSpeaker.speak(this, item.word, binding.capsule2)
     }
 
-    private fun unlockV3Capsule() {
-        currentActiveSlot = 3
-        val primaryColor = ContextCompat.getColor(this, R.color.primary)
+    private fun fillV3Container(item: BatteryCardItem) {
+        isV3Filled = true
+        cardAdapter.markUsedById(item.id)
 
-        binding.capsule3.strokeColor = primaryColor
-        binding.tagV3.background = ContextCompat.getDrawable(this, R.drawable.bg_focus_pill)
-        binding.tagV3.setTextColor(primaryColor)
-        binding.ivV3Status.setImageResource(R.drawable.ic_arrow_downward)
-        binding.ivV3Status.imageTintList = ColorStateList.valueOf(primaryColor)
-        binding.ivV3SlotIcon.setImageResource(R.drawable.ic_arrow_downward)
-        binding.ivV3SlotIcon.imageTintList = ColorStateList.valueOf(primaryColor)
-        binding.tvV3SlotText.text = getString(R.string.battery_insert_v3)
-        binding.tvV3SlotSubtext.text = getString(R.string.battery_slot_open)
-        binding.tvV3BottomStatus.text = getString(R.string.battery_waiting)
-
-        binding.tvConveyorInstruction.text = getString(R.string.battery_instruction_v3_format)
-        binding.tvCircuitStatusTitle.text = "Ranura V2 Absorbida"
-        binding.tvCircuitStatusDesc.text = "¡Excelente! Ahora selecciona el Participio V3 para estabilizar el circuito."
-    }
-
-    private fun fillV3Capsule(word: String, ipa: String) {
         binding.ivV3SlotIcon.visibility = View.GONE
-        binding.tvV3SlotText.text = word
+        binding.tvV3SlotText.text = item.word
         binding.tvV3SlotText.setTextColor(ContextCompat.getColor(this, R.color.primary))
-        binding.tvV3SlotText.textSize = 16f
-        binding.tvV3SlotSubtext.text = ipa
+        binding.tvV3SlotText.textSize = 15f
+        binding.tvV3SlotSubtext.text = item.ipa
         binding.boxV3.background = ContextCompat.getDrawable(this, R.drawable.bg_triad_slot_completed)
-        binding.ivV3Status.setImageResource(R.drawable.ic_check)
-        binding.ivV3Status.imageTintList = ColorStateList.valueOf(ContextCompat.getColor(this, R.color.success))
-        binding.tvV3BottomStatus.text = getString(R.string.battery_absorbed)
+
+        AudioSpeaker.speak(this, item.word, binding.capsule3)
     }
 
-    private fun completeRound(verb: Verb) {
-        completedTriads++
-        comboCount++
+    private fun handleErrorCard(item: BatteryCardItem, position: Int, verb: Verb) {
+        val holder = binding.rvOptionCards.findViewHolderForAdapterPosition(position)
+                as? BatteryCardAdapter.ViewHolder
+        holder?.shakeAndHighlightError()
 
-        val streakText = getString(R.string.battery_streak_format, comboCount)
-        binding.tvStreakFooter.text = streakText
+        comboCount = 0
+        binding.chipStreak.text = getString(R.string.battery_streak_short_format, comboCount)
 
-        val chargePct = ((currentVerbIndex + 1) * 20).coerceAtMost(100)
-        binding.progressBattery.setProgressCompat(chargePct, true)
-        binding.tvChargePct.text = "$chargePct%"
-
-        val successColor = ContextCompat.getColor(this, R.color.success)
-        binding.ivCircuitIcon.setImageResource(R.drawable.ic_check)
-        binding.ivCircuitIcon.imageTintList = ColorStateList.valueOf(successColor)
-        binding.tvCircuitStatusTitle.text = "¡Sobrecarga de Ronda Exitosa!"
-        binding.tvCircuitStatusDesc.text = getString(
-            R.string.battery_circuit_success_round_format,
-            verb.base,
-            verb.past,
-            verb.pastParticiple
-        )
-
-        // Pronounce full triad
-        AudioSpeaker.speak(this, "${verb.base}, ${verb.past}, ${verb.pastParticiple}", binding.cardTargetVerb)
-
-        // Record success attempt in DB
-        lifecycleScope.launch(Dispatchers.IO) {
-            verbRepo.recordPracticeAttempt(verb.base, true, "Batería de Refuerzo")
+        val errorReason = if (item.trapReason.isNotBlank()) {
+            item.trapReason
+        } else {
+            getString(R.string.battery_circuit_error_wrong_time)
         }
+        Snackbar.make(binding.root, errorReason, Snackbar.LENGTH_SHORT).show()
 
-        binding.root.postDelayed({
-            if (!isFinishing && !isDestroyed) {
-                currentVerbIndex++
-                if (currentVerbIndex < targetVerbs.size) {
-                    loadCurrentVerbRound()
-                } else {
-                    showVictoryDialog()
-                }
+        lifecycleScope.launch(Dispatchers.IO) {
+            verbRepo.recordPracticeAttempt(verb.base, false, "Batería de Refuerzo")
+        }
+    }
+
+    private fun handleErrorDropped(item: BatteryCardItem, verb: Verb) {
+        binding.root.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS)
+        comboCount = 0
+        binding.chipStreak.text = getString(R.string.battery_streak_short_format, comboCount)
+
+        val errorReason = if (item.trapReason.isNotBlank()) {
+            item.trapReason
+        } else {
+            getString(R.string.battery_circuit_error_wrong_time)
+        }
+        Snackbar.make(binding.root, errorReason, Snackbar.LENGTH_SHORT).show()
+
+        lifecycleScope.launch(Dispatchers.IO) {
+            verbRepo.recordPracticeAttempt(verb.base, false, "Batería de Refuerzo")
+        }
+    }
+
+    private fun checkRoundCompletion(verb: Verb) {
+        if (isV2Filled && isV3Filled) {
+            completedTriads++
+            comboCount++
+
+            binding.chipStreak.text = getString(R.string.battery_streak_short_format, comboCount)
+
+            val chargePct = ((currentVerbIndex + 1) * 20).coerceAtMost(100)
+            binding.progressBattery.setProgressCompat(chargePct, true)
+            binding.tvChargePct.text = getString(R.string.battery_charge_pct_format, chargePct)
+
+            // Pronounce full triad
+            AudioSpeaker.speak(this, "${verb.base}, ${verb.past}, ${verb.pastParticiple}", binding.cardTargetVerb)
+
+            // Record success in DB
+            lifecycleScope.launch(Dispatchers.IO) {
+                verbRepo.recordPracticeAttempt(verb.base, true, "Batería de Refuerzo")
             }
-        }, 1500)
+
+            binding.root.postDelayed({
+                if (!isFinishing && !isDestroyed) {
+                    currentVerbIndex++
+                    if (currentVerbIndex < targetVerbs.size) {
+                        loadCurrentVerbRound()
+                    } else {
+                        showVictoryDialog()
+                    }
+                }
+            }, 1200)
+        }
     }
 
     private fun showMnemonicHint() {
+        if (hintsRemaining <= 0) {
+            Snackbar.make(binding.root, getString(R.string.battery_hints_no_more), Snackbar.LENGTH_SHORT).show()
+            return
+        }
+
         val verb = getCurrentVerb() ?: return
+
+        hintsRemaining--
+        updateHintsButtonText()
+
         val tip = verb.commonErrorTip.ifBlank {
-            "Formas de este verbo:\nBase: ${verb.base}\nPasado: ${verb.past}\nParticipio: ${verb.pastParticiple}"
+            getString(R.string.battery_hint_default_format, verb.base, verb.past, verb.pastParticiple)
         }
 
         MaterialAlertDialogBuilder(this)
-            .setTitle(getString(R.string.battery_hint_label) + " • " + verb.base.uppercase())
+            .setTitle(getString(R.string.battery_hint_title_format, getString(R.string.battery_hint_label), verb.base.uppercase(Locale.ROOT)))
             .setMessage(tip)
-            .setPositiveButton("Entendido", null)
+            .setPositiveButton(R.string.dialog_understood, null)
             .show()
+    }
+
+    private fun updateHintsButtonText() {
+        if (hintsRemaining > 0) {
+            binding.btnMnemonicHint.text = getString(R.string.battery_hints_remaining_format, hintsRemaining)
+            binding.btnMnemonicHint.alpha = 1.0f
+        } else {
+            binding.btnMnemonicHint.text = getString(R.string.battery_hints_exhausted)
+            binding.btnMnemonicHint.alpha = 0.5f
+        }
     }
 
     private fun showQuitConfirmationDialog() {
@@ -521,6 +599,10 @@ class ReinforcementBatteryActivity : AppCompatActivity() {
                 finish()
             }
             .show()
+    }
+
+    private fun dpToPx(dp: Float): Int {
+        return (dp * resources.displayMetrics.density).toInt()
     }
 
     override fun onDestroy() {

@@ -2,9 +2,11 @@ package com.example.verbolandia.adapter
 
 import android.animation.ObjectAnimator
 import android.annotation.SuppressLint
-import android.content.res.ColorStateList
+import android.content.ClipData
+import android.os.Build
 import android.view.HapticFeedbackConstants
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
@@ -34,6 +36,27 @@ class BatteryCardAdapter(
         items.clear()
         items.addAll(newItems)
         notifyDataSetChanged()
+    }
+
+    fun getItem(position: Int): BatteryCardItem? {
+        return if (position in items.indices) items[position] else null
+    }
+
+    fun markUsedByWord(word: String): Int {
+        val index = items.indexOfFirst { !it.isUsed && it.word.equals(word, ignoreCase = true) }
+        if (index != -1) {
+            items[index].isUsed = true
+            notifyItemChanged(index)
+        }
+        return index
+    }
+
+    fun markUsedById(id: String) {
+        val index = items.indexOfFirst { it.id == id }
+        if (index != -1) {
+            items[index].isUsed = true
+            notifyItemChanged(index)
+        }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -68,13 +91,15 @@ class BatteryCardAdapter(
             val disabledSurface = ContextCompat.getColor(context, R.color.surface_container_high)
 
             if (item.isUsed) {
-                binding.cardBatteryOption.alpha = 0.35f
+                binding.cardBatteryOption.alpha = 0.25f
                 binding.cardBatteryOption.isClickable = false
+                binding.cardBatteryOption.isLongClickable = false
                 binding.cardBatteryOption.strokeColor = strokeNormal
                 binding.cardBatteryOption.setCardBackgroundColor(disabledSurface)
             } else {
                 binding.cardBatteryOption.alpha = 1.0f
                 binding.cardBatteryOption.isClickable = true
+                binding.cardBatteryOption.isLongClickable = true
                 binding.cardBatteryOption.setCardBackgroundColor(surfaceNormal)
                 if (item.isTrap) {
                     binding.tvCardTag.background = ContextCompat.getDrawable(context, R.drawable.bg_badge_reinforcement)
@@ -87,10 +112,29 @@ class BatteryCardAdapter(
                 }
             }
 
+            // Tap interaction
             binding.cardBatteryOption.setOnClickListener {
                 if (!item.isUsed) {
                     it.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP)
                     onCardClicked(item, bindingAdapterPosition)
+                }
+            }
+
+            // Drag interaction (long press to drag)
+            binding.cardBatteryOption.setOnLongClickListener { view ->
+                if (!item.isUsed) {
+                    view.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS)
+                    val clipData = ClipData.newPlainText("verb_card", item.word)
+                    val shadow = View.DragShadowBuilder(view)
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                        view.startDragAndDrop(clipData, shadow, item, 0)
+                    } else {
+                        @Suppress("DEPRECATION")
+                        view.startDrag(clipData, shadow, item, 0)
+                    }
+                    true
+                } else {
+                    false
                 }
             }
         }
