@@ -626,7 +626,7 @@
 
     <!-- General Formats & Placeholders (AuditorRecursos) -->
     <string name="audio_speaking_format">Pronunciando: %1$s</string>
-    <string name="audio_volume_muted_warning">Tu dispositivo está en silencio o sin volumen. Sube el volumen para escuchar.</string>
+    <string name="audio_volume_muted_warning">El volumen multimedia está en cero. Sube el volumen para escuchar la pronunciación.</string>
     <string name="audio_volume_adjust_action">Ajustar</string>
     <string name="percentage_format">%1$d%%</string>
     <string name="quoted_text_format">\"%1$s\"</string>

@@ -2,10 +2,8 @@ package com.example.verbolandia.util
 
 import android.app.Activity
 import android.content.Context
-import android.content.Intent
 import android.content.res.ColorStateList
 import android.media.AudioManager
-import android.provider.Settings
 import android.speech.tts.TextToSpeech
 import android.view.HapticFeedbackConstants
 import android.view.View
@@ -75,9 +73,8 @@ object AudioSpeaker {
     private fun checkVolumeAndNotify(context: Context, anchorView: View?) {
         val audioManager = context.getSystemService(Context.AUDIO_SERVICE) as? AudioManager ?: return
         val musicVolume = audioManager.getStreamVolume(AudioManager.STREAM_MUSIC)
-        val isMuted = musicVolume == 0 ||
-                audioManager.ringerMode == AudioManager.RINGER_MODE_SILENT ||
-                audioManager.ringerMode == AudioManager.RINGER_MODE_VIBRATE
+        // Únicamente alertar si el volumen multimedia está en cero (no por modo vibración/silencio de llamadas)
+        val isMuted = musicVolume <= 0
 
         if (isMuted) {
             val targetView = anchorView ?: (context as? Activity)?.findViewById(android.R.id.content)
@@ -85,15 +82,8 @@ object AudioSpeaker {
                 Snackbar.make(
                     targetView,
                     context.getString(R.string.audio_volume_muted_warning),
-                    Snackbar.LENGTH_LONG
-                ).setAction(context.getString(R.string.audio_volume_adjust_action)) {
-                    try {
-                        val intent = Intent(Settings.ACTION_SOUND_SETTINGS).apply {
-                            flags = Intent.FLAG_ACTIVITY_NEW_TASK
-                        }
-                        context.startActivity(intent)
-                    } catch (_: Exception) {}
-                }.show()
+                    Snackbar.LENGTH_SHORT
+                ).show()
             }
         }
     }
