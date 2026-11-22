@@ -3,10 +3,10 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/cardBatteryOption"
-    android:layout_width="125dp"
-    android:layout_height="115dp"
-    android:layout_marginHorizontal="5dp"
-    android:layout_marginVertical="4dp"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginHorizontal="4dp"
+    android:layout_marginVertical="3dp"
     android:clickable="true"
     android:focusable="true"
     android:foreground="?attr/selectableItemBackground"
@@ -19,7 +19,8 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:padding="8dp">
+        android:paddingHorizontal="10dp"
+        android:paddingVertical="7dp">
 
         <TextView
             android:id="@+id/tvCardTag"
@@ -38,18 +39,34 @@
             tools:text="Pasado" />
 
         <TextView
+            android:id="@+id/tvCardRole"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="6dp"
+            android:ellipsize="end"
+            android:gravity="end"
+            android:maxLines="1"
+            android:textColor="?attr/colorOnSurfaceVariant"
+            android:textSize="@dimen/text_label_sm"
+            app:layout_constraintBottom_toBottomOf="@id/tvCardTag"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/tvCardTag"
+            app:layout_constraintTop_toTopOf="@id/tvCardTag"
+            tools:text="Pasado Simple" />
+
+        <TextView
             android:id="@+id/tvCardWord"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
+            android:layout_marginTop="2dp"
             android:ellipsize="end"
             android:maxLines="1"
             android:textColor="?attr/colorOnSurface"
-            android:textSize="16sp"
+            android:textSize="17sp"
             android:textStyle="bold"
             app:layout_constraintBottom_toTopOf="@id/tvCardIpa"
             app:layout_constraintTop_toBottomOf="@id/tvCardTag"
-            tools:text="found" />
+            tools:text="watched" />
 
         <TextView
             android:id="@+id/tvCardIpa"
@@ -59,21 +76,8 @@
             android:maxLines="1"
             android:textColor="?attr/colorOnSurfaceVariant"
             android:textSize="@dimen/text_label_sm"
-            app:layout_constraintBottom_toTopOf="@id/tvCardRole"
-            app:layout_constraintTop_toBottomOf="@id/tvCardWord"
-            tools:text="/faʊnd/" />
-
-        <TextView
-            android:id="@+id/tvCardRole"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:ellipsize="end"
-            android:maxLines="1"
-            android:textColor="?attr/colorPrimary"
-            android:textSize="@dimen/text_label_sm"
-            android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"
-            tools:text="Pasado Simple" />
+            tools:text="/wɒtʃt/" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </com.google.android.material.card.MaterialCardView>

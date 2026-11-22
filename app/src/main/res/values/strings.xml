@@ -664,6 +664,10 @@
     <string name="battery_absorbed">Absorbido</string>
     <string name="battery_insert_v2">Inserte V2</string>
     <string name="battery_insert_v3">Inserte V3</string>
+    <string name="battery_v2_placeholder">V2 Pasado</string>
+    <string name="battery_v3_placeholder">V3 Participio</string>
+    <string name="battery_slot_selected">Seleccionado</string>
+    <string name="battery_slot_tap_to_select">Toca para elegir</string>
     <string name="battery_slot_open">Ranura Abierta</string>
     <string name="battery_waiting">Esperando</string>
     <string name="battery_receptor_v3">Receptor V3</string>

@@ -2,17 +2,17 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="?attr/colorSurface"
-    android:fitsSystemWindows="true"
-    android:paddingHorizontal="@dimen/screen_horizontal_padding">
+    android:background="?attr/colorSurface">
 
-    <!-- Top App Bar -->
+    <!-- Top App Bar (Unified 56dp Navigation Bar with defined padding) -->
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/layoutTopBar"
         android:layout_width="match_parent"
-        android:layout_height="52dp"
+        android:layout_height="56dp"
+        android:paddingHorizontal="@dimen/margin"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -61,485 +61,514 @@
             tools:text="03:00" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <!-- Row: Progress Bar & Racha -->
-    <LinearLayout
-        android:id="@+id/layoutProgressAndStreak"
+    <!-- Unified Gameplay Container (16dp defined frame margin, fills full height) -->
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/gameplayContainer"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
-        android:gravity="center_vertical"
-        android:orientation="horizontal"
+        android:layout_height="0dp"
+        android:paddingHorizontal="@dimen/margin"
+        android:paddingBottom="@dimen/spacing_sm"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/layoutTopBar">
 
-        <com.google.android.material.card.MaterialCardView
-            android:id="@+id/cardProgressContainer"
-            android:layout_width="0dp"
+        <!-- Tier 1: Row Progress Bar & Racha -->
+        <LinearLayout
+            android:id="@+id/layoutProgressAndStreak"
+            android:layout_width="match_parent"
             android:layout_height="40dp"
-            android:layout_marginEnd="@dimen/spacing_sm"
-            android:layout_weight="1"
-            app:cardBackgroundColor="?attr/colorSurfaceContainerLow"
-            app:cardCornerRadius="20dp"
-            app:cardElevation="0dp"
+            android:layout_marginTop="2dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/cardProgressContainer"
+                android:layout_width="0dp"
+                android:layout_height="40dp"
+                android:layout_marginEnd="@dimen/spacing_sm"
+                android:layout_weight="1"
+                app:cardBackgroundColor="?attr/colorSurfaceContainerLow"
+                app:cardCornerRadius="20dp"
+                app:cardElevation="0dp"
+                app:strokeColor="?attr/colorOutlineVariant"
+                app:strokeWidth="1dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:paddingHorizontal="10dp">
+
+                    <ImageView
+                        android:layout_width="18dp"
+                        android:layout_height="18dp"
+                        android:contentDescription="@null"
+                        android:src="@drawable/ic_flash"
+                        app:tint="?attr/colorPrimary" />
+
+                    <com.google.android.material.progressindicator.LinearProgressIndicator
+                        android:id="@+id/progressBattery"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginHorizontal="8dp"
+                        android:layout_weight="1"
+                        android:max="100"
+                        android:progress="0"
+                        app:indicatorColor="?attr/colorPrimary"
+                        app:trackColor="?attr/colorSurfaceContainerHigh"
+                        app:trackCornerRadius="4dp"
+                        app:trackThickness="8dp" />
+
+                    <TextView
+                        android:id="@+id/tvChargePct"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="?attr/colorPrimary"
+                        android:textSize="@dimen/text_label_sm"
+                        android:textStyle="bold"
+                        tools:text="0%" />
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <TextView
+                android:id="@+id/chipStreak"
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:background="@drawable/bg_icon_button_soft"
+                android:drawableStart="@drawable/ic_fire"
+                android:drawablePadding="6dp"
+                android:gravity="center"
+                android:paddingHorizontal="12dp"
+                android:textColor="?attr/colorOnSurface"
+                android:textSize="@dimen/text_label_sm"
+                android:textStyle="bold"
+                app:drawableTint="?attr/colorPrimary"
+                tools:text="0 Racha" />
+        </LinearLayout>
+
+        <!-- Tier 2: Target Verb Card -->
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/cardTargetVerb"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_xs"
+            app:cardBackgroundColor="?attr/colorSurfaceContainerLowest"
+            app:cardCornerRadius="@dimen/card_corner_radius"
+            app:cardElevation="1dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/layoutProgressAndStreak"
             app:strokeColor="?attr/colorOutlineVariant"
             app:strokeWidth="1dp">
 
-            <LinearLayout
+            <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:gravity="center_vertical"
-                android:orientation="horizontal"
-                android:paddingHorizontal="10dp">
-
-                <ImageView
-                    android:layout_width="18dp"
-                    android:layout_height="18dp"
-                    android:contentDescription="@null"
-                    android:src="@drawable/ic_flash"
-                    app:tint="?attr/colorPrimary" />
-
-                <com.google.android.material.progressindicator.LinearProgressIndicator
-                    android:id="@+id/progressBattery"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginHorizontal="8dp"
-                    android:layout_weight="1"
-                    android:max="100"
-                    android:progress="0"
-                    app:indicatorColor="?attr/colorPrimary"
-                    app:trackColor="?attr/colorSurfaceContainerHigh"
-                    app:trackCornerRadius="4dp"
-                    app:trackThickness="8dp" />
+                android:layout_height="wrap_content"
+                android:paddingHorizontal="@dimen/card_internal_padding"
+                android:paddingVertical="8dp">
 
                 <TextView
-                    android:id="@+id/tvChargePct"
+                    android:id="@+id/badgeVerbType"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:background="@drawable/bg_focus_pill"
+                    android:paddingHorizontal="8dp"
+                    android:paddingVertical="2dp"
                     android:textColor="?attr/colorPrimary"
                     android:textSize="@dimen/text_label_sm"
                     android:textStyle="bold"
-                    tools:text="0%" />
-            </LinearLayout>
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:text="REGULAR" />
+
+                <TextView
+                    android:id="@+id/badgeVerbLevel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="6dp"
+                    android:background="@drawable/bg_icon_button_soft"
+                    android:paddingHorizontal="8dp"
+                    android:paddingVertical="2dp"
+                    android:textColor="?attr/colorOnSurfaceVariant"
+                    android:textSize="@dimen/text_label_sm"
+                    android:textStyle="bold"
+                    app:layout_constraintStart_toEndOf="@id/badgeVerbType"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:text="NIVEL A1" />
+
+                <TextView
+                    android:id="@+id/chipProgressCount"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/bg_icon_button_soft"
+                    android:paddingHorizontal="8dp"
+                    android:paddingVertical="2dp"
+                    android:textColor="?attr/colorOnSurfaceVariant"
+                    android:textSize="@dimen/text_label_sm"
+                    android:textStyle="bold"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:text="1 de 5" />
+
+                <TextView
+                    android:id="@+id/tvTargetVerbBase"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
+                    android:textColor="?attr/colorOnSurface"
+                    android:textSize="22sp"
+                    android:textStyle="bold"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/badgeVerbType"
+                    tools:text="WATCH" />
+
+                <ImageButton
+                    android:id="@+id/btnSpeaker"
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:layout_marginStart="@dimen/spacing_xs"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:contentDescription="@null"
+                    android:src="@drawable/ic_volume"
+                    app:layout_constraintBottom_toBottomOf="@id/tvTargetVerbBase"
+                    app:layout_constraintStart_toEndOf="@id/tvTargetVerbBase"
+                    app:layout_constraintTop_toTopOf="@id/tvTargetVerbBase"
+                    app:tint="?attr/colorPrimary" />
+
+                <TextView
+                    android:id="@+id/tvTargetSpanish"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="1dp"
+                    android:textColor="?attr/colorOnSurfaceVariant"
+                    android:textSize="@dimen/text_body_sm"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/tvTargetVerbBase"
+                    tools:text="Ver, observar" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
         </com.google.android.material.card.MaterialCardView>
 
+        <!-- Tier 3 Header: Contenedores -->
         <TextView
-            android:id="@+id/chipStreak"
+            android:id="@+id/tvContainersTitle"
             android:layout_width="wrap_content"
-            android:layout_height="40dp"
-            android:background="@drawable/bg_icon_button_soft"
-            android:drawableStart="@drawable/ic_fire"
-            android:drawablePadding="6dp"
-            android:gravity="center"
-            android:paddingHorizontal="12dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_xs"
+            android:text="@string/battery_containers_title"
             android:textColor="?attr/colorOnSurface"
+            android:textSize="@dimen/text_label_md"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/cardTargetVerb" />
+
+        <!-- Tier 3: 3 Containers Row (Centered words, symmetric structure) -->
+        <LinearLayout
+            android:id="@+id/layoutContainers"
+            android:layout_width="match_parent"
+            android:layout_height="115dp"
+            android:layout_marginTop="4dp"
+            android:baselineAligned="false"
+            android:orientation="horizontal"
+            android:weightSum="3"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tvContainersTitle">
+
+            <!-- Container 1: V1 BASE (Preloaded, centered) -->
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/capsule1"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_marginEnd="4dp"
+                android:layout_weight="1"
+                app:cardBackgroundColor="?attr/colorSurfaceContainerLowest"
+                app:cardCornerRadius="14dp"
+                app:cardElevation="1dp"
+                app:strokeColor="?attr/colorPrimary"
+                app:strokeWidth="1.5dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical"
+                    android:padding="6dp">
+
+                    <TextView
+                        android:id="@+id/tagV1"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/bg_focus_pill"
+                        android:gravity="center"
+                        android:paddingVertical="3dp"
+                        android:text="@string/battery_v1_title"
+                        android:textColor="?attr/colorPrimary"
+                        android:textSize="@dimen/text_label_sm"
+                        android:textStyle="bold" />
+
+                    <LinearLayout
+                        android:id="@+id/boxV1"
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_marginTop="4dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/bg_triad_slot_completed"
+                        android:gravity="center"
+                        android:orientation="vertical"
+                        android:padding="4dp">
+
+                        <TextView
+                            android:id="@+id/tvV1Word"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:ellipsize="end"
+                            android:gravity="center"
+                            android:maxLines="1"
+                            android:textColor="?attr/colorPrimary"
+                            android:textSize="17sp"
+                            android:textStyle="bold"
+                            tools:text="watch" />
+
+                        <TextView
+                            android:id="@+id/tvV1Ipa"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="1dp"
+                            android:gravity="center"
+                            android:textColor="?attr/colorOnSurfaceVariant"
+                            android:textSize="@dimen/text_label_sm"
+                            tools:text="/wɒtʃ/" />
+
+                        <ImageView
+                            android:id="@+id/ivV1Status"
+                            android:layout_width="16dp"
+                            android:layout_height="16dp"
+                            android:layout_marginTop="2dp"
+                            android:contentDescription="@null"
+                            android:src="@drawable/ic_check"
+                            app:tint="@color/success" />
+                    </LinearLayout>
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- Container 2: V2 PASADO (Selectable & Centered) -->
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/capsule2"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_marginHorizontal="2dp"
+                android:layout_weight="1"
+                android:clickable="true"
+                android:focusable="true"
+                android:foreground="?attr/selectableItemBackground"
+                app:cardBackgroundColor="?attr/colorSurfaceContainerLowest"
+                app:cardCornerRadius="14dp"
+                app:cardElevation="2dp"
+                app:strokeColor="?attr/colorPrimary"
+                app:strokeWidth="2dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical"
+                    android:padding="6dp">
+
+                    <TextView
+                        android:id="@+id/tagV2"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/bg_focus_pill"
+                        android:gravity="center"
+                        android:paddingVertical="3dp"
+                        android:text="@string/battery_v2_title"
+                        android:textColor="?attr/colorPrimary"
+                        android:textSize="@dimen/text_label_sm"
+                        android:textStyle="bold" />
+
+                    <LinearLayout
+                        android:id="@+id/boxV2"
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_marginTop="4dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/bg_triad_slot_active"
+                        android:gravity="center"
+                        android:orientation="vertical"
+                        android:padding="4dp">
+
+                        <ImageView
+                            android:id="@+id/ivV2SlotIcon"
+                            android:layout_width="18dp"
+                            android:layout_height="18dp"
+                            android:contentDescription="@null"
+                            android:src="@drawable/ic_arrow_downward"
+                            app:tint="?attr/colorPrimary" />
+
+                        <TextView
+                            android:id="@+id/tvV2SlotText"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="2dp"
+                            android:ellipsize="end"
+                            android:gravity="center"
+                            android:maxLines="1"
+                            android:text="@string/battery_insert_v2"
+                            android:textColor="?attr/colorPrimary"
+                            android:textSize="15sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:id="@+id/tvV2SlotSubtext"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="1dp"
+                            android:ellipsize="end"
+                            android:gravity="center"
+                            android:maxLines="1"
+                            android:textColor="?attr/colorPrimary"
+                            android:textSize="@dimen/text_label_sm"
+                            tools:text="Seleccionado" />
+                    </LinearLayout>
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- Container 3: V3 PARTICIPIO (Selectable & Centered) -->
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/capsule3"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_marginStart="4dp"
+                android:layout_weight="1"
+                android:clickable="true"
+                android:focusable="true"
+                android:foreground="?attr/selectableItemBackground"
+                app:cardBackgroundColor="?attr/colorSurfaceContainerLowest"
+                app:cardCornerRadius="14dp"
+                app:cardElevation="1dp"
+                app:strokeColor="?attr/colorOutlineVariant"
+                app:strokeWidth="1dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical"
+                    android:padding="6dp">
+
+                    <TextView
+                        android:id="@+id/tagV3"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/bg_focus_pill"
+                        android:gravity="center"
+                        android:paddingVertical="3dp"
+                        android:text="@string/battery_v3_title"
+                        android:textColor="?attr/colorPrimary"
+                        android:textSize="@dimen/text_label_sm"
+                        android:textStyle="bold" />
+
+                    <LinearLayout
+                        android:id="@+id/boxV3"
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_marginTop="4dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/bg_triad_slot_normal"
+                        android:gravity="center"
+                        android:orientation="vertical"
+                        android:padding="4dp">
+
+                        <ImageView
+                            android:id="@+id/ivV3SlotIcon"
+                            android:layout_width="18dp"
+                            android:layout_height="18dp"
+                            android:contentDescription="@null"
+                            android:src="@drawable/ic_arrow_downward"
+                            app:tint="?attr/colorOnSurfaceVariant" />
+
+                        <TextView
+                            android:id="@+id/tvV3SlotText"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="2dp"
+                            android:ellipsize="end"
+                            android:gravity="center"
+                            android:maxLines="1"
+                            android:text="@string/battery_v3_placeholder"
+                            android:textColor="?attr/colorOnSurfaceVariant"
+                            android:textSize="15sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:id="@+id/tvV3SlotSubtext"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="1dp"
+                            android:ellipsize="end"
+                            android:gravity="center"
+                            android:maxLines="1"
+                            android:text="@string/battery_slot_tap_to_select"
+                            android:textColor="?attr/colorOnSurfaceVariant"
+                            android:textSize="@dimen/text_label_sm" />
+                    </LinearLayout>
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+        </LinearLayout>
+
+        <!-- Tier 4 Header: Abanico de Opciones -->
+        <TextView
+            android:id="@+id/tvOptionsTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_xs"
+            android:text="@string/battery_options_title"
+            android:textColor="?attr/colorOnSurface"
+            android:textSize="@dimen/text_label_md"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/layoutContainers" />
+
+        <!-- Tier 4: Option Cards Grid (Takes 100% of remaining vertical screen height) -->
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvOptionCards"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginTop="4dp"
+            android:layout_marginBottom="@dimen/spacing_xs"
+            android:clipToPadding="false"
+            app:layout_constraintBottom_toTopOf="@id/btnMnemonicHint"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tvOptionsTitle"
+            tools:itemCount="6"
+            tools:listitem="@layout/item_battery_card" />
+
+        <!-- Bottom Action Button: Pistas -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnMnemonicHint"
+            style="@style/Widget.Material3.Button.OutlinedButton"
+            android:layout_width="match_parent"
+            android:layout_height="44dp"
+            android:insetTop="0dp"
+            android:insetBottom="0dp"
+            android:textColor="?attr/colorPrimary"
             android:textSize="@dimen/text_label_sm"
             android:textStyle="bold"
-            app:drawableTint="?attr/colorPrimary"
-            tools:text="0 Racha" />
-    </LinearLayout>
+            app:cornerRadius="@dimen/button_pill_radius"
+            app:icon="@drawable/ic_lightbulb"
+            app:iconGravity="textStart"
+            app:iconSize="18dp"
+            app:iconTint="?attr/colorPrimary"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:strokeColor="?attr/colorOutlineVariant"
+            tools:text="Pistas (3 restantes)" />
 
-    <!-- Target Verb Card -->
-    <com.google.android.material.card.MaterialCardView
-        android:id="@+id/cardTargetVerb"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/spacing_sm"
-        app:cardBackgroundColor="?attr/colorSurfaceContainerLowest"
-        app:cardCornerRadius="@dimen/card_corner_radius"
-        app:cardElevation="1dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/layoutProgressAndStreak"
-        app:strokeColor="?attr/colorOutlineVariant"
-        app:strokeWidth="1dp">
-
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:paddingHorizontal="@dimen/card_internal_padding"
-            android:paddingVertical="10dp">
-
-            <TextView
-                android:id="@+id/badgeVerbType"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@drawable/bg_focus_pill"
-                android:paddingHorizontal="8dp"
-                android:paddingVertical="2dp"
-                android:textColor="?attr/colorPrimary"
-                android:textSize="@dimen/text_label_sm"
-                android:textStyle="bold"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                tools:text="IRREGULAR" />
-
-            <TextView
-                android:id="@+id/badgeVerbLevel"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="6dp"
-                android:background="@drawable/bg_icon_button_soft"
-                android:paddingHorizontal="8dp"
-                android:paddingVertical="2dp"
-                android:textColor="?attr/colorOnSurfaceVariant"
-                android:textSize="@dimen/text_label_sm"
-                android:textStyle="bold"
-                app:layout_constraintStart_toEndOf="@id/badgeVerbType"
-                app:layout_constraintTop_toTopOf="parent"
-                tools:text="NIVEL A1" />
-
-            <TextView
-                android:id="@+id/chipProgressCount"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@drawable/bg_icon_button_soft"
-                android:paddingHorizontal="8dp"
-                android:paddingVertical="2dp"
-                android:textColor="?attr/colorOnSurfaceVariant"
-                android:textSize="@dimen/text_label_sm"
-                android:textStyle="bold"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                tools:text="1 de 5" />
-
-            <TextView
-                android:id="@+id/tvTargetVerbBase"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
-                android:textColor="?attr/colorOnSurface"
-                android:textSize="22sp"
-                android:textStyle="bold"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/badgeVerbType"
-                tools:text="FIND" />
-
-            <ImageButton
-                android:id="@+id/btnSpeaker"
-                android:layout_width="32dp"
-                android:layout_height="32dp"
-                android:layout_marginStart="@dimen/spacing_xs"
-                android:background="?attr/selectableItemBackgroundBorderless"
-                android:contentDescription="@null"
-                android:src="@drawable/ic_volume"
-                app:layout_constraintBottom_toBottomOf="@id/tvTargetVerbBase"
-                app:layout_constraintStart_toEndOf="@id/tvTargetVerbBase"
-                app:layout_constraintTop_toTopOf="@id/tvTargetVerbBase"
-                app:tint="?attr/colorPrimary" />
-
-            <TextView
-                android:id="@+id/tvTargetSpanish"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="1dp"
-                android:textColor="?attr/colorOnSurfaceVariant"
-                android:textSize="@dimen/text_body_sm"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/tvTargetVerbBase"
-                tools:text="Encontrar" />
-        </androidx.constraintlayout.widget.ConstraintLayout>
-    </com.google.android.material.card.MaterialCardView>
-
-    <!-- Header: Contenedores -->
-    <TextView
-        android:id="@+id/tvContainersTitle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/spacing_sm"
-        android:text="@string/battery_containers_title"
-        android:textColor="?attr/colorOnSurface"
-        android:textSize="@dimen/text_label_md"
-        android:textStyle="bold"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/cardTargetVerb" />
-
-    <!-- 3 Containers Row -->
-    <LinearLayout
-        android:id="@+id/layoutContainers"
-        android:layout_width="match_parent"
-        android:layout_height="120dp"
-        android:layout_marginTop="6dp"
-        android:baselineAligned="false"
-        android:orientation="horizontal"
-        android:weightSum="3"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tvContainersTitle">
-
-        <!-- Container 1: V1 BASE -->
-        <com.google.android.material.card.MaterialCardView
-            android:id="@+id/capsule1"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_marginEnd="4dp"
-            android:layout_weight="1"
-            app:cardBackgroundColor="?attr/colorSurfaceContainerLowest"
-            app:cardCornerRadius="14dp"
-            app:cardElevation="1dp"
-            app:strokeColor="?attr/colorPrimary"
-            app:strokeWidth="1.5dp">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical"
-                android:padding="6dp">
-
-                <TextView
-                    android:id="@+id/tagV1"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/bg_focus_pill"
-                    android:gravity="center"
-                    android:paddingVertical="2dp"
-                    android:text="@string/battery_v1_title"
-                    android:textColor="?attr/colorPrimary"
-                    android:textSize="@dimen/text_label_sm"
-                    android:textStyle="bold" />
-
-                <LinearLayout
-                    android:id="@+id/boxV1"
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_marginTop="4dp"
-                    android:layout_weight="1"
-                    android:background="@drawable/bg_triad_slot_active"
-                    android:gravity="center"
-                    android:orientation="vertical"
-                    android:padding="2dp">
-
-                    <TextView
-                        android:id="@+id/tvV1Word"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:ellipsize="end"
-                        android:maxLines="1"
-                        android:textColor="?attr/colorPrimary"
-                        android:textSize="15sp"
-                        android:textStyle="bold"
-                        tools:text="find" />
-
-                    <TextView
-                        android:id="@+id/tvV1Ipa"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textColor="?attr/colorOnSurfaceVariant"
-                        android:textSize="@dimen/text_label_sm"
-                        tools:text="/faɪnd/" />
-
-                    <ImageView
-                        android:id="@+id/ivV1Status"
-                        android:layout_width="16dp"
-                        android:layout_height="16dp"
-                        android:layout_marginTop="2dp"
-                        android:contentDescription="@null"
-                        android:src="@drawable/ic_check"
-                        app:tint="@color/success" />
-                </LinearLayout>
-            </LinearLayout>
-        </com.google.android.material.card.MaterialCardView>
-
-        <!-- Container 2: V2 PASADO -->
-        <com.google.android.material.card.MaterialCardView
-            android:id="@+id/capsule2"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_marginHorizontal="2dp"
-            android:layout_weight="1"
-            app:cardBackgroundColor="?attr/colorSurfaceContainerLowest"
-            app:cardCornerRadius="14dp"
-            app:cardElevation="1dp"
-            app:strokeColor="?attr/colorPrimary"
-            app:strokeWidth="1.5dp">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical"
-                android:padding="6dp">
-
-                <TextView
-                    android:id="@+id/tagV2"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/bg_focus_pill"
-                    android:gravity="center"
-                    android:paddingVertical="2dp"
-                    android:text="@string/battery_v2_title"
-                    android:textColor="?attr/colorPrimary"
-                    android:textSize="@dimen/text_label_sm"
-                    android:textStyle="bold" />
-
-                <LinearLayout
-                    android:id="@+id/boxV2"
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_marginTop="4dp"
-                    android:layout_weight="1"
-                    android:background="@drawable/bg_triad_slot_normal"
-                    android:gravity="center"
-                    android:orientation="vertical"
-                    android:padding="2dp">
-
-                    <ImageView
-                        android:id="@+id/ivV2SlotIcon"
-                        android:layout_width="20dp"
-                        android:layout_height="20dp"
-                        android:contentDescription="@null"
-                        android:src="@drawable/ic_arrow_downward"
-                        app:tint="?attr/colorPrimary" />
-
-                    <TextView
-                        android:id="@+id/tvV2SlotText"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="2dp"
-                        android:ellipsize="end"
-                        android:maxLines="1"
-                        android:text="@string/battery_insert_v2"
-                        android:textColor="?attr/colorOnSurface"
-                        android:textSize="13sp"
-                        android:textStyle="bold" />
-
-                    <TextView
-                        android:id="@+id/tvV2SlotSubtext"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:ellipsize="end"
-                        android:maxLines="1"
-                        android:textColor="?attr/colorOnSurfaceVariant"
-                        android:textSize="@dimen/text_label_sm" />
-                </LinearLayout>
-            </LinearLayout>
-        </com.google.android.material.card.MaterialCardView>
-
-        <!-- Container 3: V3 PARTICIPIO -->
-        <com.google.android.material.card.MaterialCardView
-            android:id="@+id/capsule3"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_marginStart="4dp"
-            android:layout_weight="1"
-            app:cardBackgroundColor="?attr/colorSurfaceContainerLowest"
-            app:cardCornerRadius="14dp"
-            app:cardElevation="1dp"
-            app:strokeColor="?attr/colorPrimary"
-            app:strokeWidth="1.5dp">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical"
-                android:padding="6dp">
-
-                <TextView
-                    android:id="@+id/tagV3"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/bg_focus_pill"
-                    android:gravity="center"
-                    android:paddingVertical="2dp"
-                    android:text="@string/battery_v3_title"
-                    android:textColor="?attr/colorPrimary"
-                    android:textSize="@dimen/text_label_sm"
-                    android:textStyle="bold" />
-
-                <LinearLayout
-                    android:id="@+id/boxV3"
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_marginTop="4dp"
-                    android:layout_weight="1"
-                    android:background="@drawable/bg_triad_slot_normal"
-                    android:gravity="center"
-                    android:orientation="vertical"
-                    android:padding="2dp">
-
-                    <ImageView
-                        android:id="@+id/ivV3SlotIcon"
-                        android:layout_width="20dp"
-                        android:layout_height="20dp"
-                        android:contentDescription="@null"
-                        android:src="@drawable/ic_arrow_downward"
-                        app:tint="?attr/colorPrimary" />
-
-                    <TextView
-                        android:id="@+id/tvV3SlotText"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="2dp"
-                        android:ellipsize="end"
-                        android:maxLines="1"
-                        android:text="@string/battery_insert_v3"
-                        android:textColor="?attr/colorOnSurface"
-                        android:textSize="13sp"
-                        android:textStyle="bold" />
-
-                    <TextView
-                        android:id="@+id/tvV3SlotSubtext"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:ellipsize="end"
-                        android:maxLines="1"
-                        android:textColor="?attr/colorOnSurfaceVariant"
-                        android:textSize="@dimen/text_label_sm" />
-                </LinearLayout>
-            </LinearLayout>
-        </com.google.android.material.card.MaterialCardView>
-    </LinearLayout>
-
-    <!-- Header: Abanico de Opciones -->
-    <TextView
-        android:id="@+id/tvOptionsTitle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/spacing_sm"
-        android:text="@string/battery_options_title"
-        android:textColor="?attr/colorOnSurface"
-        android:textSize="@dimen/text_label_md"
-        android:textStyle="bold"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/layoutContainers" />
-
-    <!-- Horizontal Option Cards RecyclerView -->
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rvOptionCards"
-        android:layout_width="match_parent"
-        android:layout_height="120dp"
-        android:layout_marginTop="4dp"
-        android:clipToPadding="false"
-        android:orientation="horizontal"
-        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tvOptionsTitle"
-        tools:itemCount="6"
-        tools:listitem="@layout/item_battery_card" />
-
-    <!-- Bottom Hints Action Button -->
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/btnMnemonicHint"
-        style="@style/Widget.Material3.Button.OutlinedButton"
-        android:layout_width="match_parent"
-        android:layout_height="44dp"
-        android:layout_marginTop="@dimen/spacing_sm"
-        android:layout_marginBottom="@dimen/spacing_md"
-        android:insetTop="0dp"
-        android:insetBottom="0dp"
-        android:textColor="?attr/colorPrimary"
-        android:textSize="@dimen/text_label_sm"
-        android:textStyle="bold"
-        tools:text="Pistas (3 restantes)"
-        app:cornerRadius="@dimen/button_pill_radius"
-        app:icon="@drawable/ic_lightbulb"
-        app:iconGravity="textStart"
-        app:iconSize="18dp"
-        app:iconTint="?attr/colorPrimary"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:strokeColor="?attr/colorOutlineVariant" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

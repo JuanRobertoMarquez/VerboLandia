@@ -2,11 +2,8 @@ package com.example.verbolandia.adapter
 
 import android.animation.ObjectAnimator
 import android.annotation.SuppressLint
-import android.content.ClipData
-import android.os.Build
 import android.view.HapticFeedbackConstants
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
@@ -30,6 +27,7 @@ class BatteryCardAdapter(
 ) : RecyclerView.Adapter<BatteryCardAdapter.ViewHolder>() {
 
     private val items = mutableListOf<BatteryCardItem>()
+    private var itemHeight: Int = 0
 
     @SuppressLint("NotifyDataSetChanged")
     fun submitList(newItems: List<BatteryCardItem>) {
@@ -38,17 +36,16 @@ class BatteryCardAdapter(
         notifyDataSetChanged()
     }
 
-    fun getItem(position: Int): BatteryCardItem? {
-        return if (position in items.indices) items[position] else null
+    @SuppressLint("NotifyDataSetChanged")
+    fun updateItemHeight(height: Int) {
+        if (itemHeight != height && height > 0) {
+            itemHeight = height
+            notifyDataSetChanged()
+        }
     }
 
-    fun markUsedByWord(word: String): Int {
-        val index = items.indexOfFirst { !it.isUsed && it.word.equals(word, ignoreCase = true) }
-        if (index != -1) {
-            items[index].isUsed = true
-            notifyItemChanged(index)
-        }
-        return index
+    fun getItem(position: Int): BatteryCardItem? {
+        return if (position in items.indices) items[position] else null
     }
 
     fun markUsedById(id: String) {
@@ -69,6 +66,13 @@ class BatteryCardAdapter(
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+        if (itemHeight > 0) {
+            val lp = holder.itemView.layoutParams
+            if (lp.height != itemHeight) {
+                lp.height = itemHeight
+                holder.itemView.layoutParams = lp
+            }
+        }
         holder.bind(items[position])
     }
 
@@ -93,13 +97,11 @@ class BatteryCardAdapter(
             if (item.isUsed) {
                 binding.cardBatteryOption.alpha = 0.25f
                 binding.cardBatteryOption.isClickable = false
-                binding.cardBatteryOption.isLongClickable = false
                 binding.cardBatteryOption.strokeColor = strokeNormal
                 binding.cardBatteryOption.setCardBackgroundColor(disabledSurface)
             } else {
                 binding.cardBatteryOption.alpha = 1.0f
                 binding.cardBatteryOption.isClickable = true
-                binding.cardBatteryOption.isLongClickable = true
                 binding.cardBatteryOption.setCardBackgroundColor(surfaceNormal)
                 if (item.isTrap) {
                     binding.tvCardTag.background = ContextCompat.getDrawable(context, R.drawable.bg_badge_reinforcement)
@@ -112,29 +114,11 @@ class BatteryCardAdapter(
                 }
             }
 
-            // Tap interaction
+            // Pure Tap interaction (Drag & Drop removed per user request)
             binding.cardBatteryOption.setOnClickListener {
                 if (!item.isUsed) {
                     it.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP)
                     onCardClicked(item, bindingAdapterPosition)
-                }
-            }
-
-            // Drag interaction (long press to drag)
-            binding.cardBatteryOption.setOnLongClickListener { view ->
-                if (!item.isUsed) {
-                    view.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS)
-                    val clipData = ClipData.newPlainText("verb_card", item.word)
-                    val shadow = View.DragShadowBuilder(view)
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                        view.startDragAndDrop(clipData, shadow, item, 0)
-                    } else {
-                        @Suppress("DEPRECATION")
-                        view.startDrag(clipData, shadow, item, 0)
-                    }
-                    true
-                } else {
-                    false
                 }
             }
         }
