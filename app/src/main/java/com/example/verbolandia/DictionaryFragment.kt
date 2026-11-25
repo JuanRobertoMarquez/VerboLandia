@@ -1,6 +1,10 @@
 package com.example.verbolandia
 
+import android.annotation.SuppressLint
+import android.content.Context
 import android.content.Intent
+import android.content.res.ColorStateList
+import android.graphics.Rect
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -9,8 +13,13 @@ import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewTreeObserver
+import android.view.inputmethod.EditorInfo
+import android.view.inputmethod.InputMethodManager
 import android.widget.TextView
 import androidx.core.content.ContextCompat
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Lifecycle
@@ -26,6 +35,7 @@ import com.example.verbolandia.ui.LeftSlot
 import com.example.verbolandia.ui.RightAction
 import com.example.verbolandia.ui.SharedViewModel
 import com.google.android.material.bottomsheet.BottomSheetDialog
+import com.google.android.material.color.MaterialColors
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.delay
@@ -39,6 +49,7 @@ class DictionaryFragment : Fragment() {
 
     private val viewModel: SharedViewModel by activityViewModels()
     private lateinit var adapter: VerbAdapter
+    private var globalLayoutListener: ViewTreeObserver.OnGlobalLayoutListener? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -63,6 +74,8 @@ class DictionaryFragment : Fragment() {
         setupRecyclerView()
         setupSearchAndFilterButton()
         setupPaginationControls()
+        setupTouchAndScrollDismiss()
+        setupKeyboardVisibilityListener()
         setupSwipeGesture()
         observeViewModel()
     }
@@ -74,6 +87,7 @@ class DictionaryFragment : Fragment() {
 
     private fun setupRecyclerView() {
         adapter = VerbAdapter { verb ->
+            hideKeyboardAndClearSearchFocus()
             viewModel.onVerbOpened(verb)
             openVerbDetail(verb)
         }
@@ -81,46 +95,165 @@ class DictionaryFragment : Fragment() {
     }
 
     private fun setupSearchAndFilterButton() {
+        val triggerSearch = View.OnClickListener {
+            binding.etSearch.requestFocus()
+            val window = activity?.window
+            if (window != null) {
+                androidx.core.view.WindowCompat.getInsetsController(window, window.decorView)
+                    .show(WindowInsetsCompat.Type.ime())
+            } else {
+                val imm = context?.getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
+                imm?.showSoftInput(binding.etSearch, 0)
+            }
+        }
+        binding.layoutSearchInputArea.setOnClickListener(triggerSearch)
+        binding.ivSearchIcon.setOnClickListener(triggerSearch)
+        binding.cardSearch.setOnClickListener(triggerSearch)
+
         binding.etSearch.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                val query = s?.toString() ?: ""
+                val hasText = query.isNotBlank()
+                binding.btnClearSearch.visibility = if (hasText) View.VISIBLE else View.GONE
+                updateSearchHighlight(binding.etSearch.hasFocus())
                 showSkeletonLoading()
-                viewModel.onSearchQueryChanged(s?.toString() ?: "")
+                viewModel.onSearchQueryChanged(query)
             }
             override fun afterTextChanged(s: Editable?) {}
         })
 
         binding.etSearch.setOnFocusChangeListener { _, hasFocus ->
-            if (hasFocus && binding.etSearch.text.isNull_or_empty()) {
-                val history = viewModel.searchHistory.value
-                if (history.isNotEmpty()) {
-                    showHistoryList(history)
-                }
+            updateSearchHighlight(hasFocus)
+        }
+
+        binding.etSearch.setOnEditorActionListener { _, actionId, _ ->
+            if (actionId == EditorInfo.IME_ACTION_SEARCH ||
+                actionId == EditorInfo.IME_ACTION_DONE ||
+                actionId == EditorInfo.IME_ACTION_GO
+            ) {
+                hideKeyboardAndClearSearchFocus()
+                true
+            } else {
+                false
             }
         }
 
+        binding.btnClearSearch.setOnClickListener {
+            binding.etSearch.text?.clear()
+            binding.btnClearSearch.visibility = View.GONE
+            hideKeyboardAndClearSearchFocus()
+        }
+
         binding.btnOpenFilter.setOnClickListener {
+            hideKeyboardAndClearSearchFocus()
             showFilterBottomSheet()
         }
 
         binding.btnClearFilterPill.setOnClickListener {
+            hideKeyboardAndClearSearchFocus()
             showSkeletonLoading()
             viewModel.resetFilters()
         }
     }
 
+    private fun updateSearchHighlight(isActive: Boolean) {
+        if (!isAdded) return
+        if (isActive) {
+            val primaryBlue = MaterialColors.getColor(binding.root, androidx.appcompat.R.attr.colorPrimary)
+            val surfaceActive = MaterialColors.getColor(binding.root, com.google.android.material.R.attr.colorSurfaceContainerLowest)
+            binding.cardSearch.strokeColor = primaryBlue
+            binding.cardSearch.strokeWidth = (2 * resources.displayMetrics.density).toInt()
+            binding.cardSearch.setCardBackgroundColor(surfaceActive)
+            binding.cardSearch.cardElevation = 3 * resources.displayMetrics.density
+            binding.ivSearchIcon.imageTintList = ColorStateList.valueOf(primaryBlue)
+        } else {
+            val outlineColor = MaterialColors.getColor(binding.root, com.google.android.material.R.attr.colorOutlineVariant)
+            val surfaceNormal = MaterialColors.getColor(binding.root, com.google.android.material.R.attr.colorSurfaceContainerLow)
+            val mutedIconColor = MaterialColors.getColor(binding.root, com.google.android.material.R.attr.colorOnSurfaceVariant)
+            binding.cardSearch.strokeColor = outlineColor
+            binding.cardSearch.strokeWidth = (1 * resources.displayMetrics.density).toInt()
+            binding.cardSearch.setCardBackgroundColor(surfaceNormal)
+            binding.cardSearch.cardElevation = 1 * resources.displayMetrics.density
+            binding.ivSearchIcon.imageTintList = ColorStateList.valueOf(mutedIconColor)
+        }
+    }
+
     private fun setupPaginationControls() {
         binding.btnPrevPage.setOnClickListener {
+            hideKeyboardAndClearSearchFocus()
             showSkeletonLoading()
             viewModel.prevPage()
             scrollToTopList()
         }
 
         binding.btnNextPage.setOnClickListener {
+            hideKeyboardAndClearSearchFocus()
             showSkeletonLoading()
             viewModel.nextPage()
             scrollToTopList()
         }
+    }
+
+    private fun hideKeyboardAndClearSearchFocus() {
+        if (_binding == null) return
+        if (binding.etSearch.hasFocus()) {
+            binding.etSearch.clearFocus()
+        }
+        val imm = context?.getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
+        imm?.hideSoftInputFromWindow(binding.etSearch.windowToken, 0)
+        updateSearchHighlight(false)
+    }
+
+    @SuppressLint("ClickableViewAccessibility")
+    private fun setupTouchAndScrollDismiss() {
+        binding.scrollView.setOnTouchListener { _, event ->
+            if (event.action == MotionEvent.ACTION_DOWN && binding.etSearch.hasFocus()) {
+                val outRect = Rect()
+                binding.cardSearch.getGlobalVisibleRect(outRect)
+                if (!outRect.contains(event.rawX.toInt(), event.rawY.toInt())) {
+                    hideKeyboardAndClearSearchFocus()
+                }
+            }
+            false
+        }
+
+        binding.rvVerbs.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                if (newState != RecyclerView.SCROLL_STATE_IDLE) {
+                    hideKeyboardAndClearSearchFocus()
+                }
+            }
+        })
+
+        binding.scrollView.setOnScrollChangeListener { _, _, _, _, _ ->
+            if (binding.etSearch.hasFocus()) {
+                hideKeyboardAndClearSearchFocus()
+            }
+        }
+    }
+
+    private fun setupKeyboardVisibilityListener() {
+        ViewCompat.setOnApplyWindowInsetsListener(binding.root) { _, insets ->
+            val isImeVisible = insets.isVisible(WindowInsetsCompat.Type.ime())
+            if (!isImeVisible && _binding != null && binding.etSearch.hasFocus()) {
+                hideKeyboardAndClearSearchFocus()
+            }
+            insets
+        }
+
+        globalLayoutListener = ViewTreeObserver.OnGlobalLayoutListener {
+            if (_binding == null) return@OnGlobalLayoutListener
+            val r = Rect()
+            binding.root.getWindowVisibleDisplayFrame(r)
+            val screenHeight = binding.root.rootView.height
+            val keypadHeight = screenHeight - r.bottom
+            val isKeyboardOpen = keypadHeight > screenHeight * 0.15
+            if (!isKeyboardOpen && binding.etSearch.hasFocus()) {
+                hideKeyboardAndClearSearchFocus()
+            }
+        }
+        binding.root.viewTreeObserver.addOnGlobalLayoutListener(globalLayoutListener)
     }
 
     private fun setupSwipeGesture() {
@@ -264,7 +397,7 @@ class DictionaryFragment : Fragment() {
 
                 // Verb of the Day
                 launch {
-                    viewModel.currentDetailVerb.collect { verbOfToday ->
+                    viewModel.verbOfTheDay.collect { verbOfToday ->
                         if (verbOfToday != null) {
                             binding.tvVerbOfDayTitle.text = getString(R.string.verbo_del_dia_title_dynamic, verbOfToday.base, verbOfToday.spanishMeaning)
                             binding.tvVerbOfDayV1.text = getString(R.string.verbo_del_dia_v1_dynamic, verbOfToday.base)
@@ -272,12 +405,13 @@ class DictionaryFragment : Fragment() {
                             binding.tvVerbOfDayV3.text = getString(R.string.verbo_del_dia_v3_dynamic, verbOfToday.pastParticiple)
 
                             binding.cardVerbOfDay.setOnClickListener {
+                                hideKeyboardAndClearSearchFocus()
                                 viewModel.onVerbOpened(verbOfToday)
                                 openVerbDetail(verbOfToday)
                             }
 
                             binding.btnVerbOfDayAudio.setOnClickListener {
-                                com.example.verbolandia.util.AudioSpeaker.speak(requireContext(), verbOfToday.base)
+                                com.example.verbolandia.util.AudioSpeaker.speak(requireContext(), verbOfToday.base, it)
                             }
                         }
                     }
@@ -406,7 +540,26 @@ class DictionaryFragment : Fragment() {
 
     private fun CharSequence?.isNull_or_empty(): Boolean = this == null || this.isEmpty()
 
+    fun handleBackPressed(): Boolean {
+        if (_binding == null) return false
+        val hadFocus = binding.etSearch.hasFocus()
+        val hasText = !binding.etSearch.text.isNullOrEmpty()
+
+        if (hadFocus || hasText) {
+            if (hasText) {
+                binding.etSearch.text?.clear()
+            }
+            hideKeyboardAndClearSearchFocus()
+            return true
+        }
+        return false
+    }
+
     override fun onDestroyView() {
+        globalLayoutListener?.let { listener ->
+            binding.root.viewTreeObserver.removeOnGlobalLayoutListener(listener)
+        }
+        globalLayoutListener = null
         super.onDestroyView()
         _binding = null
     }

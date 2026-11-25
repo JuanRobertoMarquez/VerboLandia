@@ -76,6 +76,28 @@
     <color name="border_subdued">#E2E8F0</color>
     <color name="text_muted">#64748B</color>
 
+    <!-- App Widget Dynamic Colors (Light) -->
+    <color name="widget_bg_surface">#FFFFFF</color>
+    <color name="widget_bg_card">#F8FAFC</color>
+    <color name="widget_bg_pill">#F1F5F9</color>
+    <color name="widget_border">#E2E8F0</color>
+    <color name="widget_text_primary">#0F172A</color>
+    <color name="widget_text_secondary">#64748B</color>
+    <color name="widget_accent">#0284C7</color>
+    <color name="widget_accent_text">#FFFFFF</color>
+    <color name="widget_progress_bg">#CBD5E1</color>
+
+    <!-- Billiards Theme Colors -->
+    <color name="billiard_green_dark">#062213</color>
+    <color name="billiard_green_darkest">#04180D</color>
+    <color name="billiard_green_felt">#0D5C32</color>
+    <color name="billiard_cushion_border">#3D2314</color>
+    <color name="billiard_card_bg">#111827</color>
+    <color name="billiard_card_stroke">#374151</color>
+    <color name="billiard_text_dim">#9CA3AF</color>
+    <color name="billiard_green_divider">#1B432E</color>
+    <color name="billiard_hud_bg">#1E293B</color>
+
     <!-- Standard Colors -->
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>

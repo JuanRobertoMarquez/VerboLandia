@@ -4,8 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="?android:attr/colorBackground">
+    android:layout_height="match_parent">
 
     <!-- Top Bar unificado (include_app_bar: variante raíz — logo + título + avatar) -->
     <include
@@ -122,12 +121,12 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/spacing_xs"
-                        android:text="@string/goal_card_pct"
                         android:textColor="?attr/colorPrimary"
                         android:textSize="@dimen/text_label_md"
                         android:textStyle="bold"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@id/progressGoal" />
+                        app:layout_constraintTop_toBottomOf="@id/progressGoal"
+                        tools:text="@string/goal_card_pct" />
 
                     <TextView
                         android:id="@+id/tvGoalRemaining"
@@ -216,23 +215,46 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/spacing_sm"
                 android:orientation="horizontal"
-                android:weightSum="3"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/tvLevelLabel">
 
                 <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnLevelRandom"
+                    style="@style/Widget.Material3.Button.OutlinedButton"
+                    android:layout_width="44dp"
+                    android:layout_height="40dp"
+                    android:layout_marginEnd="6dp"
+                    android:contentDescription="@string/cd_level_random"
+                    android:insetLeft="0dp"
+                    android:insetTop="0dp"
+                    android:insetRight="0dp"
+                    android:insetBottom="0dp"
+                    android:padding="0dp"
+                    android:text=""
+                    app:cornerRadius="@dimen/button_pill_radius"
+                    app:icon="@drawable/ic_shuffle"
+                    app:iconGravity="textStart"
+                    app:iconPadding="0dp"
+                    app:iconSize="20dp"
+                    app:iconTint="?attr/colorOnSurfaceVariant" />
+
+                <com.google.android.material.button.MaterialButton
                     android:id="@+id/btnLevelBasic"
                     style="@style/Widget.Material3.Button.OutlinedButton"
                     android:layout_width="0dp"
-                    android:layout_height="44dp"
+                    android:layout_height="40dp"
                     android:layout_marginEnd="4dp"
                     android:layout_weight="1"
+                    android:ellipsize="end"
+                    android:insetLeft="0dp"
                     android:insetTop="0dp"
+                    android:insetRight="0dp"
                     android:insetBottom="0dp"
+                    android:maxLines="1"
                     android:paddingHorizontal="2dp"
                     android:text="@string/level_basic"
-                    android:textSize="11sp"
+                    android:textSize="@dimen/text_label_sm"
                     android:textStyle="bold"
                     app:cornerRadius="@dimen/button_pill_radius" />
 
@@ -240,14 +262,18 @@
                     android:id="@+id/btnLevelInter"
                     style="@style/Widget.Material3.Button.OutlinedButton"
                     android:layout_width="0dp"
-                    android:layout_height="44dp"
-                    android:layout_marginHorizontal="2dp"
+                    android:layout_height="40dp"
+                    android:layout_marginEnd="4dp"
                     android:layout_weight="1"
+                    android:ellipsize="end"
+                    android:insetLeft="0dp"
                     android:insetTop="0dp"
+                    android:insetRight="0dp"
                     android:insetBottom="0dp"
+                    android:maxLines="1"
                     android:paddingHorizontal="2dp"
                     android:text="@string/level_intermediate"
-                    android:textSize="11sp"
+                    android:textSize="@dimen/text_label_sm"
                     android:textStyle="bold"
                     app:cornerRadius="@dimen/button_pill_radius" />
 
@@ -255,14 +281,17 @@
                     android:id="@+id/btnLevelAdv"
                     style="@style/Widget.Material3.Button.OutlinedButton"
                     android:layout_width="0dp"
-                    android:layout_height="44dp"
-                    android:layout_marginStart="4dp"
+                    android:layout_height="40dp"
                     android:layout_weight="1"
+                    android:ellipsize="end"
+                    android:insetLeft="0dp"
                     android:insetTop="0dp"
+                    android:insetRight="0dp"
                     android:insetBottom="0dp"
+                    android:maxLines="1"
                     android:paddingHorizontal="2dp"
                     android:text="@string/level_advanced"
-                    android:textSize="11sp"
+                    android:textSize="@dimen/text_label_sm"
                     android:textStyle="bold"
                     app:cornerRadius="@dimen/button_pill_radius" />
             </LinearLayout>
@@ -273,9 +302,12 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/section_spacing_vertical"
-                app:cardBackgroundColor="?attr/colorSurfaceContainerLow"
+                android:clickable="true"
+                android:focusable="true"
+                android:foreground="?attr/selectableItemBackground"
+                app:cardBackgroundColor="?attr/colorSurfaceContainerLowest"
                 app:cardCornerRadius="@dimen/card_corner_radius"
-                app:cardElevation="0dp"
+                app:cardElevation="1dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/layoutLevelSelectors"
@@ -287,82 +319,93 @@
                     android:layout_height="wrap_content"
                     android:padding="@dimen/card_internal_padding">
 
-                    <ImageView
-                        android:id="@+id/ivTarget"
-                        android:layout_width="20dp"
-                        android:layout_height="20dp"
-                        android:contentDescription="@null"
-                        android:src="@drawable/ic_target"
-                        app:layout_constraintBottom_toBottomOf="@id/tvReinforcementTitle"
+                    <FrameLayout
+                        android:id="@+id/layoutReinforcementIcon"
+                        android:layout_width="46dp"
+                        android:layout_height="46dp"
+                        android:background="@drawable/bg_icon_button_soft"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="@id/tvReinforcementTitle"
-                        app:tint="?attr/colorError" />
+                        app:layout_constraintTop_toTopOf="parent">
+
+                        <ImageView
+                            android:id="@+id/ivTarget"
+                            android:layout_width="28dp"
+                            android:layout_height="28dp"
+                            android:layout_gravity="center"
+                            android:contentDescription="@null"
+                            android:src="@drawable/ic_target"
+                            app:tint="?attr/colorError" />
+                    </FrameLayout>
 
                     <TextView
                         android:id="@+id/tvReinforcementTitle"
-                        android:layout_width="wrap_content"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="@dimen/spacing_xs"
+                        android:layout_marginStart="@dimen/spacing_md"
+                        android:layout_marginEnd="@dimen/spacing_xs"
+                        android:ellipsize="end"
+                        android:singleLine="true"
                         android:text="@string/reinforcement_title"
                         android:textColor="?attr/colorError"
-                        android:textSize="@dimen/text_label_md"
+                        android:textSize="@dimen/text_headline_sm"
                         android:textStyle="bold"
-                        app:layout_constraintStart_toEndOf="@id/ivTarget"
-                        app:layout_constraintTop_toTopOf="parent" />
+                        app:layout_constraintBottom_toTopOf="@id/tvReinforcementSubtitle"
+                        app:layout_constraintEnd_toStartOf="@id/ivReinforcementChevron"
+                        app:layout_constraintStart_toEndOf="@id/layoutReinforcementIcon"
+                        app:layout_constraintTop_toTopOf="@id/layoutReinforcementIcon" />
+
+                    <TextView
+                        android:id="@+id/tvReinforcementSubtitle"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="2dp"
+                        android:ellipsize="end"
+                        android:singleLine="true"
+                        android:text="@string/reinforcement_subtitle"
+                        android:textColor="?attr/colorOnSurfaceVariant"
+                        android:textSize="@dimen/text_label_sm"
+                        app:layout_constraintBottom_toBottomOf="@id/layoutReinforcementIcon"
+                        app:layout_constraintEnd_toStartOf="@id/ivReinforcementChevron"
+                        app:layout_constraintStart_toStartOf="@id/tvReinforcementTitle"
+                        app:layout_constraintTop_toBottomOf="@id/tvReinforcementTitle" />
+
+                    <ImageView
+                        android:id="@+id/ivReinforcementChevron"
+                        android:layout_width="22dp"
+                        android:layout_height="22dp"
+                        android:contentDescription="@null"
+                        android:src="@drawable/ic_chevron_right"
+                        app:layout_constraintBottom_toBottomOf="@id/layoutReinforcementIcon"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="@id/layoutReinforcementIcon"
+                        app:tint="?attr/colorOnSurfaceVariant" />
+
+                    <TextView
+                        android:id="@+id/tvReinforcementDesc"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/spacing_sm"
+                        android:lineSpacingExtra="2dp"
+                        android:text="@string/reinforcement_desc"
+                        android:textColor="?attr/colorOnSurfaceVariant"
+                        android:textSize="@dimen/text_body_sm"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/layoutReinforcementIcon" />
 
                     <TextView
                         android:id="@+id/badgeReinforcementCount"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/spacing_sm"
                         android:background="@drawable/bg_badge_reinforcement"
                         android:paddingHorizontal="@dimen/spacing_sm"
-                        android:paddingVertical="2dp"
+                        android:paddingVertical="4dp"
                         android:text="@string/reinforcement_badge"
                         android:textColor="?attr/colorError"
                         android:textSize="@dimen/text_label_sm"
                         android:textStyle="bold"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
-
-                    <TextView
-                        android:id="@+id/tvReinforcementDesc"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/spacing_xs"
-                        android:text="@string/reinforcement_desc"
-                        android:textColor="?attr/colorOnSurfaceVariant"
-                        android:textSize="@dimen/text_body_sm"
-                        app:layout_constraintTop_toBottomOf="@id/tvReinforcementTitle" />
-
-                    <!-- Footer Row -->
-                    <TextView
-                        android:id="@+id/badgeV123"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/spacing_md"
-                        android:background="@drawable/bg_focus_pill"
-                        android:paddingHorizontal="@dimen/spacing_sm"
-                        android:paddingVertical="4dp"
-                        android:text="@string/reinforcement_v_badge"
-                        android:textColor="?attr/colorPrimary"
-                        android:textSize="@dimen/text_label_sm"
-                        android:textStyle="bold"
-                        app:layout_constraintBottom_toBottomOf="@id/btnStartGuidedReview"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="@id/btnStartGuidedReview" />
-
-                    <com.google.android.material.button.MaterialButton
-                        android:id="@+id/btnStartGuidedReview"
-                        android:layout_width="wrap_content"
-                        android:layout_height="@dimen/button_height"
-                        android:layout_marginTop="@dimen/spacing_md"
-                        android:text="@string/btn_start_guided_review"
-                        android:textColor="?attr/colorOnPrimary"
-                        android:textSize="@dimen/text_label_md"
-                        android:textStyle="bold"
-                        app:backgroundTint="?attr/colorPrimary"
-                        app:cornerRadius="@dimen/button_pill_radius"
-                        app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintTop_toBottomOf="@id/tvReinforcementDesc" />
                 </androidx.constraintlayout.widget.ConstraintLayout>
             </com.google.android.material.card.MaterialCardView>
@@ -386,6 +429,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/card_grid_spacing"
+                android:clickable="true"
+                android:focusable="true"
+                android:foreground="?attr/selectableItemBackground"
                 app:cardBackgroundColor="?attr/colorSurfaceContainerLowest"
                 app:cardCornerRadius="@dimen/card_corner_radius"
                 app:cardElevation="1dp"
@@ -400,88 +446,106 @@
                     android:layout_height="wrap_content"
                     android:padding="@dimen/card_internal_padding">
 
-                    <ImageView
-                        android:id="@+id/ivMod1Icon"
-                        android:layout_width="24dp"
-                        android:layout_height="24dp"
-                        android:contentDescription="@null"
-                        android:src="@drawable/ic_speed"
+                    <FrameLayout
+                        android:id="@+id/layoutMod1Icon"
+                        android:layout_width="46dp"
+                        android:layout_height="46dp"
+                        android:background="@drawable/bg_icon_button_soft"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:tint="?attr/colorPrimary" />
+                        app:layout_constraintTop_toTopOf="parent">
+
+                        <ImageView
+                            android:id="@+id/ivMod1Icon"
+                            android:layout_width="28dp"
+                            android:layout_height="28dp"
+                            android:layout_gravity="center"
+                            android:contentDescription="@null"
+                            android:src="@drawable/ic_speed"
+                            app:tint="?attr/colorPrimary" />
+                    </FrameLayout>
 
                     <TextView
                         android:id="@+id/tvMod1Title"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="@dimen/spacing_sm"
+                        android:layout_marginStart="@dimen/spacing_md"
                         android:layout_marginEnd="@dimen/spacing_xs"
+                        android:ellipsize="end"
+                        android:singleLine="true"
                         android:text="@string/mod_1_title"
                         android:textColor="?attr/colorOnSurface"
                         android:textSize="@dimen/text_headline_sm"
                         android:textStyle="bold"
-                        app:layout_constraintEnd_toStartOf="@id/badgeMod1"
-                        app:layout_constraintStart_toEndOf="@id/ivMod1Icon"
-                        app:layout_constraintTop_toTopOf="parent" />
+                        app:layout_constraintBottom_toTopOf="@id/tvMod1Subtitle"
+                        app:layout_constraintEnd_toStartOf="@id/ivMod1Chevron"
+                        app:layout_constraintStart_toEndOf="@id/layoutMod1Icon"
+                        app:layout_constraintTop_toTopOf="@id/layoutMod1Icon" />
 
                     <TextView
-                        android:id="@+id/badgeMod1"
-                        android:layout_width="wrap_content"
+                        android:id="@+id/tvMod1Subtitle"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:background="@drawable/bg_focus_pill"
-                        android:paddingHorizontal="@dimen/spacing_sm"
-                        android:paddingVertical="2dp"
-                        android:text="@string/mod_1_badge"
-                        android:textColor="?attr/colorPrimary"
+                        android:layout_marginTop="2dp"
+                        android:ellipsize="end"
+                        android:singleLine="true"
+                        android:text="@string/mod_1_subtitle"
+                        android:textColor="?attr/colorOnSurfaceVariant"
                         android:textSize="@dimen/text_label_sm"
+                        app:layout_constraintBottom_toBottomOf="@id/layoutMod1Icon"
                         app:layout_constraintEnd_toStartOf="@id/ivMod1Chevron"
-                        app:layout_constraintTop_toTopOf="parent" />
+                        app:layout_constraintStart_toStartOf="@id/tvMod1Title"
+                        app:layout_constraintTop_toBottomOf="@id/tvMod1Title" />
 
                     <ImageView
                         android:id="@+id/ivMod1Chevron"
-                        android:layout_width="20dp"
-                        android:layout_height="20dp"
+                        android:layout_width="22dp"
+                        android:layout_height="22dp"
                         android:contentDescription="@null"
                         android:src="@drawable/ic_chevron_right"
-                        app:layout_constraintBottom_toBottomOf="@id/badgeMod1"
+                        app:layout_constraintBottom_toBottomOf="@id/layoutMod1Icon"
                         app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintTop_toTopOf="@id/badgeMod1"
+                        app:layout_constraintTop_toTopOf="@id/layoutMod1Icon"
                         app:tint="?attr/colorOnSurfaceVariant" />
 
                     <TextView
                         android:id="@+id/tvMod1Desc"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/spacing_xs"
+                        android:layout_marginTop="@dimen/spacing_sm"
+                        android:lineSpacingExtra="2dp"
                         android:text="@string/mod_1_desc"
                         android:textColor="?attr/colorOnSurfaceVariant"
                         android:textSize="@dimen/text_body_sm"
                         app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="@id/tvMod1Title"
-                        app:layout_constraintTop_toBottomOf="@id/tvMod1Title" />
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/layoutMod1Icon" />
 
                     <TextView
+                        android:id="@+id/badgeMod1"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/spacing_sm"
-                        android:background="@drawable/bg_practice_quote_card"
+                        android:background="@drawable/bg_focus_pill"
                         android:paddingHorizontal="@dimen/spacing_sm"
                         android:paddingVertical="4dp"
-                        android:text="@string/mod_1_sample"
+                        android:text="@string/mod_1_badge"
                         android:textColor="?attr/colorPrimary"
                         android:textSize="@dimen/text_label_sm"
                         android:textStyle="bold"
-                        app:layout_constraintStart_toStartOf="@id/tvMod1Title"
+                        app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@id/tvMod1Desc" />
                 </androidx.constraintlayout.widget.ConstraintLayout>
             </com.google.android.material.card.MaterialCardView>
 
-            <!-- Modality 2: Completar en Contexto -->
+            <!-- Modality 2: Crucigrama Gramatical -->
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/cardModality2"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/card_grid_spacing"
+                android:clickable="true"
+                android:focusable="true"
+                android:foreground="?attr/selectableItemBackground"
                 app:cardBackgroundColor="?attr/colorSurfaceContainerLowest"
                 app:cardCornerRadius="@dimen/card_corner_radius"
                 app:cardElevation="1dp"
@@ -496,129 +560,106 @@
                     android:layout_height="wrap_content"
                     android:padding="@dimen/card_internal_padding">
 
-                    <ImageView
-                        android:id="@+id/ivMod2Icon"
-                        android:layout_width="24dp"
-                        android:layout_height="24dp"
-                        android:contentDescription="@null"
-                        android:src="@drawable/ic_edit_text"
+                    <FrameLayout
+                        android:id="@+id/layoutMod2Icon"
+                        android:layout_width="46dp"
+                        android:layout_height="46dp"
+                        android:background="@drawable/bg_icon_button_soft"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:tint="?attr/colorPrimary" />
+                        app:layout_constraintTop_toTopOf="parent">
+
+                        <ImageView
+                            android:id="@+id/ivMod2Icon"
+                            android:layout_width="28dp"
+                            android:layout_height="28dp"
+                            android:layout_gravity="center"
+                            android:contentDescription="@null"
+                            android:src="@drawable/ic_crossword"
+                            app:tint="?attr/colorPrimary" />
+                    </FrameLayout>
 
                     <TextView
                         android:id="@+id/tvMod2Title"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="@dimen/spacing_sm"
+                        android:layout_marginStart="@dimen/spacing_md"
                         android:layout_marginEnd="@dimen/spacing_xs"
-                        android:text="@string/mod_2_title"
+                        android:ellipsize="end"
+                        android:singleLine="true"
+                        android:text="@string/mod_crossword_title"
                         android:textColor="?attr/colorOnSurface"
                         android:textSize="@dimen/text_headline_sm"
                         android:textStyle="bold"
-                        app:layout_constraintEnd_toStartOf="@id/badgeMod2"
-                        app:layout_constraintStart_toEndOf="@id/ivMod2Icon"
-                        app:layout_constraintTop_toTopOf="parent" />
+                        app:layout_constraintBottom_toTopOf="@id/tvMod2Subtitle"
+                        app:layout_constraintEnd_toStartOf="@id/ivMod2Chevron"
+                        app:layout_constraintStart_toEndOf="@id/layoutMod2Icon"
+                        app:layout_constraintTop_toTopOf="@id/layoutMod2Icon" />
 
                     <TextView
-                        android:id="@+id/badgeMod2"
-                        android:layout_width="wrap_content"
+                        android:id="@+id/tvMod2Subtitle"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:background="@drawable/bg_focus_pill"
-                        android:paddingHorizontal="@dimen/spacing_sm"
-                        android:paddingVertical="2dp"
-                        android:text="@string/mod_2_badge"
-                        android:textColor="?attr/colorPrimary"
+                        android:layout_marginTop="2dp"
+                        android:ellipsize="end"
+                        android:singleLine="true"
+                        android:text="@string/mod_crossword_subtitle"
+                        android:textColor="?attr/colorOnSurfaceVariant"
                         android:textSize="@dimen/text_label_sm"
+                        app:layout_constraintBottom_toBottomOf="@id/layoutMod2Icon"
                         app:layout_constraintEnd_toStartOf="@id/ivMod2Chevron"
-                        app:layout_constraintTop_toTopOf="parent" />
+                        app:layout_constraintStart_toStartOf="@id/tvMod2Title"
+                        app:layout_constraintTop_toBottomOf="@id/tvMod2Title" />
 
                     <ImageView
                         android:id="@+id/ivMod2Chevron"
-                        android:layout_width="20dp"
-                        android:layout_height="20dp"
+                        android:layout_width="22dp"
+                        android:layout_height="22dp"
                         android:contentDescription="@null"
                         android:src="@drawable/ic_chevron_right"
-                        app:layout_constraintBottom_toBottomOf="@id/badgeMod2"
+                        app:layout_constraintBottom_toBottomOf="@id/layoutMod2Icon"
                         app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintTop_toTopOf="@id/badgeMod2"
+                        app:layout_constraintTop_toTopOf="@id/layoutMod2Icon"
                         app:tint="?attr/colorOnSurfaceVariant" />
 
                     <TextView
                         android:id="@+id/tvMod2Desc"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/spacing_xs"
-                        android:text="@string/mod_2_desc"
+                        android:layout_marginTop="@dimen/spacing_sm"
+                        android:lineSpacingExtra="2dp"
+                        android:text="@string/mod_crossword_desc"
                         android:textColor="?attr/colorOnSurfaceVariant"
                         android:textSize="@dimen/text_body_sm"
                         app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="@id/tvMod2Title"
-                        app:layout_constraintTop_toBottomOf="@id/tvMod2Title" />
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/layoutMod2Icon" />
 
                     <TextView
-                        android:id="@+id/tvMod2Quote"
-                        android:layout_width="match_parent"
+                        android:id="@+id/badgeMod2"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/spacing_sm"
-                        android:background="@drawable/bg_practice_quote_card"
-                        android:padding="@dimen/spacing_sm"
-                        android:text="@string/mod_2_quote"
-                        android:textColor="?attr/colorOnSurface"
-                        android:textSize="@dimen/text_body_sm"
+                        android:background="@drawable/bg_focus_pill"
+                        android:paddingHorizontal="@dimen/spacing_sm"
+                        android:paddingVertical="4dp"
+                        android:text="@string/mod_crossword_badge"
+                        android:textColor="?attr/colorPrimary"
+                        android:textSize="@dimen/text_label_sm"
                         android:textStyle="bold"
+                        app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@id/tvMod2Desc" />
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/spacing_sm"
-                        android:baselineAligned="false"
-                        android:orientation="horizontal"
-                        app:layout_constraintTop_toBottomOf="@id/tvMod2Quote">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginEnd="@dimen/spacing_xs"
-                            android:background="@drawable/bg_practice_quote_card"
-                            android:paddingHorizontal="@dimen/spacing_sm"
-                            android:paddingVertical="4dp"
-                            android:text="@string/mod_2_opt_1"
-                            android:textColor="?attr/colorOnSurfaceVariant"
-                            android:textSize="@dimen/text_label_sm" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginEnd="@dimen/spacing_xs"
-                            android:background="@drawable/bg_practice_quote_card"
-                            android:paddingHorizontal="@dimen/spacing_sm"
-                            android:paddingVertical="4dp"
-                            android:text="@string/mod_2_opt_2"
-                            android:textColor="?attr/colorOnSurfaceVariant"
-                            android:textSize="@dimen/text_label_sm" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:background="@drawable/bg_focus_pill"
-                            android:paddingHorizontal="@dimen/spacing_sm"
-                            android:paddingVertical="4dp"
-                            android:text="@string/mod_2_opt_3"
-                            android:textColor="?attr/colorPrimary"
-                            android:textSize="@dimen/text_label_sm"
-                            android:textStyle="bold" />
-                    </LinearLayout>
                 </androidx.constraintlayout.widget.ConstraintLayout>
             </com.google.android.material.card.MaterialCardView>
 
-            <!-- Modality 3: Billar de verbos -->
+            <!-- Modality 3: Sopa de Tiempos -->
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/cardModality3"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/card_grid_spacing"
+                android:clickable="true"
+                android:focusable="true"
+                android:foreground="?attr/selectableItemBackground"
                 app:cardBackgroundColor="?attr/colorSurfaceContainerLowest"
                 app:cardCornerRadius="@dimen/card_corner_radius"
                 app:cardElevation="1dp"
@@ -633,116 +674,106 @@
                     android:layout_height="wrap_content"
                     android:padding="@dimen/card_internal_padding">
 
-                    <ImageView
-                        android:id="@+id/ivMod3Icon"
-                        android:layout_width="24dp"
-                        android:layout_height="24dp"
-                        android:contentDescription="@null"
-                        android:src="@drawable/ic_game"
+                    <FrameLayout
+                        android:id="@+id/layoutMod3Icon"
+                        android:layout_width="46dp"
+                        android:layout_height="46dp"
+                        android:background="@drawable/bg_icon_button_soft"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:tint="?attr/colorPrimary" />
+                        app:layout_constraintTop_toTopOf="parent">
+
+                        <ImageView
+                            android:id="@+id/ivMod3Icon"
+                            android:layout_width="28dp"
+                            android:layout_height="28dp"
+                            android:layout_gravity="center"
+                            android:contentDescription="@null"
+                            android:src="@drawable/ic_word_search"
+                            app:tint="?attr/colorPrimary" />
+                    </FrameLayout>
 
                     <TextView
                         android:id="@+id/tvMod3Title"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="@dimen/spacing_sm"
+                        android:layout_marginStart="@dimen/spacing_md"
                         android:layout_marginEnd="@dimen/spacing_xs"
-                        android:text="@string/mod_3_title"
+                        android:ellipsize="end"
+                        android:singleLine="true"
+                        android:text="@string/mod_wordsearch_title"
                         android:textColor="?attr/colorOnSurface"
                         android:textSize="@dimen/text_headline_sm"
                         android:textStyle="bold"
-                        app:layout_constraintEnd_toStartOf="@id/badgeMod3"
-                        app:layout_constraintStart_toEndOf="@id/ivMod3Icon"
-                        app:layout_constraintTop_toTopOf="parent" />
+                        app:layout_constraintBottom_toTopOf="@id/tvMod3Subtitle"
+                        app:layout_constraintEnd_toStartOf="@id/ivMod3Chevron"
+                        app:layout_constraintStart_toEndOf="@id/layoutMod3Icon"
+                        app:layout_constraintTop_toTopOf="@id/layoutMod3Icon" />
 
                     <TextView
-                        android:id="@+id/badgeMod3"
-                        android:layout_width="wrap_content"
+                        android:id="@+id/tvMod3Subtitle"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:background="@drawable/bg_focus_pill"
-                        android:paddingHorizontal="@dimen/spacing_sm"
-                        android:paddingVertical="2dp"
-                        android:text="@string/mod_3_badge"
-                        android:textColor="?attr/colorPrimary"
+                        android:layout_marginTop="2dp"
+                        android:ellipsize="end"
+                        android:singleLine="true"
+                        android:text="@string/mod_wordsearch_subtitle"
+                        android:textColor="?attr/colorOnSurfaceVariant"
                         android:textSize="@dimen/text_label_sm"
+                        app:layout_constraintBottom_toBottomOf="@id/layoutMod3Icon"
                         app:layout_constraintEnd_toStartOf="@id/ivMod3Chevron"
-                        app:layout_constraintTop_toTopOf="parent" />
+                        app:layout_constraintStart_toStartOf="@id/tvMod3Title"
+                        app:layout_constraintTop_toBottomOf="@id/tvMod3Title" />
 
                     <ImageView
                         android:id="@+id/ivMod3Chevron"
-                        android:layout_width="20dp"
-                        android:layout_height="20dp"
+                        android:layout_width="22dp"
+                        android:layout_height="22dp"
                         android:contentDescription="@null"
                         android:src="@drawable/ic_chevron_right"
-                        app:layout_constraintBottom_toBottomOf="@id/badgeMod3"
+                        app:layout_constraintBottom_toBottomOf="@id/layoutMod3Icon"
                         app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintTop_toTopOf="@id/badgeMod3"
+                        app:layout_constraintTop_toTopOf="@id/layoutMod3Icon"
                         app:tint="?attr/colorOnSurfaceVariant" />
 
                     <TextView
                         android:id="@+id/tvMod3Desc"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/spacing_xs"
-                        android:text="@string/mod_3_desc"
+                        android:layout_marginTop="@dimen/spacing_sm"
+                        android:lineSpacingExtra="2dp"
+                        android:text="@string/mod_wordsearch_desc"
                         android:textColor="?attr/colorOnSurfaceVariant"
                         android:textSize="@dimen/text_body_sm"
                         app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="@id/tvMod3Title"
-                        app:layout_constraintTop_toBottomOf="@id/tvMod3Title" />
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/layoutMod3Icon" />
 
-                    <LinearLayout
-                        android:layout_width="match_parent"
+                    <TextView
+                        android:id="@+id/badgeMod3"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/spacing_sm"
-                        android:baselineAligned="false"
-                        android:orientation="horizontal"
-                        app:layout_constraintTop_toBottomOf="@id/tvMod3Desc">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginEnd="@dimen/spacing_xs"
-                            android:background="@drawable/bg_practice_quote_card"
-                            android:paddingHorizontal="@dimen/spacing_sm"
-                            android:paddingVertical="4dp"
-                            android:text="@string/mod_3_family_1"
-                            android:textColor="?attr/colorOnSurfaceVariant"
-                            android:textSize="@dimen/text_label_sm" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginEnd="@dimen/spacing_xs"
-                            android:background="@drawable/bg_practice_quote_card"
-                            android:paddingHorizontal="@dimen/spacing_sm"
-                            android:paddingVertical="4dp"
-                            android:text="@string/mod_3_family_2"
-                            android:textColor="?attr/colorOnSurfaceVariant"
-                            android:textSize="@dimen/text_label_sm" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:background="@drawable/bg_focus_pill"
-                            android:paddingHorizontal="@dimen/spacing_sm"
-                            android:paddingVertical="4dp"
-                            android:text="@string/mod_3_family_3"
-                            android:textColor="?attr/colorPrimary"
-                            android:textSize="@dimen/text_label_sm"
-                            android:textStyle="bold" />
-                    </LinearLayout>
+                        android:background="@drawable/bg_focus_pill"
+                        android:paddingHorizontal="@dimen/spacing_sm"
+                        android:paddingVertical="4dp"
+                        android:text="@string/mod_wordsearch_badge"
+                        android:textColor="?attr/colorPrimary"
+                        android:textSize="@dimen/text_label_sm"
+                        android:textStyle="bold"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/tvMod3Desc" />
                 </androidx.constraintlayout.widget.ConstraintLayout>
             </com.google.android.material.card.MaterialCardView>
 
-            <!-- Modality 4: Caza de Errores -->
+            <!-- Modality 4: Memorama Gramatical -->
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/cardModality4"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/card_grid_spacing"
+                android:clickable="true"
+                android:focusable="true"
+                android:foreground="?attr/selectableItemBackground"
                 app:cardBackgroundColor="?attr/colorSurfaceContainerLowest"
                 app:cardCornerRadius="@dimen/card_corner_radius"
                 app:cardElevation="1dp"
@@ -757,98 +788,208 @@
                     android:layout_height="wrap_content"
                     android:padding="@dimen/card_internal_padding">
 
-                    <ImageView
-                        android:id="@+id/ivMod4Icon"
-                        android:layout_width="24dp"
-                        android:layout_height="24dp"
-                        android:contentDescription="@null"
-                        android:src="@drawable/ic_search_error"
+                    <FrameLayout
+                        android:id="@+id/layoutMod4Icon"
+                        android:layout_width="46dp"
+                        android:layout_height="46dp"
+                        android:background="@drawable/bg_icon_button_soft"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:tint="?attr/colorError" />
+                        app:layout_constraintTop_toTopOf="parent">
+
+                        <ImageView
+                            android:id="@+id/ivMod4Icon"
+                            android:layout_width="28dp"
+                            android:layout_height="28dp"
+                            android:layout_gravity="center"
+                            android:contentDescription="@null"
+                            android:src="@drawable/ic_memory_card"
+                            app:tint="?attr/colorPrimary" />
+                    </FrameLayout>
 
                     <TextView
                         android:id="@+id/tvMod4Title"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="@dimen/spacing_sm"
+                        android:layout_marginStart="@dimen/spacing_md"
                         android:layout_marginEnd="@dimen/spacing_xs"
-                        android:text="@string/mod_4_title"
+                        android:ellipsize="end"
+                        android:singleLine="true"
+                        android:text="@string/mod_memory_title"
                         android:textColor="?attr/colorOnSurface"
                         android:textSize="@dimen/text_headline_sm"
                         android:textStyle="bold"
-                        app:layout_constraintEnd_toStartOf="@id/badgeMod4"
-                        app:layout_constraintStart_toEndOf="@id/ivMod4Icon"
-                        app:layout_constraintTop_toTopOf="parent" />
+                        app:layout_constraintBottom_toTopOf="@id/tvMod4Subtitle"
+                        app:layout_constraintEnd_toStartOf="@id/ivMod4Chevron"
+                        app:layout_constraintStart_toEndOf="@id/layoutMod4Icon"
+                        app:layout_constraintTop_toTopOf="@id/layoutMod4Icon" />
 
                     <TextView
-                        android:id="@+id/badgeMod4"
-                        android:layout_width="wrap_content"
+                        android:id="@+id/tvMod4Subtitle"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:background="@drawable/bg_badge_reinforcement"
-                        android:paddingHorizontal="@dimen/spacing_sm"
-                        android:paddingVertical="2dp"
-                        android:text="@string/mod_4_badge"
-                        android:textColor="?attr/colorError"
+                        android:layout_marginTop="2dp"
+                        android:ellipsize="end"
+                        android:singleLine="true"
+                        android:text="@string/mod_memory_subtitle"
+                        android:textColor="?attr/colorOnSurfaceVariant"
                         android:textSize="@dimen/text_label_sm"
+                        app:layout_constraintBottom_toBottomOf="@id/layoutMod4Icon"
                         app:layout_constraintEnd_toStartOf="@id/ivMod4Chevron"
-                        app:layout_constraintTop_toTopOf="parent" />
+                        app:layout_constraintStart_toStartOf="@id/tvMod4Title"
+                        app:layout_constraintTop_toBottomOf="@id/tvMod4Title" />
 
                     <ImageView
                         android:id="@+id/ivMod4Chevron"
-                        android:layout_width="20dp"
-                        android:layout_height="20dp"
+                        android:layout_width="22dp"
+                        android:layout_height="22dp"
                         android:contentDescription="@null"
                         android:src="@drawable/ic_chevron_right"
-                        app:layout_constraintBottom_toBottomOf="@id/badgeMod4"
+                        app:layout_constraintBottom_toBottomOf="@id/layoutMod4Icon"
                         app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintTop_toTopOf="@id/badgeMod4"
+                        app:layout_constraintTop_toTopOf="@id/layoutMod4Icon"
                         app:tint="?attr/colorOnSurfaceVariant" />
 
                     <TextView
                         android:id="@+id/tvMod4Desc"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/spacing_xs"
-                        android:text="@string/mod_4_desc"
+                        android:layout_marginTop="@dimen/spacing_sm"
+                        android:lineSpacingExtra="2dp"
+                        android:text="@string/mod_memory_desc"
                         android:textColor="?attr/colorOnSurfaceVariant"
                         android:textSize="@dimen/text_body_sm"
                         app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="@id/tvMod4Title"
-                        app:layout_constraintTop_toBottomOf="@id/tvMod4Title" />
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/layoutMod4Icon" />
 
                     <TextView
-                        android:id="@+id/tvMod4Quote"
-                        android:layout_width="match_parent"
+                        android:id="@+id/badgeMod4"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/spacing_sm"
-                        android:background="@drawable/bg_practice_quote_card"
-                        android:padding="@dimen/spacing_sm"
-                        android:text="@string/mod_4_quote"
-                        android:textColor="?attr/colorError"
-                        android:textSize="@dimen/text_body_sm"
+                        android:background="@drawable/bg_focus_pill"
+                        android:paddingHorizontal="@dimen/spacing_sm"
+                        android:paddingVertical="4dp"
+                        android:text="@string/mod_memory_badge"
+                        android:textColor="?attr/colorPrimary"
+                        android:textSize="@dimen/text_label_sm"
                         android:textStyle="bold"
+                        app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@id/tvMod4Desc" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+            </com.google.android.material.card.MaterialCardView>
 
-                    <LinearLayout
-                        android:layout_width="match_parent"
+            <!-- Modality 5: Billar de verbos -->
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/cardModality5"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/card_grid_spacing"
+                android:clickable="true"
+                android:focusable="true"
+                android:foreground="?attr/selectableItemBackground"
+                app:cardBackgroundColor="?attr/colorSurfaceContainerLowest"
+                app:cardCornerRadius="@dimen/card_corner_radius"
+                app:cardElevation="1dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/cardModality4"
+                app:strokeColor="?attr/colorOutlineVariant"
+                app:strokeWidth="1dp">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="@dimen/card_internal_padding">
+
+                    <FrameLayout
+                        android:id="@+id/layoutMod5Icon"
+                        android:layout_width="46dp"
+                        android:layout_height="46dp"
+                        android:background="@drawable/bg_icon_button_soft"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent">
+
+                        <ImageView
+                            android:id="@+id/ivMod5Icon"
+                            android:layout_width="28dp"
+                            android:layout_height="28dp"
+                            android:layout_gravity="center"
+                            android:contentDescription="@null"
+                            android:src="@drawable/ic_sports_billiards"
+                            app:tint="?attr/colorPrimary" />
+                    </FrameLayout>
+
+                    <TextView
+                        android:id="@+id/tvMod5Title"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/spacing_md"
+                        android:layout_marginEnd="@dimen/spacing_xs"
+                        android:ellipsize="end"
+                        android:singleLine="true"
+                        android:text="@string/mod_3_title"
+                        android:textColor="?attr/colorOnSurface"
+                        android:textSize="@dimen/text_headline_sm"
+                        android:textStyle="bold"
+                        app:layout_constraintBottom_toTopOf="@id/tvMod5Subtitle"
+                        app:layout_constraintEnd_toStartOf="@id/ivMod5Chevron"
+                        app:layout_constraintStart_toEndOf="@id/layoutMod5Icon"
+                        app:layout_constraintTop_toTopOf="@id/layoutMod5Icon" />
+
+                    <TextView
+                        android:id="@+id/tvMod5Subtitle"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="2dp"
+                        android:ellipsize="end"
+                        android:singleLine="true"
+                        android:text="@string/mod_3_subtitle"
+                        android:textColor="?attr/colorOnSurfaceVariant"
+                        android:textSize="@dimen/text_label_sm"
+                        app:layout_constraintBottom_toBottomOf="@id/layoutMod5Icon"
+                        app:layout_constraintEnd_toStartOf="@id/ivMod5Chevron"
+                        app:layout_constraintStart_toStartOf="@id/tvMod5Title"
+                        app:layout_constraintTop_toBottomOf="@id/tvMod5Title" />
+
+                    <ImageView
+                        android:id="@+id/ivMod5Chevron"
+                        android:layout_width="22dp"
+                        android:layout_height="22dp"
+                        android:contentDescription="@null"
+                        android:src="@drawable/ic_chevron_right"
+                        app:layout_constraintBottom_toBottomOf="@id/layoutMod5Icon"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="@id/layoutMod5Icon"
+                        app:tint="?attr/colorOnSurfaceVariant" />
+
+                    <TextView
+                        android:id="@+id/tvMod5Desc"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/spacing_sm"
-                        android:baselineAligned="false"
-                        android:orientation="horizontal"
-                        app:layout_constraintTop_toBottomOf="@id/tvMod4Quote">
+                        android:lineSpacingExtra="2dp"
+                        android:text="@string/mod_3_desc"
+                        android:textColor="?attr/colorOnSurfaceVariant"
+                        android:textSize="@dimen/text_body_sm"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/layoutMod5Icon" />
 
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:background="@drawable/bg_focus_pill"
-                            android:paddingHorizontal="@dimen/spacing_sm"
-                            android:paddingVertical="4dp"
-                            android:text="@string/mod_4_link"
-                            android:textColor="?attr/colorPrimary"
-                            android:textSize="@dimen/text_label_sm"
-                            android:textStyle="bold" />
-                    </LinearLayout>
+                    <TextView
+                        android:id="@+id/badgeMod5"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/spacing_sm"
+                        android:background="@drawable/bg_focus_pill"
+                        android:paddingHorizontal="@dimen/spacing_sm"
+                        android:paddingVertical="4dp"
+                        android:text="@string/mod_3_badge"
+                        android:textColor="?attr/colorPrimary"
+                        android:textSize="@dimen/text_label_sm"
+                        android:textStyle="bold"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/tvMod5Desc" />
                 </androidx.constraintlayout.widget.ConstraintLayout>
             </com.google.android.material.card.MaterialCardView>
 
@@ -858,12 +999,14 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/section_spacing_vertical"
+                android:layout_marginBottom="@dimen/spacing_xl"
                 app:cardBackgroundColor="?attr/colorSurfaceContainerLow"
                 app:cardCornerRadius="@dimen/card_corner_radius"
                 app:cardElevation="0dp"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/cardModality4"
+                app:layout_constraintTop_toBottomOf="@id/cardModality5"
                 app:strokeColor="?attr/colorOutlineVariant"
                 app:strokeWidth="1dp">
 

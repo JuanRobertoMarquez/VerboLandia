@@ -1,0 +1,234 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <!-- Top Navigation Bar -->
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/topBar"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:paddingHorizontal="@dimen/margin"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageButton
+            android:id="@+id/btnBack"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="@string/cd_back"
+            android:src="@drawable/ic_chevron_left"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:tint="?attr/colorOnSurface" />
+
+        <LinearLayout
+            android:id="@+id/layoutTitle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/spacing_sm"
+            android:gravity="center_vertical"
+            android:orientation="vertical"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/layoutBadges"
+            app:layout_constraintStart_toEndOf="@id/btnBack"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/memory_title"
+                android:textColor="?attr/colorOnSurface"
+                android:textSize="@dimen/text_label_lg"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/tvMemorySubtitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="?attr/colorOnSurfaceVariant"
+                android:textSize="@dimen/text_label_sm"
+                tools:text="Nivel B1 • Empareja 6 Verbos" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/layoutBadges"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <!-- Streak Badge -->
+            <LinearLayout
+                android:id="@+id/badgeStreak"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="6dp"
+                android:background="@drawable/bg_badge_reinforcement"
+                android:gravity="center_vertical"
+                android:paddingHorizontal="6dp"
+                android:paddingVertical="3dp">
+
+                <ImageView
+                    android:layout_width="14dp"
+                    android:layout_height="14dp"
+                    android:contentDescription="@null"
+                    android:src="@drawable/ic_fire"
+                    app:tint="?attr/colorError" />
+
+                <TextView
+                    android:id="@+id/tvStreakCounter"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="3dp"
+                    android:textColor="?attr/colorError"
+                    android:textSize="@dimen/text_label_sm"
+                    android:textStyle="bold"
+                    tools:text="x0" />
+            </LinearLayout>
+
+            <!-- Pairs Found Badge -->
+            <LinearLayout
+                android:id="@+id/badgePairs"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bg_focus_pill"
+                android:gravity="center_vertical"
+                android:paddingHorizontal="6dp"
+                android:paddingVertical="3dp">
+
+                <ImageView
+                    android:layout_width="14dp"
+                    android:layout_height="14dp"
+                    android:contentDescription="@null"
+                    android:src="@drawable/ic_check"
+                    app:tint="?attr/colorPrimary" />
+
+                <TextView
+                    android:id="@+id/tvPairsCounter"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="3dp"
+                    android:textColor="?attr/colorPrimary"
+                    android:textSize="@dimen/text_label_sm"
+                    android:textStyle="bold"
+                    tools:text="0 / 6" />
+            </LinearLayout>
+        </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <!-- Context Target Tense Banner -->
+    <TextView
+        android:id="@+id/tvTargetTensePill"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/margin"
+        android:layout_marginTop="2dp"
+        android:background="@drawable/bg_practice_quote_card"
+        android:gravity="center"
+        android:paddingVertical="6dp"
+        android:paddingHorizontal="@dimen/spacing_sm"
+        android:textColor="?attr/colorPrimary"
+        android:textSize="@dimen/text_label_md"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/topBar"
+        tools:text="Tiempo: Pasado Simple (V2)" />
+
+    <!-- 12 Cards Grid (3 Columns x 4 Rows) -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvCards"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginHorizontal="12dp"
+        android:layout_marginVertical="6dp"
+        android:overScrollMode="never"
+        app:layout_constraintBottom_toTopOf="@id/layoutActionButtons"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvTargetTensePill"
+        tools:itemCount="12"
+        tools:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+        tools:listitem="@layout/item_memory_card"
+        tools:spanCount="3" />
+
+    <!-- Action Buttons Row -->
+    <LinearLayout
+        android:id="@+id/layoutActionButtons"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/margin"
+        android:layout_marginBottom="12dp"
+        android:orientation="horizontal"
+        android:weightSum="3"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnAudioHint"
+            style="@style/Widget.Material3.Button.TonalButton"
+            android:layout_width="0dp"
+            android:layout_height="44dp"
+            android:layout_marginEnd="3dp"
+            android:layout_weight="1"
+            android:insetTop="0dp"
+            android:insetBottom="0dp"
+            android:paddingHorizontal="4dp"
+            android:text="@string/memory_btn_audio_hint"
+            android:textSize="@dimen/text_label_sm"
+            android:textStyle="bold"
+            app:cornerRadius="@dimen/button_pill_radius"
+            app:icon="@drawable/ic_volume"
+            app:iconGravity="textStart"
+            app:iconPadding="4dp"
+            app:iconSize="16dp" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnShuffle"
+            style="@style/Widget.Material3.Button.TonalButton"
+            android:layout_width="0dp"
+            android:layout_height="44dp"
+            android:layout_marginHorizontal="3dp"
+            android:layout_weight="1"
+            android:insetTop="0dp"
+            android:insetBottom="0dp"
+            android:paddingHorizontal="4dp"
+            android:text="@string/memory_btn_shuffle"
+            android:textSize="@dimen/text_label_sm"
+            android:textStyle="bold"
+            app:cornerRadius="@dimen/button_pill_radius"
+            app:icon="@drawable/ic_shuffle"
+            app:iconGravity="textStart"
+            app:iconPadding="4dp"
+            app:iconSize="16dp" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnRestart"
+            style="@style/Widget.Material3.Button.TonalButton"
+            android:layout_width="0dp"
+            android:layout_height="44dp"
+            android:layout_marginStart="3dp"
+            android:layout_weight="1"
+            android:insetTop="0dp"
+            android:insetBottom="0dp"
+            android:paddingHorizontal="4dp"
+            android:text="@string/memory_btn_restart"
+            android:textSize="@dimen/text_label_sm"
+            android:textStyle="bold"
+            app:cornerRadius="@dimen/button_pill_radius"
+            app:icon="@drawable/ic_refresh"
+            app:iconGravity="textStart"
+            app:iconPadding="4dp"
+            app:iconSize="16dp" />
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

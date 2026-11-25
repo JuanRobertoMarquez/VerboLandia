@@ -15,8 +15,6 @@ import com.example.verbolandia.databinding.FragmentVerbDetailBinding
 import com.example.verbolandia.model.Verb
 import com.example.verbolandia.ui.SharedViewModel
 import com.example.verbolandia.ui.VerbDetailBinder
-import com.example.verbolandia.util.TranslationManager
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.launch
 
@@ -26,7 +24,6 @@ class VerbDetailFragment : Fragment() {
     private val binding get() = _binding!!
 
     private val viewModel: SharedViewModel by activityViewModels()
-    private lateinit var translationManager: TranslationManager
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -40,12 +37,10 @@ class VerbDetailFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        translationManager = TranslationManager(requireContext())
-
         com.example.verbolandia.ui.AppBarHelper.configure(
             binding = binding.appBar,
             left = com.example.verbolandia.ui.LeftSlot.Back { findNavController().navigateUp() },
-            eyebrow = "DETALLE DE VERBO",
+            eyebrow = getString(R.string.verb_detail_title),
             title = getString(R.string.verb_detail_title)
         )
 
@@ -88,9 +83,6 @@ class VerbDetailFragment : Fragment() {
                             onPracticeClick = {
                                 com.example.verbolandia.ui.VerbPracticeBottomSheetFragment.newInstance(verb)
                                     .show(childFragmentManager, "VerbPracticeBottomSheet")
-                            },
-                            onTranslateClick = {
-                                requestTranslationDownload(verb)
                             }
                         )
                     }
@@ -99,53 +91,11 @@ class VerbDetailFragment : Fragment() {
         }
     }
 
-    private fun requestTranslationDownload(verb: Verb) {
-        MaterialAlertDialogBuilder(requireContext())
-            .setTitle(getString(R.string.dialog_download_model_title))
-            .setMessage(getString(R.string.dialog_download_model_msg, verb.base))
-            .setPositiveButton(getString(R.string.dialog_download_model_positive)) { dialog, _ ->
-                dialog.dismiss()
-                performTranslation(verb)
-            }
-            .setNegativeButton(R.string.dialog_cancel, null)
-            .show()
-    }
-
-    private fun performTranslation(verb: Verb) {
-        Snackbar.make(binding.root, getString(R.string.snackbar_translating), Snackbar.LENGTH_INDEFINITE).show()
-        viewLifecycleOwner.lifecycleScope.launch {
-            translationManager.translateAndSave(
-                verbBase = verb.base,
-                onSuccess = { translatedText ->
-                    Snackbar.make(
-                        binding.root,
-                        getString(R.string.snackbar_translated_format, translatedText),
-                        Snackbar.LENGTH_SHORT
-                    ).show()
-                    viewModel.onVerbOpened(verb)
-                },
-                onError = { error ->
-                    val errorMsg = error.localizedMessage ?: ""
-                    Snackbar.make(
-                        binding.root,
-                        getString(R.string.snackbar_translate_error_format, errorMsg),
-                        Snackbar.LENGTH_LONG
-                    )
-                        .setAction(getString(R.string.snackbar_action_retry)) {
-                            performTranslation(verb)
-                        }
-                        .show()
-                }
-            )
-        }
-    }
-
     private fun shareVerb(verb: Verb) {
         VerbDetailBinder.shareVerb(requireContext(), verb)
     }
 
     override fun onDestroyView() {
-        translationManager.close()
         super.onDestroyView()
         _binding = null
     }

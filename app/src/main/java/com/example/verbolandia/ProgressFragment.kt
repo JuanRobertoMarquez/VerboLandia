@@ -79,30 +79,27 @@ class ProgressFragment : Fragment() {
 
     private fun setupButtons() {
         binding.btnGenerateTestErrors.setOnClickListener {
-            val options = arrayOf(
-                getString(R.string.dialog_opt_generate_test),
-                getString(R.string.dialog_opt_reset_progress),
-                getString(R.string.dialog_cancel)
-            )
-            MaterialAlertDialogBuilder(requireContext())
-                .setTitle(R.string.dialog_test_options_title)
-                .setItems(options) { dialog, which ->
-                    dialog.dismiss()
-                    when (which) {
-                        0 -> {
-                            val summary = viewModel.progressSummary.value
-                            if (summary.topWeakVerbs.isEmpty()) {
-                                Snackbar.make(binding.root, R.string.snackbar_no_weak_verbs, Snackbar.LENGTH_LONG).show()
-                            } else {
-                                findNavController().navigate(R.id.nav_practice)
-                            }
-                        }
-                        1 -> {
-                            showConfirmResetDialog()
-                        }
-                    }
-                }
-                .show()
+            val summary = viewModel.progressSummary.value
+            val weakVerbsCount = summary.topWeakVerbs.size
+
+            val message = if (weakVerbsCount > 0) {
+                getString(R.string.btn_test_subtext_format, weakVerbsCount)
+            } else {
+                getString(R.string.snackbar_generating_test_errors)
+            }
+
+            Snackbar.make(binding.root, message, Snackbar.LENGTH_SHORT).show()
+
+            // Iniciar el quiz adaptativo centrado en errores
+            val intent = android.content.Intent(requireContext(), VerbBilliardsActivity::class.java).apply {
+                putExtra(VerbBilliardsActivity.EXTRA_ERROR_MODE, true)
+            }
+            startActivity(intent)
+        }
+
+        binding.btnGenerateTestErrors.setOnLongClickListener {
+            showConfirmResetDialog()
+            true
         }
     }
 

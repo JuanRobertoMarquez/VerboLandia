@@ -50,7 +50,7 @@ class VideoTutorialActivity : AppCompatActivity() {
         val videoUrl = intent.getStringExtra(EXTRA_VIDEO_URL)
             ?: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4"
 
-        val videoView: VideoView = findViewById(R.id.videoView)
+        val videoView: VideoView = binding.videoView
         val myMediaController = MediaController(this)
         myMediaController.setAnchorView(videoView)
 

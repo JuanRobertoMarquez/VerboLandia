@@ -36,15 +36,15 @@ class PoolTableView @JvmOverloads constructor(
         }
 
     // Physics constants
-    private val friction = 0.985f
-    private val bounceDamping = 0.85f
-    private val maxLaunchSpeed = 55f
+    private val friction = 0.982f
+    private val bounceDamping = 0.65f
+    private val maxLaunchSpeed = 50f
     private val minSpeedThreshold = 0.25f
 
     // Dimensions
     private val density = resources.displayMetrics.density
-    private val ballRadius = 20f * density
-    private val pocketRadius = 38f * density
+    private val ballRadius = 15f * density
+    private val pocketRadius = 42f * density
     private val cushionPadding = 18f * density
     private val diamondRadius = 3.5f * density
 
@@ -312,6 +312,24 @@ class PoolTableView @JvmOverloads constructor(
             return
         }
 
+        // Pocket Sinking Collision Check for active pockets (check prior to wall bounce)
+        val activeCount = activePocketCount.coerceIn(4, 6)
+        for (i in 0 until activeCount) {
+            val pocket = pockets[i]
+            val dx = ballX - pocket.x
+            val dy = ballY - pocket.y
+            val dist = hypot(dx.toDouble(), dy.toDouble()).toFloat()
+
+            if (dist < pocketRadius * 1.25f) {
+                isSunk = true
+                isMotionActive = false
+                vx = 0f
+                vy = 0f
+                onPocketSunkListener?.onPocketSunk(i)
+                return
+            }
+        }
+
         val leftBound = cushionPadding + ballRadius
         val rightBound = width - cushionPadding - ballRadius
         val topBound = cushionPadding + ballRadius
@@ -332,24 +350,6 @@ class PoolTableView @JvmOverloads constructor(
         } else if (ballY > bottomBound) {
             ballY = bottomBound
             vy = -vy * bounceDamping
-        }
-
-        // Pocket Sinking Collision Check for active pockets
-        val activeCount = activePocketCount.coerceIn(4, 6)
-        for (i in 0 until activeCount) {
-            val pocket = pockets[i]
-            val dx = ballX - pocket.x
-            val dy = ballY - pocket.y
-            val dist = hypot(dx.toDouble(), dy.toDouble()).toFloat()
-
-            if (dist < pocketRadius * 0.88f) {
-                isSunk = true
-                isMotionActive = false
-                vx = 0f
-                vy = 0f
-                onPocketSunkListener?.onPocketSunk(i)
-                break
-            }
         }
     }
 }

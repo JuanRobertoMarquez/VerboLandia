@@ -4,8 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="?android:attr/colorBackground">
+    android:layout_height="match_parent">
 
     <!-- Top Bar unificado (include_app_bar: variante detalle — flecha atrás + tag/título + bookmark + audio) -->
     <include
@@ -485,23 +484,27 @@
 
                     <TextView
                         android:id="@+id/tvEx1En"
-                        android:layout_width="match_parent"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/spacing_xs"
                         android:text="@string/ex_1_en"
                         android:textColor="?attr/colorOnSurface"
                         android:textSize="@dimen/text_body_md"
                         android:textStyle="bold"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@id/tvEx1Title" />
 
                     <TextView
                         android:id="@+id/tvEx1Es"
-                        android:layout_width="match_parent"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="2dp"
                         android:text="@string/ex_1_es"
                         android:textColor="?attr/colorOnSurfaceVariant"
                         android:textSize="@dimen/text_body_sm"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@id/tvEx1En" />
                 </androidx.constraintlayout.widget.ConstraintLayout>
             </com.google.android.material.card.MaterialCardView>
@@ -552,23 +555,27 @@
 
                     <TextView
                         android:id="@+id/tvEx2En"
-                        android:layout_width="match_parent"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/spacing_xs"
                         android:text="@string/ex_2_en"
                         android:textColor="?attr/colorOnSurface"
                         android:textSize="@dimen/text_body_md"
                         android:textStyle="bold"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@id/tvEx2Title" />
 
                     <TextView
                         android:id="@+id/tvEx2Es"
-                        android:layout_width="match_parent"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="2dp"
                         android:text="@string/ex_2_es"
                         android:textColor="?attr/colorOnSurfaceVariant"
                         android:textSize="@dimen/text_body_sm"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@id/tvEx2En" />
                 </androidx.constraintlayout.widget.ConstraintLayout>
             </com.google.android.material.card.MaterialCardView>
@@ -619,23 +626,27 @@
 
                     <TextView
                         android:id="@+id/tvEx3En"
-                        android:layout_width="match_parent"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/spacing_xs"
                         android:text="@string/ex_3_en"
                         android:textColor="?attr/colorOnSurface"
                         android:textSize="@dimen/text_body_md"
                         android:textStyle="bold"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@id/tvEx3Title" />
 
                     <TextView
                         android:id="@+id/tvEx3Es"
-                        android:layout_width="match_parent"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="2dp"
                         android:text="@string/ex_3_es"
                         android:textColor="?attr/colorOnSurfaceVariant"
                         android:textSize="@dimen/text_body_sm"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@id/tvEx3En" />
                 </androidx.constraintlayout.widget.ConstraintLayout>
             </com.google.android.material.card.MaterialCardView>

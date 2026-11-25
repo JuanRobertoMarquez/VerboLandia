@@ -44,6 +44,23 @@ class ProgressCalculatorTest {
 
         assertEquals(1, summary.masteredVerbsCount)
         assertEquals(1, summary.criticalZoneCount)
-        assertEquals(5, summary.todayCompletedCount)
+        assertEquals(2, summary.todayCompletedCount)
+    }
+
+    @Test
+    fun testTodayCompletedOnlyCountsCorrectAttempts() {
+        val nowMs = 1700000000000L
+        val clock = TestClock(nowMs)
+        val calculator = ProgressCalculator(clock)
+
+        val attempts = listOf(
+            AttemptRecord("choose", true, "crossword", nowMs - 1000),
+            AttemptRecord("speak", false, "word_search", nowMs - 2000),
+            AttemptRecord("freeze", true, "memory", nowMs - 3000),
+            AttemptRecord("write", false, "triad", nowMs - 4000)
+        )
+
+        val summary = calculator.calculate(attempts, emptyList(), emptyMap())
+        assertEquals(2, summary.todayCompletedCount)
     }
 }
