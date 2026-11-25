@@ -714,4 +714,47 @@
     <string name="battery_btn_finish">Finalizar</string>
     <string name="battery_no_verbs_title">Sin Verbos para Reforzar</string>
     <string name="battery_no_verbs_desc">¡Excelente dominio! No tienes errores pendientes por ahora.</string>
+
+    <!-- Autenticación y Perfil de Estudiante -->
+    <string name="auth_eyebrow">CUENTA VERBOLANDIA</string>
+    <string name="auth_login_title">Iniciar Sesión</string>
+    <string name="auth_login_heading">Tu Progreso en la Nube</string>
+    <string name="auth_login_subtitle">Accede para respaldar tus verbos dominados y perfil de estudio.</string>
+    <string name="auth_signup_title">Crear Cuenta</string>
+    <string name="auth_signup_subtitle">Completa tus datos de estudiante para crear tu perfil en Verbolandia.</string>
+    <string name="auth_hint_name">Nombre completo</string>
+    <string name="auth_hint_city">Ciudad</string>
+    <string name="auth_hint_country">País</string>
+    <string name="auth_hint_phone">Teléfono</string>
+    <string name="auth_hint_email">Correo electrónico</string>
+    <string name="auth_hint_password">Contraseña</string>
+    <string name="auth_password_helper">Mínimo 6 caracteres</string>
+    <string name="auth_btn_login">Iniciar sesión</string>
+    <string name="auth_btn_create_account">Crear cuenta nueva</string>
+    <string name="auth_btn_register">Registrarme</string>
+    <string name="auth_btn_already_have_account">Ya tengo una cuenta</string>
+    <string name="auth_offline_note">También puedes seguir practicando sin cuenta usando el diccionario local.</string>
+    <string name="cd_auth_icon">Icono de acceso seguro</string>
+    <string name="auth_error_empty_name">Ingresa tu nombre completo</string>
+    <string name="auth_error_empty_city">Ingresa tu ciudad</string>
+    <string name="auth_error_empty_country">Ingresa tu país</string>
+    <string name="auth_error_invalid_phone">Ingresa un teléfono válido (mínimo 7 dígitos)</string>
+    <string name="auth_error_invalid_email">Ingresa un correo electrónico válido</string>
+    <string name="auth_error_short_password">La contraseña debe tener al menos 6 caracteres</string>
+    <string name="auth_error_invalid_credentials">Correo o contraseña incorrectos</string>
+    <string name="auth_error_email_exists">Este correo ya está registrado</string>
+    <string name="auth_error_generic">Ocurrió un error al procesar la solicitud</string>
+
+    <string name="profile_eyebrow">ESTUDIANTE</string>
+    <string name="profile_title">Mi Perfil</string>
+    <string name="profile_location_format">%1$s, %2$s</string>
+    <string name="profile_phone_format">Tel: %1$s</string>
+    <string name="profile_sync_title">Respaldo de Aprendizaje</string>
+    <string name="profile_metrics_format">Verbos dominados: %1$d • Ejercicios hoy: %2$d</string>
+    <string name="profile_last_synced_format">Última sincronización: %1$s</string>
+    <string name="profile_sync_never">Pendiente</string>
+    <string name="profile_btn_sync_now">Sincronizar progreso</string>
+    <string name="profile_sync_success">Progreso guardado correctamente</string>
+    <string name="profile_btn_logout">Cerrar sesión</string>
+    <string name="cd_sync_status">Estado de sincronización</string>
 </resources>
