@@ -145,13 +145,20 @@ object AppBarHelper {
                             scaleType = ImageView.ScaleType.FIT_CENTER
                             setImageResource(R.drawable.ic_avatar_placeholder)
                             contentDescription = context.getString(R.string.cd_avatar)
-                            if (action.onClick != null) {
-                                isClickable = true
-                                val typedValue = android.util.TypedValue()
-                                if (context.theme.resolveAttribute(androidx.appcompat.R.attr.selectableItemBackgroundBorderless, typedValue, true)) {
-                                    setBackgroundResource(typedValue.resourceId)
+                            isClickable = true
+                            isFocusable = true
+                            val outValue = android.util.TypedValue()
+                            if (context.theme.resolveAttribute(android.R.attr.selectableItemBackgroundBorderless, outValue, true)) {
+                                setBackgroundResource(outValue.resourceId)
+                            }
+                            setOnClickListener {
+                                if (action.onClick != null) {
+                                    action.onClick.invoke()
+                                } else {
+                                    context.startActivity(
+                                        android.content.Intent(context, com.example.verbolandia.ProfileActivity::class.java)
+                                    )
                                 }
-                                setOnClickListener { action.onClick.invoke() }
                             }
                         }
                         binding.slotRight.addView(avatarView)

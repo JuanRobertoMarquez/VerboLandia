@@ -48,7 +48,9 @@ render.experimental.xml
 *.keystore
 
 # Google Services (e.g. APIs or Firebase)
-google-services.json
+# google-services.json se versiona a propósito: contiene identificadores del proyecto Firebase
+# que no son secretos, y el equipo lo necesita para compilar. La seguridad real está en las
+# reglas de Firestore (firestore.rules) y en Firebase Authentication.
 
 # Android Profiling
 *.hprof

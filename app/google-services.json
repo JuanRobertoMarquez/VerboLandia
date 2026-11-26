@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "772205043507",
+    "project_id": "verbolandia-ed154",
+    "storage_bucket": "verbolandia-ed154.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:772205043507:android:513b47ce941c7dbcc42846",
+        "android_client_info": {
+          "package_name": "com.example.verbolandia"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC-msR9ljdCbhuV6KUSbIZsI2MQXBwpkGQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,0 +1,25 @@
+rules_version = '2';
+
+// Reglas de Cloud Firestore para Verbolandia.
+// Cada usuario autenticado solo puede leer y escribir SU propio documento: users/{uid}.
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    match /users/{userId} {
+      allow read: if request.auth != null && request.auth.uid == userId;
+
+      allow create: if request.auth != null
+                    && request.auth.uid == userId
+                    && request.resource.data.uid == userId;
+
+      allow update: if request.auth != null && request.auth.uid == userId;
+
+      allow delete: if false;
+    }
+
+    // Todo lo demás queda bloqueado.
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

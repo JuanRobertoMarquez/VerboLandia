@@ -1,0 +1,9 @@
+diff a/app/src/main/res/values/strings.xml b/app/src/main/res/values/strings.xml	(rejected hunks)
+@@ -775,5 +775,7 @@
+     <string name="profile_btn_sync_now">Sincronizar progreso</string>
+     <string name="profile_sync_success">Progreso guardado correctamente</string>
+     <string name="profile_btn_logout">Cerrar sesión</string>
++    <string name="auth_error_network">Sin conexión con el servidor. Revisa tu internet e inténtalo de nuevo.</string>
++    <string name="profile_refresh_failed">No se pudo actualizar desde la nube. Se muestran los datos guardados en el teléfono.</string>
+     <string name="cd_sync_status">Estado de sincronización</string>
+ </resources>
