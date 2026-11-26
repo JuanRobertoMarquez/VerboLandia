@@ -26,6 +26,7 @@ interface AuthRepository {
     ): Result<UserProfile>
 
     suspend fun syncProgress(masteredCount: Int, totalPracticed: Int): Result<UserProfile>
+    suspend fun refreshProfile(): Result<UserProfile>
     fun logout()
 }
 
@@ -33,7 +34,8 @@ class AuthException(val code: ErrorCode, message: String) : Exception(message) {
     enum class ErrorCode {
         INVALID_CREDENTIALS,
         EMAIL_ALREADY_EXISTS,
-        NOT_AUTHENTICATED
+        NOT_AUTHENTICATED,
+        NETWORK_ERROR
     }
 }
 
@@ -123,6 +125,14 @@ class LocalAuthRepository(context: Context) : AuthRepository {
             saveProfile(updated, existing.optString(FIELD_PASSWORD))
             Result.success(updated)
         }
+
+    override suspend fun refreshProfile(): Result<UserProfile> = withContext(Dispatchers.IO) {
+        val user = currentUser()
+            ?: return@withContext Result.failure(
+                AuthException(AuthException.ErrorCode.NOT_AUTHENTICATED, "No active session")
+            )
+        Result.success(user)
+    }
 
     override fun logout() {
         prefs.edit().remove(KEY_ACTIVE_EMAIL).apply()
